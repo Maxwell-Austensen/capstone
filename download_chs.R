@@ -4,7 +4,7 @@
 # October 10, 2016
 
 # Program:   GitHub/capstone/download_chs.R
-# Ouput:     ROOT/chs/
+# Ouput:     ROOT/
 # Purpose:   Download and save NYC's Community Health Survey (CHS) 
 #            Public Microdata & Documenation
 ################################################################################
@@ -78,7 +78,7 @@ for(y in 2002:2014) {
   data <- read_sas(data_file_url_)
   
   # Save data file in RDS format, to easily read into R later
-  data_path_ <- paste0(raw_, "hvs_", y, ".RDS")
+  data_path_ <- paste0(raw_, "chs_", y, ".RDS")
   saveRDS(data, data_path_)
 }
 
