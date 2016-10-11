@@ -1,0 +1,112 @@
+################################################################################
+# NYU Wagner
+# Capstone
+# October 10, 2016
+
+# Program:   GitHub/capstone/explore_chs.R
+# Ouput:     ROOT/chs/
+# Purpose:   Explore NYC's Community Health Survey (CHS) Public Microdata
+################################################################################
+
+# Utility functions
+
+`%S%` <- function(x, y) {
+  paste0(x, y)
+}
+
+`%notin%` <- Negate(`%in%`)
+
+################################################################################
+
+# Install packages if needed
+package_list <- c("tidyverse", "stringr", "labelled")
+new_packages <- package_list[package_list %notin% installed.packages()[,"Package"]]
+if(length(new_packages)) install.packages(new_packages)
+
+# Load packages
+library(tidyverse)
+library(stringr)
+library(labelled)
+
+
+
+# Create Local CHS Directory ----------------------------------------------
+
+
+# Set directories
+root_ <- "C:/Users/austensen/Downloads/"
+
+raw_ <- paste0(root_, "chs/data/raw/")
+
+
+# Load CHS 2014
+data14 <- readRDS(paste0(raw_, "chs_2014.RDS"))
+
+# Prints head of data table
+data14
+
+# View data in Viewer window
+View(data14)
+
+# Prints names of all columns
+names(data14)
+
+# Lists data type of each column (includes variable label when present)
+str(data14)
+str(remove_labels(data14))
+
+
+# The symbol %>% (prnouced "pipe" is a helpful operator that allows you 
+# to reorganize the way you write code to improve readability.
+
+# It simply takes whatever is on the left, and implicitly 
+# places it as the first argument of the function call on the right.
+
+# For example, these are equivilant:
+count(data14)
+data14 %>% count()
+
+# This is helpful when you can to nest many calls to different functions.
+
+# Without these you would have to write it nested, like the two below:
+
+summarise(group_by(filter(data14, borough==1), uhf34), n())
+
+summarise(
+  group_by(
+    filter(data14, borough==1), 
+    uhf34
+  ), 
+  n()
+)
+
+# Or assign intermediate objects along the way (which gets messy)
+
+filtered <- filter(data14, borough==1)
+grouped <- group_by(filtered, uhf34)
+summarised <- summarise(grouped, n())
+summarised
+
+# But with %>% (pipe) [Ctrl + Shift + M] you can write it like this:
+
+data14 %>% 
+  filter(borough==1) %>% 
+  group_by(uhf34) %>% 
+  summarise(n())
+
+# Or write the result to a new object
+
+mn_uhf_counts <-
+  data14 %>% 
+  filter(borough==1) %>% 
+  group_by(uhf34) %>% 
+  summarise(n())
+
+
+
+inc_counts <-
+  data13 %>% 
+  group_by(uhf34, IMPUTED_POV200) %>% 
+  summarise(n())
+
+
