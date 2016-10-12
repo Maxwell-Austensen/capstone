@@ -4,5 +4,6 @@
 
 * Maxwell Austensen
 * Gopal Narsimhamurthy
-  Sih-Ting Cai
-  Amy Ganz
+* Sih-Ting Cai
+* Amy Ganz
+* Jennifer Dolatshahi
