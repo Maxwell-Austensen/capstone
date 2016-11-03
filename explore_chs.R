@@ -8,25 +8,16 @@
 # Purpose:   Explore NYC's Community Health Survey (CHS) Public Microdata
 ################################################################################
 
-# Utility functions
-
-`%S%` <- function(x, y) {
-  paste0(x, y)
-}
-
-`%notin%` <- Negate(`%in%`)
-
-################################################################################
-
 # Install packages if needed
-package_list <- c("tidyverse", "stringr", "labelled")
-new_packages <- package_list[package_list %notin% installed.packages()[,"Package"]]
+package_list <- c("tidyverse", "stringr", "labelled", "feather")
+new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
 if(length(new_packages)) install.packages(new_packages)
 
 # Load packages
-library(tidyverse)
-library(stringr)
-library(labelled)
+library(tidyverse) # for tidy data manipulation
+library(stringr) # for string manipulation
+library(labelled) # for handling labeled data
+library(feather) # for saving data files
 
 
 
@@ -34,25 +25,27 @@ library(labelled)
 
 
 # Set directories
-root_ <- "C:/Users/austensen/Downloads/"
-
-raw_ <- paste0(root_, "chs/data/raw/")
+root <- "C:/Users/austensen/Dropbox/capstone/"
+setwd(root)
 
 
 # Load CHS 2014
-data14 <- readRDS(paste0(raw_, "chs_2014.RDS"))
+data14 <- read_feather("./data/chs/data/raw/chs_2014.feather"))
 
 # Prints head of data table
 data14
 
-# View data in Viewer window
+# View data in Viewer window (ca also click data set in "objects" pane)
 View(data14)
 
 # Prints names of all columns
 names(data14)
 
 # Lists data type of each column (includes variable label when present)
+# str() works for all objects (vecors, lists, etc) 
+# if you have a data set glimpse() is a little nicer
 str(data14)
+glimpse(data14)
 str(remove_labels(data14))
 
 

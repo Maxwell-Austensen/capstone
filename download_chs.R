@@ -9,44 +9,35 @@
 #            Public Microdata & Documenation
 ################################################################################
 
-# Utility functions
-
-`%S%` <- function(x, y) {
-  paste0(x, y)
-}
-
-`%notin%` <- Negate(`%in%`)
-
-################################################################################
-
 # Install packages if needed
-package_list <- c("tidyverse", "stringr", "haven")
-new_packages <- package_list[package_list %notin% installed.packages()[,"Package"]]
+package_list <- c("tidyverse", "stringr", "haven", "feather")
+new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
 if(length(new_packages)) install.packages(new_packages)
 
 # Load packages
-library(tidyverse)
-library(stringr)
-library(haven)
-
+library(tidyverse) # for tidy data manipulation
+library(stringr) # for string manipulation
+library(haven) # for importing SAS/STATA/SPSS data
+library(feather) # for saving data files
 
 
 # Create Local CHS Directory ----------------------------------------------
 
 
 # Set directories
-root_ <- "C:/Users/austensen/Downloads/"
+root <- "C:/Users/austensen/Dropbox/capstone/data/"
+setwd(root)
 
 
 # Create new directories in the ROOT location
-chs_ <- paste0(root_, "chs/")
-data_ <- paste0(root_, "chs/data/")
-raw_ <- paste0(root_, "chs/data/raw/")
-clean_ <- paste0(root_, "chs/data/clean/")
-output_ <- paste0(root_, "chs/data/output/")
-docs_ <- paste0(root_, "chs/documentation/")
-codebooks_ <- paste0(root_, "chs/documentation/codebooks/")
-questionaires_ <- paste0(root_, "chs/documentation/questionaires/")
+chs_ <- "./chs/"
+data_ <- "./chs/data/"
+raw_ <- "./chs/data/raw/"
+clean_ <- "./chs/data/clean/"
+output_ <- "./chs/data/output/"
+docs_ <- "./chs/documentation/"
+codebooks_ <- "./chs/documentation/codebooks/"
+questionaires_ <- "./chs/documentation/questionaires/"
 
 # Create vector of all new folders
 folders <- c(chs_, data_, raw_, clean_, output_, docs_, codebooks_, questionaires_)
@@ -61,7 +52,7 @@ for(f in folders){
 
 
 # Root URL for data location
-data_url_ <- "https://www1.nyc.gov/assets/doh/downloads/sas/episrv/"
+data_url <- "https://www1.nyc.gov/assets/doh/downloads/sas/episrv/"
 
 # Name of file to download for website, with year replace with yyyy
 data_name_temp <- "chsyyyy_public.sas7bdat"
@@ -72,14 +63,14 @@ for(y in 2002:2014) {
   data_name <- str_replace(data_name_temp, "yyyy", y)
   
   # Create link to file by combining the altered name and root URL
-  data_file_url_ <- paste0(data_url_, data_name)
+  data_file_url <- paste0(data_url, data_name)
   
   # Download/read in SAS data file from link
-  data <- read_sas(data_file_url_)
+  data <- read_sas(data_file_url)
   
-  # Save data file in RDS format, to easily read into R later
-  data_path_ <- paste0(raw_, "chs_", y, ".RDS")
-  saveRDS(data, data_path_)
+  # Save data file in feather format, to easily read into R later
+  data_path <- paste0("./chs/data/raw/chs_", y, ".feather")
+  write_feather(data, data_path)
 }
 
 
@@ -87,7 +78,7 @@ for(y in 2002:2014) {
 
 
 # Root URL for questionaire & codebook locations
-docs_url_ <- "https://www1.nyc.gov/assets/doh/downloads/pdf/episrv/"
+docs_url <- "https://www1.nyc.gov/assets/doh/downloads/pdf/episrv/"
 
 # Name of file to download for website, with year replace with yyyy
 questionaire_name_temp <- "chsyyyysurvey.pdf"
@@ -100,16 +91,16 @@ for(y in 2002:2014) {
   codebook_name <- str_replace(codebook_name_temp, "yyyy", y)
   
   # Create link to file by combining the altered name and root URL
-  questionaire_url_ <- paste0(docs_url_, questionaire_name)
-  codebook_url_ <- paste0(docs_url_, codebook_name)
+  questionaire_url <- paste0(docs_url, questionaire_name)
+  codebook_url <- paste0(docs_url, codebook_name)
   
   # create local filename with path
-  questionaire_path_ <- paste0(questionaires_, questionaire_name)
-  codebook_path_ <- paste0(codebooks_, codebook_name)
+  questionaire_path <- paste0(questionaires_, questionaire_name)
+  codebook_path <- paste0(codebooks_, codebook_name)
   
   # Download/save questionaire
-  download.file(questionaire_url_, questionaire_path_, mode = "wb", quiet = TRUE)
-  download.file(codebook_url_, codebook_path_, mode = "wb", quiet = TRUE)
+  download.file(questionaire_url, questionaire_path, mode = "wb", quiet = TRUE)
+  download.file(codebook_url, codebook_path, mode = "wb", quiet = TRUE)
 }
 
 
