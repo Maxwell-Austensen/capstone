@@ -1,11 +1,7 @@
----
-title: "NYC CHS - UHF Map"
-output:
-  github_document: default
-  html_notebook: default
----
+NYC CHS - UHF Map
+================
 
-```{r, message=FALSE, warning=FALSE}
+``` r
 # Install packages if needed
 package_list <- c("tidyverse", "ggthemes", "rgdal", "maptools")
 new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
@@ -24,15 +20,10 @@ knitr::opts_knit$set(root.dir = root)
 ```
 
 ### Load shapefile and prep for mapping
-```{r, message=FALSE, warning=FALSE, include=FALSE}
-chs <- readOGR(dsn = "./gis/CHS_2009_DOHMH_2010B", layer = "CHS_2009_DOHMH_2010B")
-chs@data$id <- rownames(chs@data)
-chs.points <- fortify(chs, region="id")
-chs.df <- left_join(chs.points, chs@data, by="id")
-```
 
 ### Map United Hospital Fund Neighborhoods
-```{r}
+
+``` r
 ggplot(chs.df) + 
   aes(long,lat,group=group,fill=factor(UHF_CODE)) + 
   geom_polygon() +
@@ -42,3 +33,5 @@ ggplot(chs.df) +
   ggtitle("NYC Community Health Survey - United Health Fund (34) Neighborhoods") +
   theme_map()
 ```
+
+![](chs_uhf_map_files/figure-markdown_github/unnamed-chunk-3-1.png)
