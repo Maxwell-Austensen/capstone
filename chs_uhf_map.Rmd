@@ -1,0 +1,41 @@
+---
+title: "NYC CHS - UHF Map"
+output: html_notebook
+---
+
+```{r}
+# Install packages if needed
+package_list <- c("tidyverse", "ggthemes", "rgdal", "maptools")
+new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
+if(length(new_packages)) install.packages(new_packages)
+
+# Load packages
+library(tidyverse) # for tidy data manipulation
+library(ggthemes) # for additional ggplot2 themes (eg. theme_map)
+library(rgdal) # for reading in shapefiles
+library(maptools) # for manipulating spatial data
+
+# Set directories
+root <- "C:/Users/austensen/Dropbox/capstone/"
+setwd(root)
+```
+
+### Load shapefile and prep for mapping
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+chs <- readOGR(dsn = "./gis/CHS_2009_DOHMH_2010B", layer = "CHS_2009_DOHMH_2010B")
+chs@data$id <- rownames(chs@data)
+chs.points <- fortify(chs, region="id")
+chs.df <- left_join(chs.points, chs@data, by="id")
+```
+
+### Map United Hospital Fund Neighborhoods
+```{r}
+ggplot(chs_sp.df) + 
+  aes(long,lat,group=group,fill=factor(UHF_CODE)) + 
+  geom_polygon() +
+  geom_path(color="white") +
+  coord_equal() +
+  scale_fill_discrete(guide = FALSE) +
+  ggtitle("NYC Community Health Survey - United Health Fund (34) Neighborhoods") +
+  theme_map()
+```
