@@ -1,0 +1,59 @@
+---
+title: "Scrape Crosswalk: UHF (42) - Zip Code"
+output: html_notebook
+---
+
+```{r setup, message=FALSE, warning=FALSE}
+# Install packages if needed
+package_list <- c("tidyverse", "rvest", "stringr", "feather", "knitr")
+new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
+if(length(new_packages)) install.packages(new_packages)
+
+library(tidyverse) # for tidy data manipulation
+library(rvest) # for html web scraping
+library(stringr) # for string manipulation
+library(feather) # for saving data files
+
+
+# Set directories
+root <- "C:/Users/austensen/Dropbox/capstone/"
+knitr::opts_knit$set(root.dir = root)
+# setwd(root)
+```
+
+### Scrape table from website
+```{r}
+url <- "http://www.health.ny.gov/statistics/cancer/registry/appendix/neighborhoods.htm"
+
+table <- 
+  url %>%
+  read_html() %>% 
+  html_nodes("table") %>% 
+  html_table() %>% 
+  .[[1]] %>% 
+  as_data_frame()
+
+table
+```
+
+### Reshape data for crosswalk format
+```{r}
+xwalk <-
+  table %>%  
+  mutate(zips = str_split(`ZIP Codes`, ",")) %>% 
+  unnest(zips) %>% 
+  transmute(
+    boro = Borough,
+    uhf_42 = Neighborhood,
+    zip = as.integer(zips)
+  )
+
+xwalk
+```
+
+### Save clean crosswalk
+```{r}
+dir.create("./data/crosswalks/", showWarnings = TRUE)
+write_feather(xwalk, "./data/crosswalks/uhf_42_zip.feather")
+```
+
