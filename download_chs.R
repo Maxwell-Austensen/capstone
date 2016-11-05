@@ -23,24 +23,14 @@ library(feather) # for saving data files
 
 # Create Local CHS Directory ----------------------------------------------
 
-
-# Set directories
-root <- "C:/Users/austensen/Dropbox/capstone/data/"
-setwd(root)
-
-
 # Create new directories in the ROOT location
-chs_ <- "./chs/"
-data_ <- "./chs/data/"
-raw_ <- "./chs/data/raw/"
-clean_ <- "./chs/data/clean/"
-output_ <- "./chs/data/output/"
-docs_ <- "./chs/documentation/"
-codebooks_ <- "./chs/documentation/codebooks/"
-questionaires_ <- "./chs/documentation/questionaires/"
+raw_ <- "../Dropbox/capstone/data/raw/chs/"
+docs_ <- "../Dropbox/capstone/data/documentation/chs/"
+codebooks_ <- "../Dropbox/capstone/data/documentation/chs/codebooks/"
+questionaires_ <- "../Dropbox/capstone/data/documentation/chs/questionaires/"
 
 # Create vector of all new folders
-folders <- c(chs_, data_, raw_, clean_, output_, docs_, codebooks_, questionaires_)
+folders <- c(raw_, docs_, codebooks_, questionaires_)
 
 # Loop the vector of paths to create these folders
 for(f in folders){
@@ -69,7 +59,7 @@ for(y in 2002:2014) {
   data <- read_sas(data_file_url)
   
   # Save data file in feather format, to easily read into R later
-  data_path <- paste0("./chs/data/raw/chs_", y, ".feather")
+  data_path <- paste0(raw_, "chs_", y, ".feather")
   write_feather(data, data_path)
 }
 

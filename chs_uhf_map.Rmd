@@ -16,16 +16,11 @@ library(tidyverse) # for tidy data manipulation
 library(ggthemes) # for additional ggplot2 themes (eg. theme_map)
 library(rgdal) # for reading in shapefiles
 library(maptools) # for manipulating spatial data
-
-# Set directories
-root <- "C:/Users/austensen/Dropbox/capstone/"
-knitr::opts_knit$set(root.dir = root)
-# setwd(root)
 ```
 
 ### Load shapefile and prep for mapping
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
-chs <- readOGR(dsn = "./gis/CHS_2009_DOHMH_2010B", layer = "CHS_2009_DOHMH_2010B")
+chs <- readOGR(dsn = "../dropbox/capstone/gis/CHS_2009_DOHMH_2010B", layer = "CHS_2009_DOHMH_2010B")
 chs@data$id <- rownames(chs@data)
 chs.points <- fortify(chs, region="id")
 chs.df <- left_join(chs.points, chs@data, by="id")

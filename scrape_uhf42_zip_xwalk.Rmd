@@ -15,12 +15,6 @@ library(tidyverse) # for tidy data manipulation
 library(rvest) # for html web scraping
 library(stringr) # for string manipulation
 library(feather) # for saving data files
-
-
-# Set directories
-root <- "C:/Users/austensen/Dropbox/capstone/"
-knitr::opts_knit$set(root.dir = root)
-# setwd(root)
 ```
 
 ### Scrape table from website
@@ -35,7 +29,7 @@ table <-
   .[[1]] %>% 
   as_data_frame()
 
-table
+table %>% select(`ZIP Codes`)
 ```
 
 ### Reshape data for crosswalk format
@@ -55,7 +49,7 @@ xwalk
 
 ### Save clean crosswalk
 ```{r}
-dir.create("./data/crosswalks/", showWarnings = TRUE)
-write_feather(xwalk, "./data/crosswalks/uhf_42_zip.feather")
+dir.create("../Dropbox/capstone/data/crosswalks/", showWarnings = FALSE)
+write_feather(xwalk, "../Dropbox/capstone/data/crosswalks/uhf_42_zip.feather")
 ```
 

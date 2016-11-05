@@ -16,7 +16,6 @@ if(length(new_packages)) install.packages(new_packages)
 # Load packages
 library(tidyverse) # for tidy data manipulation
 library(stringr) # for string manipulation
-library(labelled) # for handling labeled data
 library(feather) # for saving data files
 
 
@@ -24,38 +23,32 @@ library(feather) # for saving data files
 # Create Local CHS Directory ----------------------------------------------
 
 
-# Set directories
-root <- "C:/Users/austensen/Dropbox/capstone/"
-setwd(root)
-
-
 # Load CHS 2014
-data14 <- read_feather("./data/chs/data/raw/chs_2014.feather"))
+data14 <- read_feather("../Dropbox/capstone/data/raw/chs/chs_2014.feather")
 
 # Prints head of data table
 data14
 
-# View data in Viewer window (ca also click data set in "objects" pane)
+# View data in Viewer window (can also click data set in "objects" pane)
 View(data14)
 
 # Prints names of all columns
 names(data14)
 
 # Lists data type of each column (includes variable label when present)
-# str() works for all objects (vecors, lists, etc) 
+# str() works for all objects (vectors, lists, etc) 
 # if you have a data set glimpse() is a little nicer
 str(data14)
 glimpse(data14)
-str(remove_labels(data14))
 
 
-# The symbol %>% (prnouced "pipe" is a helpful operator that allows you 
+# The symbol %>% (pronounced "pipe" is a helpful operator that allows you 
 # to reorganize the way you write code to improve readability.
 
 # It simply takes whatever is on the left, and implicitly 
 # places it as the first argument of the function call on the right.
 
-# For example, these are equivilant:
+# For example, these are equivalent:
 count(data14)
 data14 %>% count()
 
@@ -98,8 +91,13 @@ mn_uhf_counts <-
 
 
 inc_counts <-
-  data13 %>% 
-  group_by(uhf34, IMPUTED_POV200) %>% 
-  summarise(n())
+  data14 %>% 
+  group_by(borough, uhf34, imputed_pov200) %>% 
+  summarise(count = n())
+
+
+data14 %>% 
+  ggplot(aes(borough, fill = factor(imputed_pov200))) +
+  geom_bar(position = "dodge")
 
 
