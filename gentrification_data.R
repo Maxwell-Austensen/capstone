@@ -53,10 +53,10 @@ long_zip <-
   ) %>% 
   group_by(year, zcta) %>% 
   summarize(
-    agg_rent = sum(agg_rent_zip),
-    agg_hhinc = sum(agg_hhinc_zip),
-    tot_units = sum(tot_units_zip),
-    rent_units = sum(rent_units_zip)
+    agg_rent = sum(agg_rent_zip, na.rm = TRUE),
+    agg_hhinc = sum(agg_hhinc_zip, na.rm = TRUE),
+    tot_units = sum(tot_units_zip, na.rm = TRUE),
+    rent_units = sum(rent_units_zip, na.rm = TRUE)
   ) %>% 
   ungroup() %>% 
   mutate(
@@ -89,7 +89,7 @@ gent_zip <-
   mutate(
     hhinc_1990_40 = quantile(avg_hhinc_1990, .40),
     rent_chg = (avg_rent_1014 - avg_rent_1990) / avg_rent_1990,
-    rent_chg_50 = quantile(avg_hhinc_1990, .50),
+    rent_chg_50 = quantile(rent_chg, .50),
     inc_status = if_else(avg_hhinc_1014 <= hhinc_1990_40, "Lower Income", "Higher Income"),
     gent_status = if_else(inc_status=="Higher Income", "Higher Income",
                           if_else(rent_chg > rent_chg_50, "Gentrifying", "Non-Gentrifying"))
@@ -103,14 +103,14 @@ gent_uhf34 <-
   left_join(uhf34_zip_xwalk, by = c("zcta" = "zip")) %>% 
   group_by(uhf34_code) %>% 
   summarize(
-    agg_rent_1990 = sum(agg_rent_1990),
-    agg_hhinc_1990 = sum(agg_hhinc_1990),
-    agg_rent_1014 = sum(agg_rent_1014),
-    agg_hhinc_1014 = sum(agg_hhinc_1014),
-    tot_units_1990 = sum(tot_units_1990),
-    rent_units_1990 = sum(rent_units_1990),
-    tot_units_1014 = sum(tot_units_1014),
-    rent_units_1014 = sum(rent_units_1014)
+    agg_rent_1990 = sum(agg_rent_1990, na.rm = TRUE),
+    agg_hhinc_1990 = sum(agg_hhinc_1990, na.rm = TRUE),
+    agg_rent_1014 = sum(agg_rent_1014, na.rm = TRUE),
+    agg_hhinc_1014 = sum(agg_hhinc_1014, na.rm = TRUE),
+    tot_units_1990 = sum(tot_units_1990, na.rm = TRUE),
+    rent_units_1990 = sum(rent_units_1990, na.rm = TRUE),
+    tot_units_1014 = sum(tot_units_1014, na.rm = TRUE),
+    rent_units_1014 = sum(rent_units_1014, na.rm = TRUE)
   ) %>% 
   ungroup() %>% 
   mutate(
@@ -122,7 +122,7 @@ gent_uhf34 <-
   mutate(
     hhinc_1990_40 = quantile(avg_hhinc_1990, .40),
     rent_chg = (avg_rent_1014 - avg_rent_1990) / avg_rent_1990,
-    rent_chg_50 = quantile(avg_hhinc_1990, .50),
+    rent_chg_50 = quantile(rent_chg, .50),
     inc_status = if_else(avg_hhinc_1014 <= hhinc_1990_40, "Lower Income", "Higher Income"),
     gent_status = if_else(inc_status=="Higher Income", "Higher Income",
                           if_else(rent_chg > rent_chg_50, "Gentrifying", "Non-Gentrifying"))
