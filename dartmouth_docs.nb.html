@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2016-12-01" />
+<meta name="date" content="2016-12-03" />
 
 <title>Dartmouth_docs</title>
 
@@ -168,7 +168,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Dartmouth_docs</h1>
-<h4 class="date"><em>2016-12-01</em></h4>
+<h4 class="date"><em>2016-12-03</em></h4>
 
 </div>
 
@@ -185,21 +185,23 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGFydF9yYXcgPC0gcmVhZC5kYmYoXCIuLi9kcm9wYm94L2NhcHN0b25lL2RhdGEvcmF3L3RfMTAzMTEzXzEuZGJmXCIsIGFzLmlzID0gVFJVRSlcbm5hbWVzKGRhcnRfcmF3KSA8LSBuYW1lcyhkYXJ0X3JhdykgJT4lIHN0cl90b19sb3dlcigpXG5kYXJ0X25wIDwtIHJlYWQuZGJmKFwiLi4vZHJvcGJveC9jYXBzdG9uZS9kYXRhL3Jhdy9vdGhlcl9maWxlcy90X2NubV9ucF8xMjIwMTMuZGJmXCIsIGFzLmlzID0gVClcbm5hbWVzKGRhcnRfbnApIDwtIG5hbWVzKGRhcnRfbnApICU+JSBzdHJfdG9fbG93ZXIoKVxuYGBgIn0= -->
-<pre class="r"><code>dart_raw &lt;- read.dbf(&quot;../dropbox/capstone/data/raw/t_103113_1.dbf&quot;, as.is = TRUE)
-names(dart_raw) &lt;- names(dart_raw) %&gt;% str_to_lower()
-dart_np &lt;- read.dbf(&quot;../dropbox/capstone/data/raw/other_files/t_cnm_np_122013.dbf&quot;, as.is = T)
-names(dart_np) &lt;- names(dart_np) %&gt;% str_to_lower()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGFydF9yYXcyIDwtIHJlYWQuZGJmKFwiLi4vZHJvcGJveC9jYXBzdG9uZS9kYXRhL3Jhdy90XzEwMzExM18yLmRiZlwiLCBhcy5pcyA9IFQpXG5cbmBgYCJ9 -->
+<pre class="r"><code>dart_raw2 &lt;- read.dbf(&quot;../dropbox/capstone/data/raw/t_103113_2.dbf&quot;, as.is = T)
+</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gcmVhZC5kYmYoXCIuLi9kcm9wYm94L2NhcHN0b25lL2RhdGEvcmF3L3RfMTAzMTEzXzIuZGJmXCIsIGFzLmlzID0gVCkgOiBcbiAgdW5hYmxlIHRvIG9wZW4gREJGIGZpbGVcbiJ9 -->
+<pre><code>Error in read.dbf(&quot;../dropbox/capstone/data/raw/t_103113_2.dbf&quot;, as.is = T) : 
+  unable to open DBF file</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGFydF9ucCA8LVxuICBzdWJzZXQuZGF0YS5mcmFtZShkYXJ0X25wLCBjb3VudHkgJWluJSBjKFwiMzYwMDVcIiwgXCIzNjA0N1wiLCBcIjM2MDYxXCIsIFwiMzYwODFcIiwgXCIzNjA4NVwiKSlcbiAgXG5kYXJ0X25wIDwtXG4gIHRyYW5zbXV0ZShcbiAgICBnZW9pZCA9IHN0cl9jKGNvdW50eSwgdHJhY3QpLFxuICAgIGJvcm8gPSByZWNvZGUoY291bnR5LCBcbiAgICBcdFx0XCIzNjAwNVwiID0gXCJCcm9ueFwiLCBcIjM2MDQ3XCIgPSBcIkJyb29rbHluXCIsIFwiMzYwNjFcIiA9IFwiTWFuaGF0dGFuXCIsIFxuICAgIFx0XHRcIjM2MDgxXCIgPSBcIlF1ZWVuc1wiLCBcIjM2MDg1XCIgPSBcIlN0YXRlbiBJc2xhbmRcIiksXG4gICAgcGNjbm0gPSB0X2NubWZ0ZSwgXG4gICAgcGNucCA9IHRfbnBmdGVcbiAgKSAlPiVcbmRhcnRfbnljIDwtIFxuICBkYXJ0X3JhdyAlPiUgXG4gIGFzX2RhdGFfZnJhbWUoKSAlPiVcbiAgc2VsZWN0KGNvdW50eSwgdHJhY3QsIHRnX2RvYzp0b19uaW1nLCB0cGFfcGMsIHRwYV9wY18zc3AsIHRwYV9wY19vYiwgdHBhX3BjX290aCwgdGZxaGMxMCwgdGFjc18xMCwgdGJlbmVfbjEwKSAlPiVcbiAgZmlsdGVyKGNvdW50eSAlaW4lIGMoXCIzNjAwNVwiLCBcIjM2MDQ3XCIsIFwiMzYwNjFcIiwgXCIzNjA4MVwiLCBcIjM2MDg1XCIpKSAlPiUgXG4gIHRyYW5zZm9ybShcbiAgICBnZW9pZCA9IHN0cl9jKGNvdW50eSwgdHJhY3QpLFxuICAgIGJvcm8gPSByZWNvZGUoY291bnR5LCBcbiAgICBcdFx0XCIzNjAwNVwiID0gXCJCcm9ueFwiLCBcIjM2MDQ3XCIgPSBcIkJyb29rbHluXCIsIFwiMzYwNjFcIiA9IFwiTWFuaGF0dGFuXCIsIFxuICAgIFx0XHRcIjM2MDgxXCIgPSBcIlF1ZWVuc1wiLCBcIjM2MDg1XCIgPSBcIlN0YXRlbiBJc2xhbmRcIiksXG4gICAgbWVkaWNhcmVfZGVub20gPSB0YmVuZV9uMTAsXG4gICAgbWVkaWNhcmVfYWNzY2QgPSB0YWNzXzEwXG4gICkgJT4lIFxuICBtdXRhdGVfaWYoaXMuZG91YmxlLCBmdW5zKGlmX2Vsc2UoLiAlaW4lIGMoLTk5LCAtOTk5KSwgTkFfcmVhbF8sIC4pKSkgJT4lXG4gIG11dGF0ZShcbiAgICBhY3NjZF9ydCA9IGlmX2Vsc2UobWVkaWNhcmVfZGVub20gIT0gMCwgKG1lZGljYXJlX2Fjc2NkIC8gbWVkaWNhcmVfZGVub20pKjEwMDAsIE5BX3JlYWxfKVxuICApXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGFydF9ucCA8LVxuICBzdWJzZXQuZGF0YS5mcmFtZShkYXJ0X25wLCBjb3VudHkgJWluJSBjKFwiMzYwMDVcIiwgXCIzNjA0N1wiLCBcIjM2MDYxXCIsIFwiMzYwODFcIiwgXCIzNjA4NVwiKSlcbmRhcnRfbnAgPC1cbiAgZGFydF9ucCAlPiVcbiAgdHJhbnNtdXRlKFxuICAgIGdlb2lkID0gc3RyX2MoY291bnR5LCB0cmFjdCksXG4gICAgYm9ybyA9IHJlY29kZShjb3VudHksIFxuICAgIFx0XHRcIjM2MDA1XCIgPSBcIkJyb254XCIsIFwiMzYwNDdcIiA9IFwiQnJvb2tseW5cIiwgXCIzNjA2MVwiID0gXCJNYW5oYXR0YW5cIiwgXG4gICAgXHRcdFwiMzYwODFcIiA9IFwiUXVlZW5zXCIsIFwiMzYwODVcIiA9IFwiU3RhdGVuIElzbGFuZFwiKSxcbiAgICBwY2NubSA9IHRfY25tZnRlLCBcbiAgICBwY25wID0gdF9ucGZ0ZVxuICApICU+JVxuICBtdXRhdGVfaWYoaXMuZG91YmxlLCBmdW5zKGlmX2Vsc2UoLiAlaW4lIGMoLTk5LCAtOTk5KSwgTkFfcmVhbF8sIC4pKSlcbmBgYCJ9 -->
 <pre class="r"><code>dart_np &lt;-
   subset.data.frame(dart_np, county %in% c(&quot;36005&quot;, &quot;36047&quot;, &quot;36061&quot;, &quot;36081&quot;, &quot;36085&quot;))
-  
 dart_np &lt;-
+  dart_np %&gt;%
   transmute(
     geoid = str_c(county, tract),
     boro = recode(county, 
@@ -208,89 +210,190 @@ dart_np &lt;-
     pccnm = t_cnmfte, 
     pcnp = t_npfte
   ) %&gt;%
-dart_nyc &lt;- 
+  mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueHdhbGsgPC0gXG4gIHJlYWRfY3N2KFwiLi4vZHJvcGJveC9jYXBzdG9uZS9kYXRhL2Nyb3Nzd2Fsa3MvZ2VudF94d2Fsay5jc3ZcIiwgY29sX3R5cGVzID0gY29scyhnZW9pZCA9IFwiY1wiKSkgJT4lIFxuICBtdXRhdGUoZ2VudCA9IHJlY29kZShnZW50X2luZCwgYDBgID0gTkFfY2hhcmFjdGVyXywgYDFgID0gXCJHZW50cmlmeWluZ1wiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAyYCA9IFwiTm9uLUdlbnRyaWZ5aW5nXCIsIGAzYCA9IFwiSGlnaGVyLUluY29tZVwiKSxcbiAgICAgICAgIGdlbnQgPSBvcmRlcmVkKGdlbnQsIGxldmVscyA9IGMoXCJHZW50cmlmeWluZ1wiLCBcIk5vbi1HZW50cmlmeWluZ1wiLCBcIkhpZ2hlci1JbmNvbWVcIikpKSAlPiUgXG4gIHNlbGVjdChnZW9pZCwgZ2VudCkgJT4lIFxuICBmaWx0ZXIoIWlzLm5hKGdlbnQpKVxuYGBgIn0= -->
+<pre class="r"><code>xwalk &lt;- 
+  read_csv(&quot;../dropbox/capstone/data/crosswalks/gent_xwalk.csv&quot;, col_types = cols(geoid = &quot;c&quot;)) %&gt;% 
+  mutate(gent = recode(gent_ind, `0` = NA_character_, `1` = &quot;Gentrifying&quot;, 
+                                 `2` = &quot;Non-Gentrifying&quot;, `3` = &quot;Higher-Income&quot;),
+         gent = ordered(gent, levels = c(&quot;Gentrifying&quot;, &quot;Non-Gentrifying&quot;, &quot;Higher-Income&quot;))) %&gt;% 
+  select(geoid, gent) %&gt;% 
+  filter(!is.na(gent))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGFydF9mZW0gPC1cbiAgZGFydF9yYXcyICU+JVxuICBhc19kYXRhX2ZyYW1lKCkgJT4lXG4gIGZpbHRlcihjb3VudHkgJWluJSBjKFwiMzYwMDVcIiwgXCIzNjA0N1wiLCBcIjM2MDYxXCIsIFwiMzYwODFcIiwgXCIzNjA4NVwiKSkgJT4lIFxuICB0cmFuc211dGUoXG4gICAgZ2VvaWQgPSBzdHJfYyhjb3VudHksIHRyYWN0KSxcbiAgICBib3JvID0gcmVjb2RlKGNvdW50eSwgXG4gICAgXHRcdFwiMzYwMDVcIiA9IFwiQnJvbnhcIiwgXCIzNjA0N1wiID0gXCJCcm9va2x5blwiLCBcIjM2MDYxXCIgPSBcIk1hbmhhdHRhblwiLCBcbiAgICBcdFx0XCIzNjA4MVwiID0gXCJRdWVlbnNcIiwgXCIzNjA4NVwiID0gXCJTdGF0ZW4gSXNsYW5kXCIpLFxuICAgIHRvdGZlbTE1XzY0ID0gdGYxNV82NCkgJT4lXG4gICAgbXV0YXRlX2lmKGlzLmRvdWJsZSwgZnVucyhpZl9lbHNlKC4gJWluJSBjKC05OSwgLTk5OSksIE5BX3JlYWxfLCAuKSkpXG5gYGAifQ== -->
+<pre class="r"><code>dart_fem &lt;-
+  dart_raw2 %&gt;%
+  as_data_frame() %&gt;%
+  filter(county %in% c(&quot;36005&quot;, &quot;36047&quot;, &quot;36061&quot;, &quot;36081&quot;, &quot;36085&quot;)) %&gt;% 
+  transmute(
+    geoid = str_c(county, tract),
+    boro = recode(county, 
+            &quot;36005&quot; = &quot;Bronx&quot;, &quot;36047&quot; = &quot;Brooklyn&quot;, &quot;36061&quot; = &quot;Manhattan&quot;, 
+            &quot;36081&quot; = &quot;Queens&quot;, &quot;36085&quot; = &quot;Staten Island&quot;),
+    totfem15_64 = tf15_64) %&gt;%
+    mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGFydF9ueWMgPC0gXG4gIGRhcnRfcmF3ICU+JSBcbiAgYXNfZGF0YV9mcmFtZSgpICU+JVxuICBmaWx0ZXIoY291bnR5ICVpbiUgYyhcIjM2MDA1XCIsIFwiMzYwNDdcIiwgXCIzNjA2MVwiLCBcIjM2MDgxXCIsIFwiMzYwODVcIikpICU+JSBcbiAgdHJhbnNtdXRlKFxuICAgIGdlb2lkID0gc3RyX2MoY291bnR5LCB0cmFjdCksXG4gICAgYm9ybyA9IHJlY29kZShjb3VudHksIFxuICAgIFx0XHRcIjM2MDA1XCIgPSBcIkJyb254XCIsIFwiMzYwNDdcIiA9IFwiQnJvb2tseW5cIiwgXCIzNjA2MVwiID0gXCJNYW5oYXR0YW5cIiwgXG4gICAgXHRcdFwiMzYwODFcIiA9IFwiUXVlZW5zXCIsIFwiMzYwODVcIiA9IFwiU3RhdGVuIElzbGFuZFwiKSxcbiAgICBtZWRpY2FyZV9kZW5vbSA9IHRiZW5lX24xMCxcbiAgICBtZWRpY2FyZV9hY3NjZCA9IHRhY3NfMTAsXG4gICAgcGNwID0gdGdfZG9jLFxuICAgIHNwZWNpYWxpc3QgPSB0c19kb2MsXG4gICAgb2JneW4gPSB0b19kb2MsXG4gICAgZmVkcGNwID0gdGdfZmVkZG9jLFxuICAgIGZlZHNwZWMgPSB0c19mZWRkb2MsIFxuICAgIGZlZG9iID0gdG9fZmVkZG9jLFxuICAgIG5vbmZlZHBjcCA9IHRnX25mZWRkb2MsIFxuICAgIG5vbmZlZHNwZWMgPSB0c19uZmVkZG9jLFxuICAgIG5vbmZlZG9iID0gdG9fbmZlZGRvYyxcbiAgICBpbWdfcGNwID0gdGdfaW1nLFxuICAgIGltZ19zcGVjID0gdHNfaW1nLFxuICAgIGltZ19vYiA9IHRvX2ltZywgXG4gICAgY21nX3BjcCA9IHRnX2NtZyxcbiAgICBjbWdfc3BlYyA9IHRzX2NtZywgXG4gICAgY21nX29iID0gdG9fY21nLCBcbiAgICBuaW1nX3BjcCA9IHRnX25pbWcsXG4gICAgbmltZ19zcGVjID0gdHNfbmltZyxcbiAgICBuaW1nX29iID0gdG9fbmltZyxcbiAgICBwYV9wY3AgPSB0cGFfcGMsXG4gICAgcGFfc3BlYyA9IHRwYV9wY18zc3AsXG4gICAgcGFfb2IgPSB0cGFfcGNfb2IsXG4gICAgcGFfb3RoZXIgPSB0cGFfcGNfb3RoLFxuICAgIGZxaGMgPSB0ZnFoYzEwLFxuICAgIHRvdGFnZTBfMTQgPSB0YWdlMDBfMTQsXG4gICAgdG90YWdlMTVfNjQgPSB0YWdlMTVfNjQsXG4gICAgdG90YWdlXzY1dXAgPSB0YWdlNjVfdXBcbiAgKSAlPiUgXG4gIG11dGF0ZV9pZihpcy5kb3VibGUsIGZ1bnMoaWZfZWxzZSguICVpbiUgYygtOTksIC05OTkpLCBOQV9yZWFsXywgLikpKSAlPiVcbiAgaW5uZXJfam9pbihkYXJ0X25wLCBieSA9IGMoXCJib3JvXCIsIFwiZ2VvaWRcIikpICU+JVxuICBpbm5lcl9qb2luKGRhcnRfZmVtLCBieSA9IGMoXCJnZW9pZFwiLCBcImJvcm9cIikpICU+JVxuICBpbm5lcl9qb2luKHh3YWxrLCBieSA9IFwiZ2VvaWRcIilcbmBgYCJ9 -->
+<pre class="r"><code>dart_nyc &lt;- 
   dart_raw %&gt;% 
   as_data_frame() %&gt;%
-  select(county, tract, tg_doc:to_nimg, tpa_pc, tpa_pc_3sp, tpa_pc_ob, tpa_pc_oth, tfqhc10, tacs_10, tbene_n10) %&gt;%
   filter(county %in% c(&quot;36005&quot;, &quot;36047&quot;, &quot;36061&quot;, &quot;36081&quot;, &quot;36085&quot;)) %&gt;% 
-  transform(
+  transmute(
     geoid = str_c(county, tract),
     boro = recode(county, 
             &quot;36005&quot; = &quot;Bronx&quot;, &quot;36047&quot; = &quot;Brooklyn&quot;, &quot;36061&quot; = &quot;Manhattan&quot;, 
             &quot;36081&quot; = &quot;Queens&quot;, &quot;36085&quot; = &quot;Staten Island&quot;),
     medicare_denom = tbene_n10,
-    medicare_acscd = tacs_10
+    medicare_acscd = tacs_10,
+    pcp = tg_doc,
+    specialist = ts_doc,
+    obgyn = to_doc,
+    fedpcp = tg_feddoc,
+    fedspec = ts_feddoc, 
+    fedob = to_feddoc,
+    nonfedpcp = tg_nfeddoc, 
+    nonfedspec = ts_nfeddoc,
+    nonfedob = to_nfeddoc,
+    img_pcp = tg_img,
+    img_spec = ts_img,
+    img_ob = to_img, 
+    cmg_pcp = tg_cmg,
+    cmg_spec = ts_cmg, 
+    cmg_ob = to_cmg, 
+    nimg_pcp = tg_nimg,
+    nimg_spec = ts_nimg,
+    nimg_ob = to_nimg,
+    pa_pcp = tpa_pc,
+    pa_spec = tpa_pc_3sp,
+    pa_ob = tpa_pc_ob,
+    pa_other = tpa_pc_oth,
+    fqhc = tfqhc10,
+    totage0_14 = tage00_14,
+    totage15_64 = tage15_64,
+    totage_65up = tage65_up
   ) %&gt;% 
   mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .))) %&gt;%
-  mutate(
-    acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_)
-  )</code></pre>
+  inner_join(dart_np, by = c(&quot;boro&quot;, &quot;geoid&quot;)) %&gt;%
+  inner_join(dart_fem, by = c(&quot;geoid&quot;, &quot;boro&quot;)) %&gt;%
+  inner_join(xwalk, by = &quot;geoid&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gdHJhbnNtdXRlKGdlb2lkID0gc3RyX2MoY291bnR5LCB0cmFjdCksIGJvcm8gPSByZWNvZGUoY291bnR5LCAgOiBcbiAgb2JqZWN0ICdjb3VudHknIG5vdCBmb3VuZFxuIn0= -->
-<pre><code>Error in transmute(geoid = str_c(county, tract), boro = recode(county,  : 
-  object 'county' not found</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFwcGx5KGRhcnRfbnljJG1lZGljYXJlX2Rlbm9tLCBkYXJ0X255YyRib3JvLCBGVU4gPSBzdW0sIG5hLnJtPVQpXG5gYGAifQ== -->
-<pre class="r"><code>tapply(dart_nyc$medicare_denom, dart_nyc$boro, FUN = sum, na.rm=T)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICBCcm9ueCAgICAgIEJyb29rbHluICAgICBNYW5oYXR0YW4gICAgICAgIFF1ZWVucyBTdGF0ZW4gSXNsYW5kIFxuICAgICAgICA3MTYzMyAgICAgICAgMTY4MjcxICAgICAgICAxNTA3MTQgICAgICAgIDE2MjIzMiAgICAgICAgIDMzMTQ5IFxuIn0= -->
-<pre><code>        Bronx      Brooklyn     Manhattan        Queens Staten Island 
-        71633        168271        150714        162232         33149 </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGVzY3JpYmVCeShkYXJ0X255YyR0Z19kb2MsIGdyb3VwID0gZGFydF9ueWMkYm9ybylcbmBgYCJ9 -->
-<pre class="r"><code>describeBy(dart_nyc$tg_doc, group = dart_nyc$boro)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGFydF9ueWMkcGh5c2ljaWFucyA8LSBkYXJ0X255YyRwY3AgKyBkYXJ0X255YyRzcGVjaWFsaXN0ICsgZGFydF9ueWMkb2JneW5cbmRhcnRfbnljJHBhIDwtIGRhcnRfbnljJHBhX29iICsgZGFydF9ueWMkcGFfcGNwICsgZGFydF9ueWMkcGFfc3BlYyArIGRhcnRfbnljJHBhX290aGVyXG5kYXJ0X255YyRvYnN0ZXRzIDwtIGRhcnRfbnljJG9iZ3luICsgZGFydF9ueWMkcGFfb2IgKyBkYXJ0X255YyRwY2NubVxuZGFydF9ueWMkYWxscGNwIDwtIGRhcnRfbnljJHBjcCArIGRhcnRfbnljJHBjbnAgKyBkYXJ0X255YyRwYV9wY3BcbmRhcnRfbnljJHNwZWNzIDwtIGRhcnRfbnljJHNwZWNpYWxpc3QgKyBkYXJ0X255YyRwYV9zcGVjXG5kYXJ0X255YyR0b3Rwb3AgPC0gZGFydF9ueWMkdG90YWdlMF8xNCArIGRhcnRfbnljJHRvdGFnZTE1XzY0ICsgZGFydF9ueWMkdG90YWdlXzY1dXBcbmRhcnRfbnljJGFsbGltZyA8LSBkYXJ0X255YyRpbWdfb2IgKyBkYXJ0X255YyRpbWdfcGNwICsgZGFydF9ueWMkaW1nX3NwZWNcbmBgYCJ9 -->
+<pre class="r"><code>dart_nyc$physicians &lt;- dart_nyc$pcp + dart_nyc$specialist + dart_nyc$obgyn
+dart_nyc$pa &lt;- dart_nyc$pa_ob + dart_nyc$pa_pcp + dart_nyc$pa_spec + dart_nyc$pa_other
+dart_nyc$obstets &lt;- dart_nyc$obgyn + dart_nyc$pa_ob + dart_nyc$pccnm
+dart_nyc$allpcp &lt;- dart_nyc$pcp + dart_nyc$pcnp + dart_nyc$pa_pcp
+dart_nyc$specs &lt;- dart_nyc$specialist + dart_nyc$pa_spec
+dart_nyc$totpop &lt;- dart_nyc$totage0_14 + dart_nyc$totage15_64 + dart_nyc$totage_65up
+dart_nyc$allimg &lt;- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiJEJyb254XG4gICB2YXJzICAgbiBtZWFuICAgIHNkIG1lZGlhbiB0cmltbWVkIG1hZCBtaW4gbWF4IHJhbmdlIHNrZXcga3VydG9zaXMgIHNlXG5YMSAgICAxIDMzOSAzLjQ1IDExLjA2ICAgICAgMCAgICAgMS4yICAgMCAgIDAgMTI5ICAgMTI5IDcuMTUgICAgNjMuNTcgMC42XG5cbiRCcm9va2x5blxuICAgdmFycyAgIG4gbWVhbiAgIHNkIG1lZGlhbiB0cmltbWVkICBtYWQgbWluIG1heCByYW5nZSBza2V3IGt1cnRvc2lzICAgc2VcblgxICAgIDEgNzYxIDIuNzcgNy4zOCAgICAgIDEgICAgMS4yMyAxLjQ4ICAgMCAgOTEgICAgOTEgNi4zMyAgICA1MC45MSAwLjI3XG5cbiRNYW5oYXR0YW5cbiAgIHZhcnMgICBuIG1lYW4gICAgc2QgbWVkaWFuIHRyaW1tZWQgIG1hZCBtaW4gbWF4IHJhbmdlIHNrZXcga3VydG9zaXMgICBzZVxuWDEgICAgMSAyODggOC44NCAxNS43OSAgICAgIDQgICAgNS41NiA1LjkzICAgMCAxMzIgICAxMzIgNC40NyAgICAyNi4wMyAwLjkzXG5cbiRRdWVlbnNcbiAgIHZhcnMgICBuIG1lYW4gICBzZCBtZWRpYW4gdHJpbW1lZCBtYWQgbWluIG1heCByYW5nZSBza2V3IGt1cnRvc2lzICAgc2VcblgxICAgIDEgNjY5IDIuNDYgNi41OCAgICAgIDAgICAgMS4xMyAgIDAgICAwICA3NyAgICA3NyA2LjY5ICAgIDU2LjUyIDAuMjVcblxuJGBTdGF0ZW4gSXNsYW5kYFxuICAgdmFycyAgIG4gbWVhbiAgIHNkIG1lZGlhbiB0cmltbWVkICBtYWQgbWluIG1heCByYW5nZSBza2V3IGt1cnRvc2lzICAgc2VcblgxICAgIDEgMTExICAzLjQgOC41MiAgICAgIDEgICAgMS40OCAxLjQ4ICAgMCAgNTkgICAgNTkgNS4wNyAgICAyOC45NCAwLjgxXG5cbmF0dHIoLFwiY2FsbFwiKVxuYnkuZGVmYXVsdChkYXRhID0geCwgSU5ESUNFUyA9IGdyb3VwLCBGVU4gPSBkZXNjcmliZSwgdHlwZSA9IHR5cGUpXG4ifQ== -->
-<pre><code>$Bronx
-   vars   n mean    sd median trimmed mad min max range skew kurtosis  se
-X1    1 339 3.45 11.06      0     1.2   0   0 129   129 7.15    63.57 0.6
-
-$Brooklyn
-   vars   n mean   sd median trimmed  mad min max range skew kurtosis   se
-X1    1 761 2.77 7.38      1    1.23 1.48   0  91    91 6.33    50.91 0.27
-
-$Manhattan
-   vars   n mean    sd median trimmed  mad min max range skew kurtosis   se
-X1    1 288 8.84 15.79      4    5.56 5.93   0 132   132 4.47    26.03 0.93
-
-$Queens
-   vars   n mean   sd median trimmed mad min max range skew kurtosis   se
-X1    1 669 2.46 6.58      0    1.13   0   0  77    77 6.69    56.52 0.25
-
-$`Staten Island`
-   vars   n mean   sd median trimmed  mad min max range skew kurtosis   se
-X1    1 111  3.4 8.52      1    1.48 1.48   0  59    59 5.07    28.94 0.81
-
-attr(,&quot;call&quot;)
-by.default(data = x, INDICES = group, FUN = describe, type = type)</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFwcGx5KGRhcnRfbnljJHRnX2RvYywgZGFydF9ueWMkYm9ybywgRlVOID0gc3VtKVxuYGBgIn0= -->
-<pre class="r"><code>tapply(dart_nyc$tg_doc, dart_nyc$boro, FUN = sum)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICBCcm9ueCAgICAgIEJyb29rbHluICAgICBNYW5oYXR0YW4gICAgICAgIFF1ZWVucyBTdGF0ZW4gSXNsYW5kIFxuICAgICAgICAgMTE3MCAgICAgICAgICAyMTA3ICAgICAgICAgIDI1NDYgICAgICAgICAgMTY0NSAgICAgICAgICAgMzc3IFxuIn0= -->
-<pre><code>        Bronx      Brooklyn     Manhattan        Queens Staten Island 
-         1170          2107          2546          1645           377 </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+
+<!-- rnb-html-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImtuaXRfYXNpcyJdfX0= -->
+
+<table style="width:100%;">
+<colgroup>
+<col width="16%" />
+<col width="14%" />
+<col width="6%" />
+<col width="6%" />
+<col width="7%" />
+<col width="10%" />
+<col width="9%" />
+<col width="11%" />
+<col width="7%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">gent</th>
+<th align="right">physicians_rt</th>
+<th align="right">pa_rt</th>
+<th align="right">np_rt</th>
+<th align="right">cnm_rt</th>
+<th align="right">allpcp_rt</th>
+<th align="right">specs_rt</th>
+<th align="right">obstets_rt</th>
+<th align="right">img_rt</th>
+<th align="right">fqhc_rt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Gentrifying</td>
+<td align="right">1.78</td>
+<td align="right">0.26</td>
+<td align="right">0.08</td>
+<td align="right">0.16</td>
+<td align="right">0.97</td>
+<td align="right">0.94</td>
+<td align="right">0.44</td>
+<td align="right">0.95</td>
+<td align="right">0.02</td>
+</tr>
+<tr class="even">
+<td align="left">Non-Gentrifying</td>
+<td align="right">2.44</td>
+<td align="right">0.24</td>
+<td align="right">0.08</td>
+<td align="right">0.09</td>
+<td align="right">1.03</td>
+<td align="right">1.52</td>
+<td align="right">0.45</td>
+<td align="right">1.20</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="odd">
+<td align="left">Higher-Income</td>
+<td align="right">4.06</td>
+<td align="right">0.44</td>
+<td align="right">0.12</td>
+<td align="right">0.14</td>
+<td align="right">1.42</td>
+<td align="right">2.79</td>
+<td align="right">0.79</td>
+<td align="right">1.62</td>
+<td align="right">0.01</td>
+</tr>
+</tbody>
+</table>
+
+
+<!-- rnb-html-end -->
+
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
 <!-- rnb-text-end -->
-</div>
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtKGRhcnRfbnljJHRvdGZlbTE1XzY0KVxuXG5gYGAifQ== -->
+<pre class="r"><code>sum(dart_nyc$totfem15_64)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDI5NzY4MjhcbiJ9 -->
+<pre><code>[1] 2976828</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGFydG1vdXRoX2RvY3MiCm91dHB1dDoKICBodG1sX25vdGVib29rOiBkZWZhdWx0CiAgZ2l0aHViX2RvY3VtZW50OiBkZWZhdWx0CmRhdGU6ICdgciBTeXMuRGF0ZSgpYCcKLS0tCgpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpgYGAKCmBgYHtyLCBtZXNzYWdlPUZBTFNFfQpsaWJyYXJ5KHN0cmluZ3IpOyBsaWJyYXJ5KGZvcmVpZ24pOyBsaWJyYXJ5KFF1YW50UHN5Yyk7IGxpYnJhcnkocHN5Y2gpOyBsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgpgYGB7cn0KZGFydF9yYXcgPC0gcmVhZC5kYmYoIi4uL2Ryb3Bib3gvY2Fwc3RvbmUvZGF0YS9yYXcvdF8xMDMxMTNfMS5kYmYiLCBhcy5pcyA9IFRSVUUpCm5hbWVzKGRhcnRfcmF3KSA8LSBuYW1lcyhkYXJ0X3JhdykgJT4lIHN0cl90b19sb3dlcigpCgpkYXJ0X25wIDwtIHJlYWQuZGJmKCIuLi9kcm9wYm94L2NhcHN0b25lL2RhdGEvcmF3L290aGVyX2ZpbGVzL3RfY25tX25wXzEyMjAxMy5kYmYiLCBhcy5pcyA9IFQpCm5hbWVzKGRhcnRfbnApIDwtIG5hbWVzKGRhcnRfbnApICU+JSBzdHJfdG9fbG93ZXIoKQpgYGAKCmBgYHtyfQoKZGFydF9ucCA8LQogIHN1YnNldC5kYXRhLmZyYW1lKGRhcnRfbnAsIGNvdW50eSAlaW4lIGMoIjM2MDA1IiwgIjM2MDQ3IiwgIjM2MDYxIiwgIjM2MDgxIiwgIjM2MDg1IikpCiAgCmRhcnRfbnAgPC0KICB0cmFuc211dGUoCiAgICBnZW9pZCA9IHN0cl9jKGNvdW50eSwgdHJhY3QpLAogICAgYm9ybyA9IHJlY29kZShjb3VudHksIAogICAgCQkiMzYwMDUiID0gIkJyb254IiwgIjM2MDQ3IiA9ICJCcm9va2x5biIsICIzNjA2MSIgPSAiTWFuaGF0dGFuIiwgCiAgICAJCSIzNjA4MSIgPSAiUXVlZW5zIiwgIjM2MDg1IiA9ICJTdGF0ZW4gSXNsYW5kIiksCiAgICBwY2NubSA9IHRfY25tZnRlLCAKICAgIHBjbnAgPSB0X25wZnRlCiAgKSAlPiUKCmRhcnRfbnljIDwtIAogIGRhcnRfcmF3ICU+JSAKICBhc19kYXRhX2ZyYW1lKCkgJT4lCiAgc2VsZWN0KGNvdW50eSwgdHJhY3QsIHRnX2RvYzp0b19uaW1nLCB0cGFfcGMsIHRwYV9wY18zc3AsIHRwYV9wY19vYiwgdHBhX3BjX290aCwgdGZxaGMxMCwgdGFjc18xMCwgdGJlbmVfbjEwKSAlPiUKICBmaWx0ZXIoY291bnR5ICVpbiUgYygiMzYwMDUiLCAiMzYwNDciLCAiMzYwNjEiLCAiMzYwODEiLCAiMzYwODUiKSkgJT4lIAogIHRyYW5zZm9ybSgKICAgIGdlb2lkID0gc3RyX2MoY291bnR5LCB0cmFjdCksCiAgICBib3JvID0gcmVjb2RlKGNvdW50eSwgCiAgICAJCSIzNjAwNSIgPSAiQnJvbngiLCAiMzYwNDciID0gIkJyb29rbHluIiwgIjM2MDYxIiA9ICJNYW5oYXR0YW4iLCAKICAgIAkJIjM2MDgxIiA9ICJRdWVlbnMiLCAiMzYwODUiID0gIlN0YXRlbiBJc2xhbmQiKSwKICAgIG1lZGljYXJlX2Rlbm9tID0gdGJlbmVfbjEwLAogICAgbWVkaWNhcmVfYWNzY2QgPSB0YWNzXzEwCiAgKSAlPiUgCiAgbXV0YXRlX2lmKGlzLmRvdWJsZSwgZnVucyhpZl9lbHNlKC4gJWluJSBjKC05OSwgLTk5OSksIE5BX3JlYWxfLCAuKSkpICU+JQogIG11dGF0ZSgKICAgIGFjc2NkX3J0ID0gaWZfZWxzZShtZWRpY2FyZV9kZW5vbSAhPSAwLCAobWVkaWNhcmVfYWNzY2QgLyBtZWRpY2FyZV9kZW5vbSkqMTAwMCwgTkFfcmVhbF8pCiAgKQpoZWFkKGRhcnRfbnljKQpgYGAKYGBge3J9Cgp0YXBwbHkoZGFydF9ueWMkbWVkaWNhcmVfZGVub20sIGRhcnRfbnljJGJvcm8sIEZVTiA9IHN1bSwgbmEucm09VCkKYGBgCgpgYGB7cn0KZGVzY3JpYmVCeShkYXJ0X255YyR0Z19kb2MsIGdyb3VwID0gZGFydF9ueWMkYm9ybykKCnRhcHBseShkYXJ0X255YyR0Z19kb2MsIGRhcnRfbnljJGJvcm8sIEZVTiA9IHN1bSkKYGBgCgojIyBJbmNsdWRpbmcgUGxvdHMKCllvdSBjYW4gYWxzbyBlbWJlZCBwbG90cywgZm9yIGV4YW1wbGU6CgpgYGB7ciBwcmVzc3VyZSwgZWNobz1GQUxTRX0KcGxvdChwcmVzc3VyZSkKYGBgCgpOb3RlIHRoYXQgdGhlIGBlY2hvID0gRkFMU0VgIHBhcmFtZXRlciB3YXMgYWRkZWQgdG8gdGhlIGNvZGUgY2h1bmsgdG8gcHJldmVudCBwcmludGluZyBvZiB0aGUgUiBjb2RlIHRoYXQgZ2VuZXJhdGVkIHRoZSBwbG90Lgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGFydG1vdXRoX2RvY3MiCm91dHB1dDoKICBodG1sX25vdGVib29rOiBkZWZhdWx0CiAgZ2l0aHViX2RvY3VtZW50OiBkZWZhdWx0CmRhdGU6ICdgciBTeXMuRGF0ZSgpYCcKLS0tCgpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpgYGAKCmBgYHtyLCBtZXNzYWdlPUZBTFNFfQpsaWJyYXJ5KHN0cmluZ3IpOyBsaWJyYXJ5KGZvcmVpZ24pOyBsaWJyYXJ5KFF1YW50UHN5Yyk7IGxpYnJhcnkocHN5Y2gpOyBsaWJyYXJ5KGtuaXRyKTsgbGlicmFyeSh0aWR5dmVyc2UpCmBgYAoKYGBge3J9CmRhcnRfcmF3IDwtIHJlYWQuZGJmKCIuLi9kcm9wYm94L2NhcHN0b25lL2RhdGEvcmF3L3RfMTAzMTEzXzEuZGJmIiwgYXMuaXMgPSBUUlVFKQpuYW1lcyhkYXJ0X3JhdykgPC0gbmFtZXMoZGFydF9yYXcpICU+JSBzdHJfdG9fbG93ZXIoKQoKZGFydF9yYXcyIDwtIHJlYWQuZGJmKCIuLi9kcm9wYm94L2NhcHN0b25lL2RhdGEvcmF3L290aGVyX2ZpbGVzL3RfMTAzMTEzXzIuZGJmIiwgYXMuaXMgPSBUKQpuYW1lcyhkYXJ0X3JhdzIpIDwtIG5hbWVzKGRhcnRfcmF3MikgJT4lIHN0cl90b19sb3dlcigpCgpkYXJ0X25wIDwtIHJlYWQuZGJmKCIuLi9kcm9wYm94L2NhcHN0b25lL2RhdGEvcmF3L290aGVyX2ZpbGVzL3RfY25tX25wXzEyMjAxMy5kYmYiLCBhcy5pcyA9IFQpCm5hbWVzKGRhcnRfbnApIDwtIG5hbWVzKGRhcnRfbnApICU+JSBzdHJfdG9fbG93ZXIoKQpgYGAKCmBgYHtyfQpkYXJ0X25wIDwtCiAgc3Vic2V0LmRhdGEuZnJhbWUoZGFydF9ucCwgY291bnR5ICVpbiUgYygiMzYwMDUiLCAiMzYwNDciLCAiMzYwNjEiLCAiMzYwODEiLCAiMzYwODUiKSkKCmRhcnRfbnAgPC0KICBkYXJ0X25wICU+JQogIHRyYW5zbXV0ZSgKICAgIGdlb2lkID0gc3RyX2MoY291bnR5LCB0cmFjdCksCiAgICBib3JvID0gcmVjb2RlKGNvdW50eSwgCiAgICAJCSIzNjAwNSIgPSAiQnJvbngiLCAiMzYwNDciID0gIkJyb29rbHluIiwgIjM2MDYxIiA9ICJNYW5oYXR0YW4iLCAKICAgIAkJIjM2MDgxIiA9ICJRdWVlbnMiLCAiMzYwODUiID0gIlN0YXRlbiBJc2xhbmQiKSwKICAgIHBjY25tID0gdF9jbm1mdGUsIAogICAgcGNucCA9IHRfbnBmdGUKICApICU+JQogIG11dGF0ZV9pZihpcy5kb3VibGUsIGZ1bnMoaWZfZWxzZSguICVpbiUgYygtOTksIC05OTkpLCBOQV9yZWFsXywgLikpKQoKYGBgCgpgYGB7cn0KeHdhbGsgPC0gCiAgcmVhZF9jc3YoIi4uL2Ryb3Bib3gvY2Fwc3RvbmUvZGF0YS9jcm9zc3dhbGtzL2dlbnRfeHdhbGsuY3N2IiwgY29sX3R5cGVzID0gY29scyhnZW9pZCA9ICJjIikpICU+JSAKICBtdXRhdGUoZ2VudCA9IHJlY29kZShnZW50X2luZCwgYDBgID0gTkFfY2hhcmFjdGVyXywgYDFgID0gIkdlbnRyaWZ5aW5nIiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGAyYCA9ICJOb24tR2VudHJpZnlpbmciLCBgM2AgPSAiSGlnaGVyLUluY29tZSIpLAogICAgICAgICBnZW50ID0gb3JkZXJlZChnZW50LCBsZXZlbHMgPSBjKCJHZW50cmlmeWluZyIsICJOb24tR2VudHJpZnlpbmciLCAiSGlnaGVyLUluY29tZSIpKSkgJT4lIAogIHNlbGVjdChnZW9pZCwgZ2VudCkgJT4lIAogIGZpbHRlcighaXMubmEoZ2VudCkpCmBgYAoKYGBge3J9CmRhcnRfZmVtIDwtCiAgZGFydF9yYXcyICU+JQogIGFzX2RhdGFfZnJhbWUoKSAlPiUKICBmaWx0ZXIoY291bnR5ICVpbiUgYygiMzYwMDUiLCAiMzYwNDciLCAiMzYwNjEiLCAiMzYwODEiLCAiMzYwODUiKSkgJT4lIAogIHRyYW5zbXV0ZSgKICAgIGdlb2lkID0gc3RyX2MoY291bnR5LCB0cmFjdCksCiAgICBib3JvID0gcmVjb2RlKGNvdW50eSwgCiAgICAJCSIzNjAwNSIgPSAiQnJvbngiLCAiMzYwNDciID0gIkJyb29rbHluIiwgIjM2MDYxIiA9ICJNYW5oYXR0YW4iLCAKICAgIAkJIjM2MDgxIiA9ICJRdWVlbnMiLCAiMzYwODUiID0gIlN0YXRlbiBJc2xhbmQiKSwKICAgIHRvdGZlbTE1XzY0ID0gdGYxNV82NCkgJT4lCiAgICBtdXRhdGVfaWYoaXMuZG91YmxlLCBmdW5zKGlmX2Vsc2UoLiAlaW4lIGMoLTk5LCAtOTk5KSwgTkFfcmVhbF8sIC4pKSkKYGBgCgpgYGB7cn0KZGFydF9ueWMgPC0gCiAgZGFydF9yYXcgJT4lIAogIGFzX2RhdGFfZnJhbWUoKSAlPiUKICBmaWx0ZXIoY291bnR5ICVpbiUgYygiMzYwMDUiLCAiMzYwNDciLCAiMzYwNjEiLCAiMzYwODEiLCAiMzYwODUiKSkgJT4lIAogIHRyYW5zbXV0ZSgKICAgIGdlb2lkID0gc3RyX2MoY291bnR5LCB0cmFjdCksCiAgICBib3JvID0gcmVjb2RlKGNvdW50eSwgCiAgICAJCSIzNjAwNSIgPSAiQnJvbngiLCAiMzYwNDciID0gIkJyb29rbHluIiwgIjM2MDYxIiA9ICJNYW5oYXR0YW4iLCAKICAgIAkJIjM2MDgxIiA9ICJRdWVlbnMiLCAiMzYwODUiID0gIlN0YXRlbiBJc2xhbmQiKSwKICAgIG1lZGljYXJlX2Rlbm9tID0gdGJlbmVfbjEwLAogICAgbWVkaWNhcmVfYWNzY2QgPSB0YWNzXzEwLAogICAgcGNwID0gdGdfZG9jLAogICAgc3BlY2lhbGlzdCA9IHRzX2RvYywKICAgIG9iZ3luID0gdG9fZG9jLAogICAgZmVkcGNwID0gdGdfZmVkZG9jLAogICAgZmVkc3BlYyA9IHRzX2ZlZGRvYywgCiAgICBmZWRvYiA9IHRvX2ZlZGRvYywKICAgIG5vbmZlZHBjcCA9IHRnX25mZWRkb2MsIAogICAgbm9uZmVkc3BlYyA9IHRzX25mZWRkb2MsCiAgICBub25mZWRvYiA9IHRvX25mZWRkb2MsCiAgICBpbWdfcGNwID0gdGdfaW1nLAogICAgaW1nX3NwZWMgPSB0c19pbWcsCiAgICBpbWdfb2IgPSB0b19pbWcsIAogICAgY21nX3BjcCA9IHRnX2NtZywKICAgIGNtZ19zcGVjID0gdHNfY21nLCAKICAgIGNtZ19vYiA9IHRvX2NtZywgCiAgICBuaW1nX3BjcCA9IHRnX25pbWcsCiAgICBuaW1nX3NwZWMgPSB0c19uaW1nLAogICAgbmltZ19vYiA9IHRvX25pbWcsCiAgICBwYV9wY3AgPSB0cGFfcGMsCiAgICBwYV9zcGVjID0gdHBhX3BjXzNzcCwKICAgIHBhX29iID0gdHBhX3BjX29iLAogICAgcGFfb3RoZXIgPSB0cGFfcGNfb3RoLAogICAgZnFoYyA9IHRmcWhjMTAsCiAgICB0b3RhZ2UwXzE0ID0gdGFnZTAwXzE0LAogICAgdG90YWdlMTVfNjQgPSB0YWdlMTVfNjQsCiAgICB0b3RhZ2VfNjV1cCA9IHRhZ2U2NV91cAogICkgJT4lIAogIG11dGF0ZV9pZihpcy5kb3VibGUsIGZ1bnMoaWZfZWxzZSguICVpbiUgYygtOTksIC05OTkpLCBOQV9yZWFsXywgLikpKSAlPiUKICBpbm5lcl9qb2luKGRhcnRfbnAsIGJ5ID0gYygiYm9ybyIsICJnZW9pZCIpKSAlPiUKICBpbm5lcl9qb2luKGRhcnRfZmVtLCBieSA9IGMoImdlb2lkIiwgImJvcm8iKSkgJT4lCiAgaW5uZXJfam9pbih4d2FsaywgYnkgPSAiZ2VvaWQiKQoKYGBgCgoKYGBge3J9CmRhcnRfbnljJHBoeXNpY2lhbnMgPC0gZGFydF9ueWMkcGNwICsgZGFydF9ueWMkc3BlY2lhbGlzdCArIGRhcnRfbnljJG9iZ3luCmRhcnRfbnljJHBhIDwtIGRhcnRfbnljJHBhX29iICsgZGFydF9ueWMkcGFfcGNwICsgZGFydF9ueWMkcGFfc3BlYyArIGRhcnRfbnljJHBhX290aGVyCmRhcnRfbnljJG9ic3RldHMgPC0gZGFydF9ueWMkb2JneW4gKyBkYXJ0X255YyRwYV9vYiArIGRhcnRfbnljJHBjY25tCmRhcnRfbnljJGFsbHBjcCA8LSBkYXJ0X255YyRwY3AgKyBkYXJ0X255YyRwY25wICsgZGFydF9ueWMkcGFfcGNwCmRhcnRfbnljJHNwZWNzIDwtIGRhcnRfbnljJHNwZWNpYWxpc3QgKyBkYXJ0X255YyRwYV9zcGVjCmRhcnRfbnljJHRvdHBvcCA8LSBkYXJ0X255YyR0b3RhZ2UwXzE0ICsgZGFydF9ueWMkdG90YWdlMTVfNjQgKyBkYXJ0X255YyR0b3RhZ2VfNjV1cApkYXJ0X255YyRhbGxpbWcgPC0gZGFydF9ueWMkaW1nX29iICsgZGFydF9ueWMkaW1nX3BjcCArIGRhcnRfbnljJGltZ19zcGVjCmBgYAoKYGBge3J9CnN1bXRhYmxlIDwtIAogIGRhcnRfbnljICU+JQogIGdyb3VwX2J5KGdlbnQpICU+JQogIHN1bW1hcmlzZShwaHlzaWNpYW5zX3J0ID0gc3VtKHBoeXNpY2lhbnMpIC8gc3VtKHRvdHBvcCkqMTAwMCwKICAgICAgICAgICAgcGFfcnQgPSBzdW0ocGEpIC8gc3VtKHRvdHBvcCkqMTAwMCwKICAgICAgICAgICAgbnBfcnQgPSBzdW0ocGNucCkgLyBzdW0odG90cG9wKSoxMDAwLAogICAgICAgICAgICBjbm1fcnQgPSBzdW0ocGNjbm0pIC8gc3VtKHRvdGZlbTE1XzY0KSoxMDAwLAogICAgICAgICAgICBhbGxwY3BfcnQgPSBzdW0oYWxscGNwKSAvIHN1bSh0b3Rwb3ApKjEwMDAsCiAgICAgICAgICAgIHNwZWNzX3J0ID0gc3VtKHNwZWNzKSAvIHN1bSh0b3Rwb3ApKjEwMDAsCiAgICAgICAgICAgIG9ic3RldHNfcnQgPSBzdW0ob2JzdGV0cykgLyBzdW0odG90ZmVtMTVfNjQpKjEwMDAsCiAgICAgICAgICAgIGltZ19ydCA9IHN1bShhbGxpbWcpIC8gc3VtKHRvdHBvcCkqMTAwMCwKICAgICAgICAgICAgZnFoY19ydCA9IHN1bShmcWhjKSAvIHN1bSh0b3Rwb3ApKjEwMDApICU+JSAKICBtdXRhdGVfaWYoaXMubnVtZXJpYywgZnVucyhyb3VuZCguLCBkaWdpdHMgPSAyKSkpCgpzdW10YWJsZSAlPiUgZ2F0aGVyKCJ2YXIiLCAidmFsdWUiLCAtZ2VudCkgJT4lIHNwcmVhZChnZW50LCB2YWx1ZSkKCmthYmxlKHN1bXRhYmxlKQpgYGAKCmBgYHtyfQpzdW1tYXJpc2UoYWNzY2RfcnQgPSBzdW0obWVkaWNhcmVfYWNzY2QpIC8gc3VtKG1lZGljYXJlX2Rlbm9tKSAqIDEwMDApCgpzdW1tYXJpc2UoLmRhdGEgPSBkYXJ0X255Yywgb2JneW5fcnQgPSBzdW0ob2JneW4pL3N1bSh0b3RmZW0xNV82NCkgKiAxMDAwKQpzdW0oZGFydF9ueWMkb2JneW4pCnN1bShkYXJ0X255YyR0b3RmZW0xNV82NCkKdGFwcGx5KGRhcnRfbnljJHRnX2RvYywgZGFydF9ueWMkZ2VudCwgRlVOID0gc3VtKQoKdGFwcGx5KGRhcnRfbnljJHRnX2RvYywgZGFydF9ueWMkYm9ybywgRlVOID0gc3VtKQpgYGAK</div>
 
 
 
