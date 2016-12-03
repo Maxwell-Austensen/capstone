@@ -136,7 +136,8 @@ sumtable <-
             specs_rt = sum(specs) / sum(totpop)*1000,
             obstets_rt = sum(obstets) / sum(totfem15_64)*1000,
             img_rt = sum(allimg) / sum(totpop)*1000,
-            fqhc_rt = sum(fqhc) / sum(totpop)*1000) %>% 
+            fqhc_rt = sum(fqhc) / sum(totpop)*1000, 
+            acscd_rt = sum(medicare_acscd) / sum(medicare_denom) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 
 sumtable %>% gather("var", "value", -gent) %>% spread(gent, value)
