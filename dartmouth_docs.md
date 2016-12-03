@@ -118,40 +118,40 @@ sumtable <-
   dart_nyc %>%
   group_by(gent) %>%
   summarise(physicians_rt = sum(physicians) / sum(totpop)*1000,
-            pa_rt = sum(pa) / sum(totpop)*1000,
-            np_rt = sum(pcnp) / sum(totpop)*1000,
-            cnm_rt = sum(pccnm) / sum(totfem15_64)*1000,
+            pa_rt = sum(pa) / sum(totpop)*10000,
+            np_rt = sum(pcnp) / sum(totpop)*100000,
+            cnm_rt = sum(pccnm) / sum(totfem15_64)*10000,
             allpcp_rt = sum(allpcp) / sum(totpop)*1000,
             specs_rt = sum(specs) / sum(totpop)*1000,
-            obstets_rt = sum(obstets) / sum(totfem15_64)*1000,
+            obstets_rt = sum(obstets) / sum(totfem15_64)*10000,
             img_rt = sum(allimg) / sum(totpop)*1000,
-            fqhc_rt = sum(fqhc) / sum(totpop)*1000, 
-            acscd_rt = sum(medicare_acscd) / sum(medicare_denom) * 1000) %>%
+            acscd_rt = sum(medicare_acscd, na.rm=T) / sum(medicare_denom, na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 
 sumtable %>% gather("var", "value", -gent) %>% spread(gent, value)
 ```
 
-    ## # A tibble: 10 × 4
-    ##              var Gentrifying `Non-Gentrifying` `Higher-Income`
-    ## *          <chr>       <dbl>             <dbl>           <dbl>
-    ## 1       acscd_rt          NA                NA              NA
-    ## 2      allpcp_rt        0.97              1.03            1.42
-    ## 3         cnm_rt        0.16              0.09            0.14
-    ## 4        fqhc_rt        0.02              0.01            0.01
-    ## 5         img_rt        0.95              1.20            1.62
-    ## 6          np_rt        0.08              0.08            0.12
-    ## 7     obstets_rt        0.44              0.45            0.79
-    ## 8          pa_rt        0.26              0.24            0.44
-    ## 9  physicians_rt        1.78              2.44            4.06
-    ## 10      specs_rt        0.94              1.52            2.79
+    ## # A tibble: 9 × 4
+    ##             var Gentrifying `Non-Gentrifying` `Higher-Income`
+    ## *         <chr>       <dbl>             <dbl>           <dbl>
+    ## 1      acscd_rt       71.38             77.33           50.21
+    ## 2     allpcp_rt        0.97              1.03            1.42
+    ## 3        cnm_rt        1.56              0.86            1.39
+    ## 4        img_rt        0.95              1.20            1.62
+    ## 5         np_rt        7.69              7.76           12.18
+    ## 6    obstets_rt        4.43              4.49            7.90
+    ## 7         pa_rt        2.56              2.43            4.39
+    ## 8 physicians_rt        1.78              2.44            4.06
+    ## 9      specs_rt        0.94              1.52            2.79
 
 ``` r
-kable(sumtable)
+kable(sumtable, col.names = c("Gentrification Status", "Physicians per 1000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1000", "Specialists per 1000", "Repro. Health Providers per 10,000", "International Medical Grads per 1000", "Ambulatory Sensitive Condition Discharges per 1000"))
 ```
 
-| gent            |  physicians\_rt|  pa\_rt|  np\_rt|  cnm\_rt|  allpcp\_rt|  specs\_rt|  obstets\_rt|  img\_rt|  fqhc\_rt| acscd\_rt |
-|:----------------|---------------:|-------:|-------:|--------:|-----------:|----------:|------------:|--------:|---------:|:----------|
-| Gentrifying     |            1.78|    0.26|    0.08|     0.16|        0.97|       0.94|         0.44|     0.95|      0.02| NA        |
-| Non-Gentrifying |            2.44|    0.24|    0.08|     0.09|        1.03|       1.52|         0.45|     1.20|      0.01| NA        |
-| Higher-Income   |            4.06|    0.44|    0.12|     0.14|        1.42|       2.79|         0.79|     1.62|      0.01| NA        |
+| Gentrification Status |  Physicians per 1000|  PAs per 10,000|  NPs per 100,000|  Cert. Nurse Midwives per 10,000|  Primary Care Providers per 1000|  Specialists per 1000|  Repro. Health Providers per 10,000|  International Medical Grads per 1000|  Ambulatory Sensitive Condition Discharges per 1000|
+|:----------------------|--------------------:|---------------:|----------------:|--------------------------------:|--------------------------------:|---------------------:|-----------------------------------:|-------------------------------------:|---------------------------------------------------:|
+| Gentrifying           |                 1.78|            2.56|             7.69|                             1.56|                             0.97|                  0.94|                                4.43|                                  0.95|                                               71.38|
+| Non-Gentrifying       |                 2.44|            2.43|             7.76|                             0.86|                             1.03|                  1.52|                                4.49|                                  1.20|                                               77.33|
+| Higher-Income         |                 4.06|            4.39|            12.18|                             1.39|                             1.42|                  2.79|                                7.90|                                  1.62|                                               50.21|
+
+col.names = c("Physicians per 1000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1000", "Specialists per 1000", "Repro. Health Providers per 10,000", ))
