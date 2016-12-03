@@ -125,6 +125,8 @@ dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
 ```
 
 ```{r}
+dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
+  
 sumtable <- 
   dart_nyc %>%
   group_by(gent) %>%
@@ -136,12 +138,14 @@ sumtable <-
             specs_rt = sum(specs) / sum(totpop)*1000,
             obstets_rt = sum(obstets) / sum(totfem15_64)*10000,
             img_rt = sum(allimg) / sum(totpop)*1000,
-            acscd_rt = sum(medicare_acscd, na.rm=T) / sum(medicare_denom, na.rm=T) * 1000) %>%
+            acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(medicare_denom[!is.na(acscd_rt)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 
 sumtable %>% gather("var", "value", -gent) %>% spread(gent, value)
 
-kable(sumtable, col.names = c("Gentrification Status", "Physicians per 1000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1000", "Specialists per 1000", "Repro. Health Providers per 10,000", "International Medical Grads per 1000", "Ambulatory Sensitive Condition Discharges per 1000"))
+kable(sumtable, col.names = c("Gentrification Status", "Physicians per 1,000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1,000", "Specialists per 1,000", "Repro. Health Providers per 10,000", "International Medical Grads per 1,000", "Ambulatory Sensitive Condition Discharges per 1,000"), caption = "Rates of providers and ambulatory sensitive conditions by gentrification status of providers' census tract")
+
+# add footnote for what is in each cat and for rates of obstets and nurse midwives per females 15 - 65 #
 ```
 
 col.names = c("Physicians per 1000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1000", "Specialists per 1000", "Repro. Health Providers per 10,000",  ))

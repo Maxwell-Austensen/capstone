@@ -114,6 +114,8 @@ dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
 ```
 
 ``` r
+dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
+  
 sumtable <- 
   dart_nyc %>%
   group_by(gent) %>%
@@ -125,7 +127,7 @@ sumtable <-
             specs_rt = sum(specs) / sum(totpop)*1000,
             obstets_rt = sum(obstets) / sum(totfem15_64)*10000,
             img_rt = sum(allimg) / sum(totpop)*1000,
-            acscd_rt = sum(medicare_acscd, na.rm=T) / sum(medicare_denom, na.rm=T) * 1000) %>%
+            acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(medicare_denom[!is.na(acscd_rt)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 
 sumtable %>% gather("var", "value", -gent) %>% spread(gent, value)
@@ -134,7 +136,7 @@ sumtable %>% gather("var", "value", -gent) %>% spread(gent, value)
     ## # A tibble: 9 × 4
     ##             var Gentrifying `Non-Gentrifying` `Higher-Income`
     ## *         <chr>       <dbl>             <dbl>           <dbl>
-    ## 1      acscd_rt       71.38             77.33           50.21
+    ## 1      acscd_rt       86.82             90.35           61.21
     ## 2     allpcp_rt        0.97              1.03            1.42
     ## 3        cnm_rt        1.56              0.86            1.39
     ## 4        img_rt        0.95              1.20            1.62
@@ -145,13 +147,17 @@ sumtable %>% gather("var", "value", -gent) %>% spread(gent, value)
     ## 9      specs_rt        0.94              1.52            2.79
 
 ``` r
-kable(sumtable, col.names = c("Gentrification Status", "Physicians per 1000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1000", "Specialists per 1000", "Repro. Health Providers per 10,000", "International Medical Grads per 1000", "Ambulatory Sensitive Condition Discharges per 1000"))
+kable(sumtable, col.names = c("Gentrification Status", "Physicians per 1,000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1,000", "Specialists per 1,000", "Repro. Health Providers per 10,000", "International Medical Grads per 1,000", "Ambulatory Sensitive Condition Discharges per 1,000"), caption = "Rates of providers and ambulatory sensitive conditions by gentrification status of providers' census tract")
 ```
 
-| Gentrification Status |  Physicians per 1000|  PAs per 10,000|  NPs per 100,000|  Cert. Nurse Midwives per 10,000|  Primary Care Providers per 1000|  Specialists per 1000|  Repro. Health Providers per 10,000|  International Medical Grads per 1000|  Ambulatory Sensitive Condition Discharges per 1000|
-|:----------------------|--------------------:|---------------:|----------------:|--------------------------------:|--------------------------------:|---------------------:|-----------------------------------:|-------------------------------------:|---------------------------------------------------:|
-| Gentrifying           |                 1.78|            2.56|             7.69|                             1.56|                             0.97|                  0.94|                                4.43|                                  0.95|                                               71.38|
-| Non-Gentrifying       |                 2.44|            2.43|             7.76|                             0.86|                             1.03|                  1.52|                                4.49|                                  1.20|                                               77.33|
-| Higher-Income         |                 4.06|            4.39|            12.18|                             1.39|                             1.42|                  2.79|                                7.90|                                  1.62|                                               50.21|
+| Gentrification Status |  Physicians per 1,000|  PAs per 10,000|  NPs per 100,000|  Cert. Nurse Midwives per 10,000|  Primary Care Providers per 1,000|  Specialists per 1,000|  Repro. Health Providers per 10,000|  International Medical Grads per 1,000|  Ambulatory Sensitive Condition Discharges per 1,000|
+|:----------------------|---------------------:|---------------:|----------------:|--------------------------------:|---------------------------------:|----------------------:|-----------------------------------:|--------------------------------------:|----------------------------------------------------:|
+| Gentrifying           |                  1.78|            2.56|             7.69|                             1.56|                              0.97|                   0.94|                                4.43|                                   0.95|                                                86.82|
+| Non-Gentrifying       |                  2.44|            2.43|             7.76|                             0.86|                              1.03|                   1.52|                                4.49|                                   1.20|                                                90.35|
+| Higher-Income         |                  4.06|            4.39|            12.18|                             1.39|                              1.42|                   2.79|                                7.90|                                   1.62|                                                61.21|
+
+``` r
+# add footnote for what is in each cat and for rates of obstets and nurse midwives per females 15 - 65 #
+```
 
 col.names = c("Physicians per 1000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1000", "Specialists per 1000", "Repro. Health Providers per 10,000", ))
