@@ -1,8 +1,8 @@
 ---
 title: "Explore Dartmouth Data"
 output:
-  github_document: default
   html_notebook: default
+  github_document: default
 date: '`r Sys.Date()`'
 ---
 
@@ -14,14 +14,15 @@ if(length(new_packages)) install.packages(new_packages)
 
 library(tidyverse) # for tidy data manipulation
 library(stringr) # for string manipulation
-# library(janitor) # for handy data cleaning tools
-library(foreign) # For reading in DBF files
+# library(janitor) # for handy tools to inspect/clean data
+library(foreign) # For reading in different file formats (incl DBF)
 library(ggmap) # for additional ggplot2 themes (eg. theme_map)
 library(tigris) # for downloading census shapefiles
 # library(rgeos) # for handling spatial data
 library(raster) # for erase function to clip tracts to shoreline (erase water)
 library(maptools) # for manipulating spatial data
-library(viridis) # for color palletes
+library(viridis) # for color palettes
+library(ggmissing) # for getting summarizing/plotting missing data
 ```
 
 ```{r}
@@ -34,25 +35,15 @@ dart_nyc <-
   dart_raw %>% 
   as_data_frame() %>% 
   filter(county %in% c("36005", "36047", "36061", "36081", "36085")) %>% 
-  transmute(
-    geoid = str_c(county, tract),
-    boro = recode(county, 
-    		"36005" = "Bronx", "36047" = "Brooklyn", "36061" = "Manhattan", 
-    		"36081" = "Queens", "36085" = "Staten Island"),
-    medicare_denom = tbene_n10,
-    medicare_acscd = tacs_10
-  ) %>% 
+  transmute(geoid = str_c(county, tract),
+            boro = recode(county, "36005" = "Bronx", "36047" = "Brooklyn", "36061" = "Manhattan", 
+                                  "36081" = "Queens", "36085" = "Staten Island"),
+            medicare_denom = tbene_n10,
+            medicare_acscd = tacs_10) %>% 
   mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .))) %>% 
-  mutate(
-    acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_)
-  )
+  mutate(acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
 
 head(dart_nyc)
-```
-
-
-```{r}
-dart_nyc %>% summarise_if(is.double, funs("miss_pct" = sum(is.na(.)) / n()))
 ```
 
 ```{r}
@@ -62,14 +53,10 @@ dart_nyc %>%
   summarise(acscd_rt = sum(medicare_acscd) / sum(medicare_denom) * 1000) %>% 
   ggplot(aes(boro, acscd_rt)) +
   geom_col() +
-  labs(
-    title = "Ambulatory Care Sensitive Condition Discharges",
-    subtitle = "per 1000 Medicare Benificiaries"
-  ) +
-  theme(
-    axis.title.x = element_blank(), 
-    axis.title.y = element_blank()
-  )
+  labs(title = "Ambulatory Care Sensitive Condition Discharges",
+       subtitle = "per 1000 Medicare Benificiaries") +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank())
 ```
 
 ```{r}
@@ -105,17 +92,13 @@ p <-
   coord_map() +
   viridis::scale_fill_viridis() +
   theme_nothing(legend = TRUE) +
-  labs(
-    title = "Ambulatory Care Sensitive Condition Discharges \nper 1,000 Medicare Benificiaries",
-    subtitle = "New York City, 2010",
-    fil = "",
-    caption = "Source: Dartmouth Atlas of Health Care"
-  ) +
-  theme(
-    legend.title = element_blank(),
-    legend.position = c(.1, .7),
-    plot.caption = element_text(colour = "grey50")
-  )
+  labs(title = "Ambulatory Care Sensitive Condition Discharges \nper 1,000 Medicare Beneficiaries",
+       subtitle = "New York City, 2010",
+       fil = "",
+       caption = "Source: Dartmouth Atlas of Health Care") +
+  theme(legend.title = element_blank(),
+        legend.position = c(.1, .7),
+        plot.caption = element_text(colour = "grey50"))
 
 ggsave("acsc_map.png", p, width = 10, height = 10, units = "in")
 ```
