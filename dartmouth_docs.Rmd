@@ -11,35 +11,60 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, message=FALSE}
-library(tidyverse); library(stringr); library(foreign); library(QuantPsyc); library(psych)
+library(stringr); library(foreign); library(QuantPsyc); library(psych); library(tidyverse)
 ```
 
 ```{r}
 dart_raw <- read.dbf("../dropbox/capstone/data/raw/t_103113_1.dbf", as.is = TRUE)
 names(dart_raw) <- names(dart_raw) %>% str_to_lower()
+
+dart_np <- read.dbf("../dropbox/capstone/data/raw/other_files/t_cnm_np_122013.dbf", as.is = T)
+names(dart_np) <- names(dart_np) %>% str_to_lower()
 ```
 
 ```{r}
+
+dart_np <-
+  subset.data.frame(dart_np, county %in% c("36005", "36047", "36061", "36081", "36085"))
+  
+dart_np <-
+  transmute(
+    geoid = str_c(county, tract),
+    boro = recode(county, 
+    		"36005" = "Bronx", "36047" = "Brooklyn", "36061" = "Manhattan", 
+    		"36081" = "Queens", "36085" = "Staten Island"),
+    pccnm = t_cnmfte, 
+    pcnp = t_npfte
+  ) %>%
+
 dart_nyc <- 
   dart_raw %>% 
-  as_data_frame() %>% 
-  select(county, tract, tg_doc:to_nimg, tpa_pc, tpa_pc_3sp, tpa_pc_ob, tpa_pc_oth, tfqhc10, tbene_n10) %>%
+  as_data_frame() %>%
+  select(county, tract, tg_doc:to_nimg, tpa_pc, tpa_pc_3sp, tpa_pc_ob, tpa_pc_oth, tfqhc10, tacs_10, tbene_n10) %>%
   filter(county %in% c("36005", "36047", "36061", "36081", "36085")) %>% 
   transform(
     geoid = str_c(county, tract),
     boro = recode(county, 
     		"36005" = "Bronx", "36047" = "Brooklyn", "36061" = "Manhattan", 
     		"36081" = "Queens", "36085" = "Staten Island"),
-    medicare_denom = tbene_n10
+    medicare_denom = tbene_n10,
+    medicare_acscd = tacs_10
   ) %>% 
-  mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))
-
+  mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .))) %>%
+  mutate(
+    acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_)
+  )
 head(dart_nyc)
 ```
 ```{r}
+
+tapply(dart_nyc$medicare_denom, dart_nyc$boro, FUN = sum, na.rm=T)
+```
+
+```{r}
 describeBy(dart_nyc$tg_doc, group = dart_nyc$boro)
 
-tapply(dart_nyc$tg_doc, dart_nyc$boro, FUN = mean)
+tapply(dart_nyc$tg_doc, dart_nyc$boro, FUN = sum)
 ```
 
 ## Including Plots
