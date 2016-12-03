@@ -1,8 +1,8 @@
 ---
 title: "Explore Dartmouth Data"
 output:
-  github_document: default
   html_notebook: default
+  github_document: default
 date: '`r Sys.Date()`'
 ---
 
@@ -35,7 +35,6 @@ xwalk <-
          gent = ordered(gent, levels = c("Gentrifying", "Non-Gentrifying", "Higher-Income"))) %>% 
   select(geoid, gent) %>% 
   filter(!is.na(gent))
-
 ```
 
 ```{r}
@@ -57,7 +56,7 @@ head(dart_nyc)
 
 ```{r}
 dart_nyc %>% 
-  filter(!is.na(acscd_rt)) %>% 
+  filter(!is.na(acscd_rt)) %>%
   group_by(gent) %>% 
   summarise(acscd_rt = sum(medicare_acscd) / sum(medicare_denom) * 1000) %>% 
   ggplot(aes(gent, acscd_rt, fill = gent)) +
