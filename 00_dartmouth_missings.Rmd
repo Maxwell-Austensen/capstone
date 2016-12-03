@@ -1,0 +1,71 @@
+---
+title: "Dartmouth Explore Missings"
+output:
+  github_document: default
+  html_notebook: default
+date: '`r Sys.Date()`'
+---
+
+```{r, message=FALSE}
+# Install packages if needed
+package_list <- c("tidyverse", "stringr", "foreign", "viridis", "rmarkdown", "knitr")
+new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
+if(length(new_packages)) install.packages(new_packages)
+
+library(tidyverse) # for tidy data manipulation
+library(stringr) # for string manipulation
+library(foreign) # For reading in different file formats (incl DBF)
+library(ggmissing) # for summarizing/plotting missing data
+library(visdat) # for more plots of missing data 
+```
+
+```{r}
+dart_raw <- read.dbf("../dropbox/capstone/data/raw/t_103113_1.dbf", as.is = TRUE)
+names(dart_raw) <- names(dart_raw) %>% str_to_lower()
+```
+
+```{r}
+dart_nyc <- 
+  dart_raw %>% 
+  as_data_frame() %>% 
+  filter(county %in% c("36005", "36047", "36061", "36081", "36085")) %>% 
+  mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))
+```
+
+```{r}
+dart_nyc %>% percent_missing_df() # overall percentage of missing data
+```
+
+```{r}
+dart_nyc %>% percent_missing_case() # % of cases that contain missing data
+```
+
+```{r}
+dart_nyc %>% percent_missing_var() # % of variables that contain missing data
+```
+
+```{r}
+dart_nyc %>% table_missing_case() # tabulations of missing data across cases
+```
+
+```{r}
+dart_nyc %>% summary_missing_var() # summary information of missing data for variables and cases
+```
+
+```{r}
+dart_nyc %>% vis_miss()
+```
+
+
+```{r}
+miss_vars <- 
+  dart_nyc %>% 
+  summary_missing_var() %>% 
+  filter(n_missing != 0) %>% 
+  .[["variable"]]
+
+dart_nyc %>% 
+  select(one_of(miss_vars)) %>% 
+  vis_miss()
+```
+
