@@ -8,7 +8,7 @@ date: '`r Sys.Date()`'
 
 ```{r, message=FALSE}
 # Install packages if needed
-package_list <- c("tidyverse", "stringr", "foreign", "viridis", "rmarkdown", "knitr", "devtools")
+package_list <- c("tidyverse", "stringr", "foreign", "rmarkdown", "knitr", "devtools")
 new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
 if(length(new_packages)) install.packages(new_packages)
 

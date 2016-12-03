@@ -1,8 +1,8 @@
 ---
 title: "Explore Dartmouth Data"
 output:
-  html_notebook: default
   github_document: default
+  html_notebook: default
 date: '`r Sys.Date()`'
 ---
 
@@ -12,7 +12,6 @@ package_list <- c("tidyverse", "stringr", "foreign", "ggmap", "tigris", "raster"
 new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
 if(length(new_packages)) install.packages(new_packages)
 
-library(tidyverse) # for tidy data manipulation
 library(stringr) # for string manipulation
 # library(janitor) # for handy tools to inspect/clean data
 library(foreign) # For reading in different file formats (incl DBF)
@@ -22,12 +21,21 @@ library(tigris) # for downloading census shapefiles
 library(raster) # for erase function to clip tracts to shoreline (erase water)
 library(maptools) # for manipulating spatial data
 library(viridis) # for color palettes
-library(ggmissing) # for getting summarizing/plotting missing data
+library(tidyverse) # for tidy data manipulation
 ```
 
 ```{r}
 dart_raw <- read.dbf("../dropbox/capstone/data/raw/t_103113_1.dbf", as.is = TRUE)
 names(dart_raw) <- names(dart_raw) %>% str_to_lower()
+
+xwalk <- 
+  read_csv("../dropbox/capstone/data/crosswalks/gent_xwalk.csv", col_types = cols(geoid = "c")) %>% 
+  mutate(gent = recode(gent_ind, `0` = NA_character_, `1` = "Gentrifying", 
+                                 `2` = "Non-Gentrifying", `3` = "Higher-Income"),
+         gent = ordered(gent, levels = c("Gentrifying", "Non-Gentrifying", "Higher-Income"))) %>% 
+  select(geoid, gent) %>% 
+  filter(!is.na(gent))
+
 ```
 
 ```{r}
@@ -41,7 +49,8 @@ dart_nyc <-
             medicare_denom = tbene_n10,
             medicare_acscd = tacs_10) %>% 
   mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .))) %>% 
-  mutate(acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
+  mutate(acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_)) %>% 
+  inner_join(xwalk, by = "geoid")
 
 head(dart_nyc)
 ```
@@ -49,14 +58,15 @@ head(dart_nyc)
 ```{r}
 dart_nyc %>% 
   filter(!is.na(acscd_rt)) %>% 
-  group_by(boro) %>% 
+  group_by(gent) %>% 
   summarise(acscd_rt = sum(medicare_acscd) / sum(medicare_denom) * 1000) %>% 
-  ggplot(aes(boro, acscd_rt)) +
+  ggplot(aes(gent, acscd_rt, fill = gent)) +
   geom_col() +
+  geom_text(aes(y = acscd_rt + 5, label = round(acscd_rt, 1))) +
+  scale_fill_viridis(discrete = TRUE) +
   labs(title = "Ambulatory Care Sensitive Condition Discharges",
-       subtitle = "per 1000 Medicare Benificiaries") +
-  theme(axis.title.x = element_blank(),
-        axis.title.y = element_blank())
+       subtitle = "per 1000 Medicare Benificiaries",
+       x = "", y = "", fill = "")
 ```
 
 ```{r}
@@ -64,7 +74,10 @@ dart_nyc %>%
   filter(!is.na(acscd_rt)) %>% 
   ggplot(aes(x = acscd_rt)) +
   geom_density(size = 1) +
-  facet_wrap(~ boro)
+  facet_grid(gent ~ .) +
+  labs(title = "Density of Tract-Level Ambulatory Care Sensitive Condition Discharges",
+       subtitle = "per 1000 Medicare Benificiaries",
+       x = "", y = "")
 ```
 
 ```{r, message=FALSE}
@@ -90,7 +103,7 @@ p <-
   geom_polygon() +
   geom_polygon(fill = NA, color = "white", size = 0.10) +
   coord_map() +
-  viridis::scale_fill_viridis() +
+  scale_fill_viridis(option = "magma") +
   theme_nothing(legend = TRUE) +
   labs(title = "Ambulatory Care Sensitive Condition Discharges \nper 1,000 Medicare Beneficiaries",
        subtitle = "New York City, 2010",
@@ -110,8 +123,31 @@ ggsave("acsc_map.png", p, width = 10, height = 10, units = "in")
 ***
 
 
+```{r, message=FALSE, warning=FALSE}
+p <-
+  tracts_df %>% 
+  ggplot(aes(x= long, y = lat, group = group, fill = gent)) +
+  geom_polygon() +
+  geom_polygon(fill = NA, color = "white", size = 0.10) +
+  coord_map() +
+  scale_fill_viridis(discrete = TRUE) +
+  theme_nothing(legend = TRUE) +
+  labs(title = "Gentrification Status by Tract",
+       subtitle = "New York City, 2010",
+       fil = "",
+       caption = "Source: Dartmouth Atlas of Health Care") +
+  theme(legend.title = element_blank(),
+        legend.position = c(.1, .7),
+        plot.caption = element_text(colour = "grey50"))
 
+ggsave("gent_map.png", p, width = 10, height = 10, units = "in")
+```
 
+***
+
+![](./gent_map.png)
+
+***
 
 
 
