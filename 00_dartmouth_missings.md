@@ -4,9 +4,12 @@ Dartmouth Explore Missings
 
 ``` r
 # Install packages if needed
-package_list <- c("tidyverse", "stringr", "foreign", "viridis", "rmarkdown", "knitr")
+package_list <- c("tidyverse", "stringr", "foreign", "viridis", "rmarkdown", "knitr", "devtools")
 new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
 if(length(new_packages)) install.packages(new_packages)
+
+# devtools::install_github("njtierney/ggmissing")
+# devtools::install_github("njtierney/visdat")
 
 library(tidyverse) # for tidy data manipulation
 library(stringr) # for string manipulation
