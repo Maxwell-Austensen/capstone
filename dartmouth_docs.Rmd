@@ -169,7 +169,7 @@ sumtable <-
             cnm_rt = sum(pccnm) / sum(totfem15_64)*10000,
             cnm_ci = ci(10000, totfem15_64, pccnm),
             allpcp_rt = sum(allpcp) / sum(totpop)*1000,
-            allpco_ci = ci(1000, totpop, allpcp), 
+            allpcp_ci = ci(1000, totpop, allpcp), 
             specs_rt = sum(specs) / sum(totpop)*1000,
             specs_ci = ci(1000, totpop, specs),
             obstets_rt = sum(obstets) / sum(totfem15_64)*10000,
@@ -179,9 +179,12 @@ sumtable <-
             acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(medicare_denom[!is.na(acscd_rt)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 
-sumtable %>% gather("var", "value", -gent) %>% spread(gent, value)
+foo <- names(sumtable)
+dput(foo)
+order_vec <- c("gent", "physicians_rt", "phys_ci", "pa_rt", "pa_ci", "np_rt", 
+"np_ci", "cnm_rt", "cnm_ci", "allpcp_rt", "allpcp_ci", "specs_rt", 
+"specs_ci", "obstets_rt", "obstets_ci", "img_rt", "img_ci", "acscd_rt") 
 
-kable(sumtable, col.names = c("Gentrification Status", "Physicians per 1,000", "CI", "PAs per 10,000", "CI", "NPs per 100,000","CI", "Cert. Nurse Midwives per 10,000", "CI", "Primary Care Providers per 1,000","CI", "Specialists per 1,000","CI", "Repro. Health Providers per 10,000", "CI","International Medical Grads per 1,000", "CI","Ambulatory Sensitive Condition Discharges per 1,000"), caption = "Rates of providers and ambulatory sensitive conditions by gentrification status of providers' census tract")
+kable(sumtable %>% gather("var", "value", -gent) %>% spread(gent, value) %>% mutate(var = ordered(var, levels = order_vec)) %>% arrange(var))
 
-# add footnote for what is in each cat and for rates of obstets and nurse midwives per females 15 - 65 #
 ```
