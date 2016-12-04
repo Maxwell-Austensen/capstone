@@ -118,7 +118,7 @@ dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
 ci <- function(x , n , d) {
   l <- (x / sum(n))*((sum(d)) - (1.96 * sqrt(sum(d))))
   r <- (x / sum(n))*((sum(d)) + (1.96 * sqrt(sum(d))))
-  output <-  paste0(signif(l, digits = 3), ",", signif(r, digits = 3))
+  output <-  paste0(signif(l, digits = 3), " , ", signif(r, digits = 3))
   return(output)
 }
 
@@ -138,7 +138,7 @@ cimedicare <- function(x) {
 ci(1000, dart_nyc$totpop, dart_nyc$physicians)
 ```
 
-    ## [1] "3.16,3.24"
+    ## [1] "3.16 , 3.24"
 
 ``` r
 dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
@@ -173,35 +173,35 @@ sumtable %>% gather("var", "value", -gent) %>% spread(gent, value)
 ```
 
     ## # A tibble: 17 × 4
-    ##              var Gentrifying `Non-Gentrifying` `Higher-Income`
-    ## *          <chr>       <chr>             <chr>           <chr>
-    ## 1       acscd_rt       86.82             90.35           61.21
-    ## 2      allpco_ci   0.93,1.01        0.976,1.08       1.38,1.45
-    ## 3      allpcp_rt        0.97              1.03            1.42
-    ## 4         cnm_ci   1.28,1.84        0.606,1.12       1.21,1.56
-    ## 5         cnm_rt        1.56              0.86            1.39
-    ## 6         img_ci 0.909,0.993         1.14,1.25       1.58,1.65
-    ## 7         img_rt        0.95               1.2            1.62
-    ## 8          np_ci   6.51,8.88          6.3,9.22       11.2,13.2
-    ## 9          np_rt        7.69              7.76           12.18
-    ## 10    obstets_ci    3.96,4.9         3.91,5.07       7.48,8.33
-    ## 11    obstets_rt        4.43              4.49             7.9
-    ## 12         pa_ci   2.35,2.78         2.17,2.68        4.2,4.58
-    ## 13         pa_rt        2.56              2.43            4.39
-    ## 14       phys_ci   1.72,1.84         2.36,2.53          4,4.12
-    ## 15 physicians_rt        1.78              2.44            4.06
-    ## 16      specs_ci 0.902,0.985         1.45,1.58       2.74,2.84
-    ## 17      specs_rt        0.94              1.52            2.79
+    ##              var   Gentrifying `Non-Gentrifying` `Higher-Income`
+    ## *          <chr>         <chr>             <chr>           <chr>
+    ## 1       acscd_rt         86.82             90.35           61.21
+    ## 2      allpco_ci   0.93 , 1.01      0.976 , 1.08     1.38 , 1.45
+    ## 3      allpcp_rt          0.97              1.03            1.42
+    ## 4         cnm_ci   1.28 , 1.84      0.606 , 1.12     1.21 , 1.56
+    ## 5         cnm_rt          1.56              0.86            1.39
+    ## 6         img_ci 0.909 , 0.993       1.14 , 1.25     1.58 , 1.65
+    ## 7         img_rt          0.95               1.2            1.62
+    ## 8          np_ci   6.51 , 8.88        6.3 , 9.22     11.2 , 13.2
+    ## 9          np_rt          7.69              7.76           12.18
+    ## 10    obstets_ci    3.96 , 4.9       3.91 , 5.07     7.48 , 8.33
+    ## 11    obstets_rt          4.43              4.49             7.9
+    ## 12         pa_ci   2.35 , 2.78       2.17 , 2.68      4.2 , 4.58
+    ## 13         pa_rt          2.56              2.43            4.39
+    ## 14       phys_ci   1.72 , 1.84       2.36 , 2.53        4 , 4.12
+    ## 15 physicians_rt          1.78              2.44            4.06
+    ## 16      specs_ci 0.902 , 0.985       1.45 , 1.58     2.74 , 2.84
+    ## 17      specs_rt          0.94              1.52            2.79
 
 ``` r
 kable(sumtable, col.names = c("Gentrification Status", "Physicians per 1,000", "CI", "PAs per 10,000", "CI", "NPs per 100,000","CI", "Cert. Nurse Midwives per 10,000", "CI", "Primary Care Providers per 1,000","CI", "Specialists per 1,000","CI", "Repro. Health Providers per 10,000", "CI","International Medical Grads per 1,000", "CI","Ambulatory Sensitive Condition Discharges per 1,000"), caption = "Rates of providers and ambulatory sensitive conditions by gentrification status of providers' census tract")
 ```
 
-| Gentrification Status |  Physicians per 1,000| CI        |  PAs per 10,000| CI        |  NPs per 100,000| CI        |  Cert. Nurse Midwives per 10,000| CI         |  Primary Care Providers per 1,000| CI         |  Specialists per 1,000| CI          |  Repro. Health Providers per 10,000| CI        |  International Medical Grads per 1,000| CI          |  Ambulatory Sensitive Condition Discharges per 1,000|
-|:----------------------|---------------------:|:----------|---------------:|:----------|----------------:|:----------|--------------------------------:|:-----------|---------------------------------:|:-----------|----------------------:|:------------|-----------------------------------:|:----------|--------------------------------------:|:------------|----------------------------------------------------:|
-| Gentrifying           |                  1.78| 1.72,1.84 |            2.56| 2.35,2.78 |             7.69| 6.51,8.88 |                             1.56| 1.28,1.84  |                              0.97| 0.93,1.01  |                   0.94| 0.902,0.985 |                                4.43| 3.96,4.9  |                                   0.95| 0.909,0.993 |                                                86.82|
-| Non-Gentrifying       |                  2.44| 2.36,2.53 |            2.43| 2.17,2.68 |             7.76| 6.3,9.22  |                             0.86| 0.606,1.12 |                              1.03| 0.976,1.08 |                   1.52| 1.45,1.58   |                                4.49| 3.91,5.07 |                                   1.20| 1.14,1.25   |                                                90.35|
-| Higher-Income         |                  4.06| 4,4.12    |            4.39| 4.2,4.58  |            12.18| 11.2,13.2 |                             1.39| 1.21,1.56  |                              1.42| 1.38,1.45  |                   2.79| 2.74,2.84   |                                7.90| 7.48,8.33 |                                   1.62| 1.58,1.65   |                                                61.21|
+| Gentrification Status |  Physicians per 1,000| CI          |  PAs per 10,000| CI          |  NPs per 100,000| CI          |  Cert. Nurse Midwives per 10,000| CI           |  Primary Care Providers per 1,000| CI           |  Specialists per 1,000| CI            |  Repro. Health Providers per 10,000| CI          |  International Medical Grads per 1,000| CI            |  Ambulatory Sensitive Condition Discharges per 1,000|
+|:----------------------|---------------------:|:------------|---------------:|:------------|----------------:|:------------|--------------------------------:|:-------------|---------------------------------:|:-------------|----------------------:|:--------------|-----------------------------------:|:------------|--------------------------------------:|:--------------|----------------------------------------------------:|
+| Gentrifying           |                  1.78| 1.72 , 1.84 |            2.56| 2.35 , 2.78 |             7.69| 6.51 , 8.88 |                             1.56| 1.28 , 1.84  |                              0.97| 0.93 , 1.01  |                   0.94| 0.902 , 0.985 |                                4.43| 3.96 , 4.9  |                                   0.95| 0.909 , 0.993 |                                                86.82|
+| Non-Gentrifying       |                  2.44| 2.36 , 2.53 |            2.43| 2.17 , 2.68 |             7.76| 6.3 , 9.22  |                             0.86| 0.606 , 1.12 |                              1.03| 0.976 , 1.08 |                   1.52| 1.45 , 1.58   |                                4.49| 3.91 , 5.07 |                                   1.20| 1.14 , 1.25   |                                                90.35|
+| Higher-Income         |                  4.06| 4 , 4.12    |            4.39| 4.2 , 4.58  |            12.18| 11.2 , 13.2 |                             1.39| 1.21 , 1.56  |                              1.42| 1.38 , 1.45  |                   2.79| 2.74 , 2.84   |                                7.90| 7.48 , 8.33 |                                   1.62| 1.58 , 1.65   |                                                61.21|
 
 ``` r
 # add footnote for what is in each cat and for rates of obstets and nurse midwives per females 15 - 65 #

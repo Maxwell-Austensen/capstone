@@ -129,7 +129,7 @@ dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
 ci <- function(x , n , d) {
   l <- (x / sum(n))*((sum(d)) - (1.96 * sqrt(sum(d))))
   r <- (x / sum(n))*((sum(d)) + (1.96 * sqrt(sum(d))))
-  output <-  paste0(signif(l, digits = 3), ",", signif(r, digits = 3))
+  output <-  paste0(signif(l, digits = 3), " , ", signif(r, digits = 3))
   return(output)
 }
 
