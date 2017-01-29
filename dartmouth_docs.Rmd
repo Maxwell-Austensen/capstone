@@ -124,28 +124,67 @@ dart_nyc$totpop <- dart_nyc$totage0_14 + dart_nyc$totage15_64 + dart_nyc$totage_
 dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
 ```
 
+```{r} 
+# Upper Limit = (1000 / n) (d + (1.96 x square root of d)) #
+ci <- function(x , n , d) {
+  l <- (x / sum(n))*((sum(d)) - (1.96 * sqrt(sum(d))))
+  r <- (x / sum(n))*((sum(d)) + (1.96 * sqrt(sum(d))))
+  output <-  paste0(signif(l, digits = 3), " , ", signif(r, digits = 3))
+  return(output)
+}
+
+ci00 <- function(x, n, d, r) {
+  l <- l <- (x / sum(n[!is.na(r)], na.rm = T))*((sum(d[!is.na(r)], na.rm = T)) - (1.96 * sqrt(sum(d[!is.na(r)], na.rm = T))))
+  r <- (x / sum(n[!is.na(r)], na.rm = T))*((sum(d[!is.na(r)], na.rm = T)) + (1.96 * sqrt(sum(d[!is.na(r)], na.rm = T))))
+  output <-  paste0(signif(l, digits = 3), ",", signif(r, digits = 3))
+  return(output)
+}
+cimedicare <- function(x) {
+  l <- (x / sum(dart_nyc$medicare_denom[!is.na(dart_nyc$acscd_rt)], na.rm=T))*((sum(dart_nyc$medicare_acscd[!is.na(dart_nyc$acscd_rt)], na.rm=T)) - (1.96 * sqrt(sum(dart_nyc$medicare_acscd[!is.na(dart_nyc$acscd_rt)], na.rm=T))))
+  r <- (x / sum(dart_nyc$medicare_denom[!is.na(dart_nyc$acscd_rt)], na.rm=T))*((sum(dart_nyc$medicare_acscd[!is.na(dart_nyc$acscd_rt)], na.rm=T)) + (1.96 * sqrt(sum(dart_nyc$medicare_acscd[!is.na(dart_nyc$acscd_rt)], na.rm=T))))
+  output <-  paste0(signif(l, digits = 4), ",", signif(r, digits = 4))
+  return(output)
+}
+
+ci(1000, dart_nyc$totpop, dart_nyc$physicians)
+
+```
+
 ```{r}
 dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
-  
+
+sumtotpop <- sum(dart_nyc$totpop)
+sumfempop <- sum(dart_nyc$totfem15_64)
+summedicare <- sum(dart_nyc$medicare_denom[!is.na(dart_nyc$acscd_rt)], na.rm=T)
+
 sumtable <- 
   dart_nyc %>%
   group_by(gent) %>%
   summarise(physicians_rt = sum(physicians) / sum(totpop)*1000,
+            phys_ci = ci(1000, totpop, physicians),
             pa_rt = sum(pa) / sum(totpop)*10000,
+            pa_ci = ci(10000, totpop, pa),
             np_rt = sum(pcnp) / sum(totpop)*100000,
+            np_ci = ci(100000, totpop, pcnp),
             cnm_rt = sum(pccnm) / sum(totfem15_64)*10000,
+            cnm_ci = ci(10000, totfem15_64, pccnm),
             allpcp_rt = sum(allpcp) / sum(totpop)*1000,
+            allpcp_ci = ci(1000, totpop, allpcp), 
             specs_rt = sum(specs) / sum(totpop)*1000,
+            specs_ci = ci(1000, totpop, specs),
             obstets_rt = sum(obstets) / sum(totfem15_64)*10000,
+            obstets_ci = ci(10000, totfem15_64, obstets),
             img_rt = sum(allimg) / sum(totpop)*1000,
+            img_ci = ci(1000, totpop, allimg),
             acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(medicare_denom[!is.na(acscd_rt)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 
-sumtable %>% gather("var", "value", -gent) %>% spread(gent, value)
+foo <- names(sumtable)
+dput(foo)
+order_vec <- c("gent", "physicians_rt", "phys_ci", "pa_rt", "pa_ci", "np_rt", 
+"np_ci", "cnm_rt", "cnm_ci", "allpcp_rt", "allpcp_ci", "specs_rt", 
+"specs_ci", "obstets_rt", "obstets_ci", "img_rt", "img_ci", "acscd_rt") 
 
-kable(sumtable, col.names = c("Gentrification Status", "Physicians per 1,000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1,000", "Specialists per 1,000", "Repro. Health Providers per 10,000", "International Medical Grads per 1,000", "Ambulatory Sensitive Condition Discharges per 1,000"), caption = "Rates of providers and ambulatory sensitive conditions by gentrification status of providers' census tract")
+kable(sumtable %>% gather("var", "value", -gent) %>% spread(gent, value) %>% mutate(var = ordered(var, levels = order_vec)) %>% arrange(var))
 
-# add footnote for what is in each cat and for rates of obstets and nurse midwives per females 15 - 65 #
 ```
-
-col.names = c("Physicians per 1000", "PAs per 10,000", "NPs per 100,000", "Cert. Nurse Midwives per 10,000", "Primary Care Providers per 1000", "Specialists per 1000", "Repro. Health Providers per 10,000",  ))
