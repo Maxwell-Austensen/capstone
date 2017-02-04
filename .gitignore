@@ -1,2 +1,10 @@
 .Rproj.user/
+<<<<<<< Updated upstream
 .Rproj.user
+=======
+*.xlsx
+
+*.csv
+
+*.docx
+>>>>>>> Stashed changes
