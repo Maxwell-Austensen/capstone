@@ -1,0 +1,52 @@
+---
+title: "Dartmouth_docsPCSA"
+output:
+  github_document: default
+  html_notebook: default
+date: '`r Sys.Date()`'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE}
+library(stringr); library(foreign); library(QuantPsyc); library(psych); library(knitr); library(tidyverse)
+```
+
+```{r}
+dart_raw <- read.dbf("../dropbox/capstone/2010 data/p_103113_1.dbf", as.is = TRUE)
+names(dart_raw) <- names(dart_raw) %>% str_to_lower()
+
+dart_raw2 <- read.dbf("../dropbox/capstone/2010 data/p_103113_2.dbf", as.is = T)
+names(dart_raw2) <- names(dart_raw2) %>% str_to_lower()
+
+dart_np <- read.dbf("../dropbox/capstone/2010 data/p_cnm_np_122013.dbf", as.is = T)
+names(dart_np) <- names(dart_np) %>% str_to_lower()
+```
+
+
+```{r}
+dart_np$pcsa <-as.numeric(dart_np$pcsa)
+
+xwalk <- read_csv("../Dropbox/capstone/tract_pcsa_xwalk.csv") %>% distinct(pcsa, pcsa_name)
+dart_np <- semi_join(dart_np, xwalk, by = "pcsa")
+
+
+#dart_np <-
+ # subset.data.frame(dart_np, county %in% c("36005", "36047", "36061", "36081", "36085"))
+dart_np <- subset.data.frame(dart_np, pcsa_st == "NY")
+
+
+dart_np <-
+  dart_np %>%
+  transmute(boro = 
+              case_when(.$pcsa_l %in% c("Bronx") ~ "Bronx",)
+    boro = transmute(boro pcsa_l, 
+    		"36005" = "Bronx", "36047" = "Brooklyn", "36061" = "Manhattan", 
+    		"36081" = "Queens", "36085" = "Staten Island"),
+    cnm_fte = p_cnmfte, 
+    np_fte = p_npfte
+  ) %>%
+  mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))
+```
