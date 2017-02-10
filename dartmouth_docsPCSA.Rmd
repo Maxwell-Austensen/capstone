@@ -43,5 +43,48 @@ dart_np <-
 ```
 
 ```{r}
+dart_raw2$pcsa <- as.numeric(dart_raw2$pcsa)
+dart_raw2 <- semi_join(dart_raw2, xwalk, by = "pcsa")
 
+dart_fem <-
+  dart_raw2 %>%
+  transmute(pcsa = pcsa,
+    pcsa_l = pcsa_l,
+    fem15_44 = pp12i30 + pp12i31 + pp12i32 + pp12i33 + pp12i34 + pp12i36 + pp12i37 + pp12i38
+  ) %>%
+    mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))
 ```
+
+```{r}
+dart_raw$pcsa <- as.numeric(dart_raw$pcsa)
+dart_raw <- semi_join(dart_raw, xwalk, by = "pcsa")
+dart_nyc <- 
+  dart_raw %>% 
+  transmute(
+    pcp = pg_doc,
+    famprac = pf_doc, 
+    internist = pi_doc,
+    specialist = ps_doc,
+    obgyn = po_doc,
+    nonfedpcp = pg_nfeddoc,
+    nonfedspec = ps_nfeddoc,
+    nonfedob = po_nfeddoc,
+    img_pcp = pg_img,
+    img_spec = ps_img,
+    img_ob = po_img,
+    pa_pcp = ppa_pc,
+    pa_spec = ppa_pc_3sp, #GP/IM/Pediatrics PAs - as specialists
+    pa_ob = ppa_pc_ob, #ob pa
+    pa_oth = ppa_pc_oth, #geriatrics or unk specialty PA
+    partb_pcp = pvt_pc10, #pc visits Part b only
+    pcpvt_tot = pvt_pc10 + pvt_rhc10 + pvt_fqhc10, #total pcp visits for part B and OTP
+    partb_amb = pvt_am10, #ambulatory visits part b only
+    edperday = pvt_ed10, #est total number of ED visits per day
+    pcpvt_rhc = pvt_rhc10,
+    pcpvt_fqhc = pvt_fqhc10,
+    medicare_acscd = pacs_10, #acs discharges
+    medicare_denom = pbene_n10 #total bene pop for 2010, all medicare, not part-specific
+  ) %>% 
+  mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .))) 
+```
+
