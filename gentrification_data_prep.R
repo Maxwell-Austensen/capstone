@@ -6,6 +6,8 @@ library(haven)
 
 ncdb_raw <- read_dta("J:/DEPT/REUP/Data/National/Neighborhood Change Database 2010/Clean/nyc_all_years_all_fields_long.dta")
 
+# For decennial years the cpi adjustments are actually for the previous year.
+# "Consumer Price Index for All Urban Consumers (Current Series) without seasonal adjustments from the US Bureau of Labor Statistics over all major expenditure classes for the New York City metropolitan area"
 cpi <- tribble(
   ~year, ~cpi_2016_base,
   1980,    0.279839766,
