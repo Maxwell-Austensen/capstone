@@ -189,6 +189,7 @@ vsttable <-
 
 
 ```{r}
+## won't work
 vsttb <- names(vsttable)
 dput(vsttb)
 order_vec <- c("gent_status", "acscd_rt", "pcp_rt", "ed_rt")
