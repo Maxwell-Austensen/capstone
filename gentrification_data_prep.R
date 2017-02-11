@@ -16,7 +16,7 @@ cpi <- tribble(
   2008,    0.914563439
 )
 
-tract_pcsa_xwalk <- read_csv("../Dropbox/capstone/nyc_tract_pcsa_xwalk.csv")
+tract_pcsa_xwalk <- read_csv("../Dropbox/capstone/tract_pcsa_xwalk.csv", col_types = "ccc")
 
 
 # Inflation Adjustment ----------------------------------------------------
@@ -25,13 +25,14 @@ ncdb_adj <- ncdb_raw %>%
   filter(year %in% c(1990, 2000, 2008)) %>% 
   select(year, geo2010, numhhs, rntocc, aggrent, avhhin_n) %>% 
   left_join(cpi, by = "year") %>% 
+  mutate(geoid = as.character(geo2010)) %>% 
   mutate_at(vars(aggrent, avhhin_n), funs("adj" = . * (1 / cpi_2016_base)))
 
 
 # Make wide Tract and PCSa files ------------------------------------------
 
 pcsa_wide <- ncdb_adj %>% 
-  right_join(tract_pcsa_xwalk, by = c("geo2010" = "geoid")) %>% 
+  right_join(tract_pcsa_xwalk, by = "geoid") %>% 
   group_by(year, pcsa, pcsa_name) %>% 
   summarise_at(vars(avhhin_n_adj, numhhs, aggrent_adj, rntocc), sum) %>% 
   ungroup %>% 
@@ -44,7 +45,7 @@ pcsa_wide <- ncdb_adj %>%
 tract_wide <- ncdb_adj %>% 
   mutate(avg_inc_adj = avhhin_n_adj / numhhs,
          avg_rent_adj = aggrent_adj / rntocc) %>% 
-  gather("var", "value", -geo2010, -year) %>% 
+  gather("var", "value", -geoid, -year) %>% 
   unite(var_year, var, year) %>% 
   spread(var_year, value)
 
