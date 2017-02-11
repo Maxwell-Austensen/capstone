@@ -62,7 +62,7 @@ gentxwalk <-
   filter(!is.na(gent_status))
 
 gentxwalk$pcsa <- as.numeric(gentxwalk$pcsa)
-gentxwalk$gent_status <- as.factor(gentxwalk$gent_status)
+gentxwalk$gent_status <- as.ordered(gentxwalk$gent_status)
 
 ```
 
@@ -193,7 +193,8 @@ vsttb <- names(vsttable)
 dput(vsttb)
 order_vec <- c("gent_status", "acscd_rt", "pcp_rt", "ed_rt")
 
-kable(vsttb %>% gather("var", "value", -gent_status) %>% spread(gent_status, value) %>% mutate(var = ordered(var, levels = order_vec)) %>% arrange(var))
+kable(vsttb %>% gather("var", "value", -gent_status) %>% spread(gent_status, value) %>% 
+        mutate(var = ordered(var, levels = order_vec)) %>% arrange(var))
 
 ```
 
