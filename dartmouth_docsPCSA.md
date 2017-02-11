@@ -1,20 +1,12 @@
----
-title: "Dartmouth_docsPCSA"
-output:
-  github_document: default
-  html_notebook: default
-date: '`r Sys.Date()`'
----
+Dartmouth\_docsPCSA
+================
+2017-02-11
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r, message=FALSE}
+``` r
 library(stringr); library(foreign); library(QuantPsyc); library(psych); library(knitr); library(tidyverse)
 ```
 
-```{r}
+``` r
 dart_raw <- read.dbf("../dropbox/capstone/2010 data/p_103113_1.dbf", as.is = TRUE)
 names(dart_raw) <- names(dart_raw) %>% str_to_lower()
 
@@ -25,11 +17,20 @@ dart_np <- read.dbf("../dropbox/capstone/2010 data/p_cnm_np_122013.dbf", as.is =
 names(dart_np) <- names(dart_np) %>% str_to_lower()
 ```
 
-
-```{r}
+``` r
 dart_np$pcsa <-as.numeric(dart_np$pcsa)
 
 xwalk <- read_csv("../Dropbox/capstone/tract_pcsa_xwalk.csv") %>% distinct(pcsa, pcsa_name)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   geoid = col_double(),
+    ##   pcsa = col_double(),
+    ##   pcsa_name = col_character()
+    ## )
+
+``` r
 dart_np <- semi_join(dart_np, xwalk, by = "pcsa")
 
 dart_np <-
@@ -42,7 +43,7 @@ dart_np <-
   mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))
 ```
 
-```{r}
+``` r
 dart_raw2$pcsa <- as.numeric(dart_raw2$pcsa)
 dart_raw2 <- semi_join(dart_raw2, xwalk, by = "pcsa")
 
@@ -55,7 +56,7 @@ dart_fem <-
     mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))
 ```
 
-```{r}
+``` r
 gentxwalk <- 
   read_csv("../dropbox/capstone/pcsa_gent.csv", col_types = cols(pcsa = "c")) %>% 
   select(pcsa, gent_status) %>% 
@@ -63,10 +64,9 @@ gentxwalk <-
 
 gentxwalk$pcsa <- as.numeric(gentxwalk$pcsa)
 gentxwalk$gent_status <- as.ordered(gentxwalk$gent_status)
-
 ```
 
-```{r}
+``` r
 dart_raw$pcsa <- as.numeric(dart_raw$pcsa)
 dart_raw <- semi_join(dart_raw, xwalk, by = "pcsa")
 
@@ -106,7 +106,7 @@ dart_nyc <-
   inner_join(gentxwalk, by = "pcsa")
 ```
 
-```{r}
+``` r
 dart_nyc$physicians <- dart_nyc$pcp + dart_nyc$specialist + dart_nyc$obgyn + dart_nyc$famprac + dart_nyc$internist
 dart_nyc$pa <- dart_nyc$pa_ob + dart_nyc$pa_pcp + dart_nyc$pa_spec + dart_nyc$pa_oth
 dart_nyc$obstets <- dart_nyc$obgyn + dart_nyc$pa_ob + dart_nyc$cnm_fte
@@ -115,7 +115,7 @@ dart_nyc$specs <- dart_nyc$specialist + dart_nyc$pa_spec + dart_nyc$pa_oth
 dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
 ```
 
-```{r} 
+``` r
 # Upper Limit = (1000 / n) (d + (1.96 x square root of d)) #
 ci <- function(x , n , d) {
   l <- (x / sum(n))*((sum(d)) - (1.96 * sqrt(sum(d))))
@@ -138,10 +138,11 @@ cimedicare <- function(x) {
 }
 
 ci(1000, dart_nyc$totpop, dart_nyc$physicians)
-
 ```
 
-```{r}
+    ## [1] "4.01 , 4.1"
+
+``` r
 ### WON'T WORK
 sumtotpop <- sum(dart_nyc$totpop)
 sumfempop <- sum(dart_nyc$fem15_44)
@@ -170,8 +171,13 @@ sumtable <-
 kable(sumtable)
 ```
 
-```{r}
+| gent\_status    |  physicians\_rt| phys\_ci    |  pa\_rt| pa\_ci      |  np\_rt| np\_ci      |  cnm\_rt| cnm\_ci     |  allpcp\_rt| allpcp\_ci  |  specs\_rt| specs\_ci   |  obstets\_rt| obstets\_ci |  img\_rt| img\_ci     |
+|:----------------|---------------:|:------------|-------:|:------------|-------:|:------------|--------:|:------------|-----------:|:------------|----------:|:------------|------------:|:------------|--------:|:------------|
+| Gentrifying     |            2.72| 2.64 , 2.8  |    2.17| 1.95 , 2.39 |    8.63| 7.24 , 10   |     2.98| 2.39 , 3.57 |        1.06| 1.01 , 1.1  |       1.29| 1.24 , 1.35 |         9.32| 8.28 , 10.4 |     1.10| 1.05 , 1.15 |
+| High Income     |            4.71| 4.65 , 4.77 |    4.20| 4.03 , 4.38 |   11.78| 10.9 , 12.7 |     2.63| 2.31 , 2.95 |        1.38| 1.35 , 1.41 |       2.87| 2.83 , 2.92 |        15.46| 14.7 , 16.2 |     1.53| 1.5 , 1.56  |
+| Non-Gentrifying |            2.95| 2.85 , 3.05 |    3.41| 3.08 , 3.74 |    7.64| 6.07 , 9.21 |     2.72| 2.04 , 3.4  |        1.09| 1.03 , 1.15 |       1.57| 1.5 , 1.64  |         9.45| 8.18 , 10.7 |     1.34| 1.27 , 1.4  |
 
+``` r
 dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
 dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(medicare_denom != 0, (pcpvt_tot / medicare_denom)*1000, NA_real_))
 dart_nyc <- mutate(dart_nyc, ed_rt = if_else(medicare_denom !=0, (edperday / medicare_denom)*1000, NA_real_))
@@ -185,11 +191,9 @@ vsttable <-
             pcp_rt = sum(pcpvt_tot[!is.na(pcp_rt)], na.rm = T) / sum(medicare_denom[!is.na(pcp_rt)], na.rm=T) * 1000,
             ed_rt = sum(edperday[!is.na(ed_rt)], na.rm= T / sum(medicare_denom)[!is.na(ed_rt)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
-
 ```
 
-
-```{r}
+``` r
 # vsttb <- names(vsttable)
 # dput(vsttb)
 order_vec <- c("gent_status", "acscd_rt", "pcp_rt", "ed_rt")
@@ -202,7 +206,13 @@ vsttable %>%
   kable()
 ```
 
-```{r}
+| var       |  Gentrifying|  High Income|  Non-Gentrifying|
+|:----------|------------:|------------:|----------------:|
+| acscd\_rt |        82.84|  5.97400e+01|            80.31|
+| pcp\_rt   |      3318.17|  3.04389e+03|          4905.32|
+| ed\_rt    |  37324000.00|  1.62250e+08|      32848000.00|
+
+``` r
 # foo <- names(sumtable)
 # dput(foo)
 order_vec <- c("gent", "physicians_rt", "phys_ci", "pa_rt", "pa_ci", "np_rt", 
@@ -215,6 +225,23 @@ sumtable %>%
   mutate(var = ordered(var, levels = order_vec)) %>% 
   arrange(var) %>% 
   kable()
-
 ```
 
+| var            | Gentrifying | High Income | Non-Gentrifying |
+|:---------------|:------------|:------------|:----------------|
+| physicians\_rt | 2.72        | 4.71        | 2.95            |
+| phys\_ci       | 2.64 , 2.8  | 4.65 , 4.77 | 2.85 , 3.05     |
+| pa\_rt         | 2.17        | 4.2         | 3.41            |
+| pa\_ci         | 1.95 , 2.39 | 4.03 , 4.38 | 3.08 , 3.74     |
+| np\_rt         | 8.63        | 11.78       | 7.64            |
+| np\_ci         | 7.24 , 10   | 10.9 , 12.7 | 6.07 , 9.21     |
+| cnm\_rt        | 2.98        | 2.63        | 2.72            |
+| cnm\_ci        | 2.39 , 3.57 | 2.31 , 2.95 | 2.04 , 3.4      |
+| allpcp\_rt     | 1.06        | 1.38        | 1.09            |
+| allpcp\_ci     | 1.01 , 1.1  | 1.35 , 1.41 | 1.03 , 1.15     |
+| specs\_rt      | 1.29        | 2.87        | 1.57            |
+| specs\_ci      | 1.24 , 1.35 | 2.83 , 2.92 | 1.5 , 1.64      |
+| obstets\_rt    | 9.32        | 15.46       | 9.45            |
+| obstets\_ci    | 8.28 , 10.4 | 14.7 , 16.2 | 8.18 , 10.7     |
+| img\_rt        | 1.1         | 1.53        | 1.34            |
+| img\_ci        | 1.05 , 1.15 | 1.5 , 1.56  | 1.27 , 1.4      |
