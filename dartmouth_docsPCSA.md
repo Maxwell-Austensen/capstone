@@ -143,7 +143,6 @@ ci(1000, dart_nyc$totpop, dart_nyc$physicians)
     ## [1] "4.01 , 4.1"
 
 ``` r
-### WON'T WORK
 sumtotpop <- sum(dart_nyc$totpop)
 sumfempop <- sum(dart_nyc$fem15_44)
 
