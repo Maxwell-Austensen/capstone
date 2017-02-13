@@ -172,7 +172,7 @@ kable(sumtable)
 ```{r}
 
 dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
-dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(medicare_denom != 0, (pcpvt_tot / medicare_denom)*1000, NA_real_))
+dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(medicare_denom != 0, (pcpvt_tot / medicare_denom)*100, NA_real_))
 dart_nyc <- mutate(dart_nyc, ed_rt = if_else(medicare_denom !=0, (edperday / medicare_denom)*1000, NA_real_))
 
 summedicare <- sum(dart_nyc$medicare_denom[!is.na(dart_nyc$acscd_rt)], na.rm=T)
@@ -181,7 +181,7 @@ vsttable <-
   dart_nyc %>%
   group_by(gent_status) %>%
   summarise(acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(medicare_denom[!is.na(acscd_rt)], na.rm=T) * 1000,
-            pcp_rt = sum(pcpvt_tot[!is.na(pcp_rt)], na.rm = T) / sum(medicare_denom[!is.na(pcp_rt)], na.rm=T) * 1000,
+            pcp_rt = sum(pcpvt_tot[!is.na(pcp_rt)], na.rm = T) / sum(medicare_denom[!is.na(pcp_rt)], na.rm=T) * 100,
             ed_rt = sum(edperday[!is.na(ed_rt)], na.rm= T / sum(medicare_denom)[!is.na(ed_rt)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 
