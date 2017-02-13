@@ -62,7 +62,7 @@ gentxwalk <-
   filter(!is.na(gent_status))
 
 gentxwalk$pcsa <- as.numeric(gentxwalk$pcsa)
-gentxwalk$gent_status <- as.ordered(gentxwalk$gent_status)
+gentxwalk$gent_status <- ordered(gentxwalk$gent_status, levels = c("Non-Gentrifying", "Gentrifying", "High Income"))
 
 ```
 
