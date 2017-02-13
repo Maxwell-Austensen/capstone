@@ -1,6 +1,6 @@
 Dartmouth\_docsPCSA
 ================
-2017-02-11
+2017-02-12
 
 ``` r
 library(stringr); library(foreign); library(QuantPsyc); library(psych); library(knitr); library(tidyverse)
@@ -178,7 +178,7 @@ kable(sumtable)
 
 ``` r
 dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
-dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(medicare_denom != 0, (pcpvt_tot / medicare_denom)*1000, NA_real_))
+dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(medicare_denom != 0, (pcpvt_tot / medicare_denom)*100, NA_real_))
 dart_nyc <- mutate(dart_nyc, ed_rt = if_else(medicare_denom !=0, (edperday / medicare_denom)*1000, NA_real_))
 
 summedicare <- sum(dart_nyc$medicare_denom[!is.na(dart_nyc$acscd_rt)], na.rm=T)
@@ -187,7 +187,7 @@ vsttable <-
   dart_nyc %>%
   group_by(gent_status) %>%
   summarise(acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(medicare_denom[!is.na(acscd_rt)], na.rm=T) * 1000,
-            pcp_rt = sum(pcpvt_tot[!is.na(pcp_rt)], na.rm = T) / sum(medicare_denom[!is.na(pcp_rt)], na.rm=T) * 1000,
+            pcp_rt = sum(pcpvt_tot[!is.na(pcp_rt)], na.rm = T) / sum(medicare_denom[!is.na(pcp_rt)], na.rm=T) * 100,
             ed_rt = sum(edperday[!is.na(ed_rt)], na.rm= T / sum(medicare_denom)[!is.na(ed_rt)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 ```
@@ -207,9 +207,9 @@ vsttable %>%
 
 | var       |  Gentrifying|  High Income|  Non-Gentrifying|
 |:----------|------------:|------------:|----------------:|
-| acscd\_rt |        82.84|  5.97400e+01|            80.31|
-| pcp\_rt   |      3318.17|  3.04389e+03|          4905.32|
-| ed\_rt    |  37324000.00|  1.62250e+08|      32848000.00|
+| acscd\_rt |   8.2840e+01|   5.9740e+01|       8.0310e+01|
+| pcp\_rt   |   3.3182e+02|   3.0439e+02|       4.9053e+02|
+| ed\_rt    |   3.7324e+07|   1.6225e+08|       3.2848e+07|
 
 ``` r
 # foo <- names(sumtable)

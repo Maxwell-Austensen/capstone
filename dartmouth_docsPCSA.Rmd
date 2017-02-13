@@ -1,8 +1,8 @@
 ---
 title: "Dartmouth_docsPCSA"
 output:
-  html_notebook: default
   github_document: default
+  html_notebook: default
 date: '`r Sys.Date()`'
 ---
 
