@@ -197,6 +197,8 @@ vsttable <-
 # dput(vsttb)
 order_vec <- c("gent_status", "acscd_rt", "pcp_rt", "ed_rt")
 
+options(scipen=999)
+
 vsttable %>% 
   gather("var", "value", -gent_status) %>% 
   spread(gent_status, value) %>% 
@@ -205,11 +207,11 @@ vsttable %>%
   kable()
 ```
 
-| var       |  Non-Gentrifying|  Gentrifying|  High Income|
-|:----------|----------------:|------------:|------------:|
-| acscd\_rt |       8.0310e+01|   8.2840e+01|   5.9740e+01|
-| pcp\_rt   |       4.9053e+02|   3.3182e+02|   3.0439e+02|
-| ed\_rt    |       3.2848e+07|   3.7324e+07|   1.6225e+08|
+| var       |  Non-Gentrifying|  Gentrifying|   High Income|
+|:----------|----------------:|------------:|-------------:|
+| acscd\_rt |            80.31|        82.84|         59.74|
+| pcp\_rt   |           490.53|       331.82|        304.39|
+| ed\_rt    |      32848000.00|  37324000.00|  162250000.00|
 
 ``` r
 # foo <- names(sumtable)

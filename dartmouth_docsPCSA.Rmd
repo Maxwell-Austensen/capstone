@@ -193,6 +193,8 @@ vsttable <-
 # dput(vsttb)
 order_vec <- c("gent_status", "acscd_rt", "pcp_rt", "ed_rt")
 
+options(scipen=999)
+
 vsttable %>% 
   gather("var", "value", -gent_status) %>% 
   spread(gent_status, value) %>% 
