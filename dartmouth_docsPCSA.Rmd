@@ -15,6 +15,7 @@ library(stringr); library(foreign); library(QuantPsyc); library(psych); library(
 ```
 
 ```{r}
+# 2010 raw data
 dart_raw <- read.dbf("../dropbox/capstone/2010 data/p_103113_1.dbf", as.is = TRUE)
 names(dart_raw) <- names(dart_raw) %>% str_to_lower()
 
@@ -27,6 +28,8 @@ names(dart_np) <- names(dart_np) %>% str_to_lower()
 
 
 ```{r}
+# limit to NYC PCSAs
+
 dart_np$pcsa <-as.numeric(dart_np$pcsa)
 
 xwalk <- read_csv("../Dropbox/capstone/tract_pcsa_xwalk.csv") %>% distinct(pcsa, pcsa_name)
@@ -204,8 +207,7 @@ vsttable %>%
 ```
 
 ```{r}
-# foo <- names(sumtable)
-# dput(foo)
+
 order_vec <- c("gent", "physicians_rt", "phys_ci", "pa_rt", "pa_ci", "np_rt", 
 "np_ci", "cnm_rt", "cnm_ci", "allpcp_rt", "allpcp_ci", "specs_rt", 
 "specs_ci", "obstets_rt", "obstets_ci", "img_rt", "img_ci", "acscd_rt") 
@@ -216,6 +218,49 @@ sumtable %>%
   mutate(var = ordered(var, levels = order_vec)) %>% 
   arrange(var) %>% 
   kable()
+
+```
+
+```{r}
+## bring in 99 data
+raw99 <- read.csv("../dropbox/capstone/zcta99_pcsa2010.csv", as.is = TRUE)
+names(raw99) <- names(raw99) %>% str_to_lower()
+
+cms_pcsa <-read.csv("../dropbox/capstone/cms99_pcsa2010.csv", as.is = T)
+names(cms_pcsa) <- names(cms_pcsa) %>% str_to_lower()
+```
+
+```{r}
+cms_pcsa <-
+  cms_pcsa %>%
+  transmute(pcsa = pcsa2010, 
+            pcpvt = zvt_pc99,
+            ambvt = zvt_am99,
+            edvt = zvt_ed99,
+            totbene = zbene_n)
+
+nyc99 <-
+  raw99 %>%
+  transmute(pcsa = pcsa2010,
+            pcp = zg_doc,
+            specialist = zs_doc,
+            obgyn = zo_doc,
+            nonfedpcp = zg_nfeddoc,
+            nonfedspec = zs_nfeddoc,
+            nonfedob = zo_nfeddoc,
+            img_pcp = zg_img,
+            img_spec = zs_img,
+            img_ob = zo_img,
+            pa_tot = zpa_tot,
+            pa_pcp = zpa_pc,
+            pa_spec = zpa_spec,
+            pa_ob = zpa_obgyn,
+            pa_oth = zpa_oth,
+            fqhcs = zfqhc,
+            fem15_44 = zp012030 + zp012031 + zp012032 + zp012033 + zp012034 + zp012035 + zp012036 + zp012037 + zp012038,
+            totpop = zage00_14 + zage15_64 + zage65_up) %>%
+  inner_join(cms_pcsa, by = "pcsa") %>%
+  inner_join(gentxwalk, by = "pcsa")
 
 ```
 
