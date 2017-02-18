@@ -101,7 +101,10 @@ dart_nyc <-
     pcpvt_fqhc = pvt_fqhc10,
     medicare_acscd = pacs_10, #acs discharges
     medicare_denom = pbene_n10, #total bene pop for 2010, all medicare, not part-specific
-    totpop = page00_14 + page15_64 + page65_up
+    pcpdenom = pvden_10, # denom for PCP rate
+    totpop = page00_14 + page15_64 + page65_up, 
+    ed_crudert = pcr_ed10,
+    hospdenom = phden_10
   ) %>% 
   mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .))) %>%
   inner_join(dart_np, by = "pcsa") %>%
@@ -176,8 +179,8 @@ kable(sumtable)
 ```{r}
 
 dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom), NA_real_))
-dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(medicare_denom != 0, (pcpvt_tot / medicare_denom), NA_real_))
-dart_nyc <- mutate(dart_nyc, ed_rt = if_else(medicare_denom !=0, (edperday / medicare_denom), NA_real_))
+dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(pcpdenom != 0, (pcpvt_tot / pcpdenom), NA_real_))
+dart_nyc <- mutate(dart_nyc, ed_rt = if_else(hospdenom !=0, (edperday / hospdenom), NA_real_))
 
 summedicare <- sum(dart_nyc$medicare_denom[!is.na(dart_nyc$acscd_rt)], na.rm=T)
 
@@ -185,10 +188,10 @@ vsttable <-
   dart_nyc %>%
   group_by(gent_status) %>%
   summarise(acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(medicare_denom[!is.na(acscd_rt)], na.rm=T) * 1000,
-            pcp_rt = sum(pcpvt_tot[!is.na(pcp_rt)], na.rm = T) / sum(medicare_denom[!is.na(pcp_rt)], na.rm=T) * 100,
+            pcp_rt = sum(pcpvt_tot[!is.na(pcp_rt)], na.rm = T) / sum(pcpdenom[!is.na(pcp_rt)], na.rm=T) * 100, 
             ed_rt = sum(edperday[!is.na(ed_rt)], na.rm= T / sum(medicare_denom)[!is.na(ed_rt)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
-
+## ED RT is not tallying with crude rate from dartmouth data
 ```
 
 
