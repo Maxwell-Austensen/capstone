@@ -119,6 +119,7 @@ dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
 ```
 
 ```{r} 
+# functions for CIs
 # Upper Limit = (1000 / n) (d + (1.96 x square root of d)) #
 ci <- function(x , n , d) {
   l <- (x / sum(n))*((sum(d)) - (1.96 * sqrt(sum(d))))
@@ -174,9 +175,9 @@ kable(sumtable)
 
 ```{r}
 
-dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom)*1000, NA_real_))
-dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(medicare_denom != 0, (pcpvt_tot / medicare_denom)*100, NA_real_))
-dart_nyc <- mutate(dart_nyc, ed_rt = if_else(medicare_denom !=0, (edperday / medicare_denom)*1000, NA_real_))
+dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom), NA_real_))
+dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(medicare_denom != 0, (pcpvt_tot / medicare_denom), NA_real_))
+dart_nyc <- mutate(dart_nyc, ed_rt = if_else(medicare_denom !=0, (edperday / medicare_denom), NA_real_))
 
 summedicare <- sum(dart_nyc$medicare_denom[!is.na(dart_nyc$acscd_rt)], na.rm=T)
 
@@ -192,8 +193,6 @@ vsttable <-
 
 
 ```{r}
-# vsttb <- names(vsttable)
-# dput(vsttb)
 order_vec <- c("gent_status", "acscd_rt", "pcp_rt", "ed_rt")
 
 options(scipen=999)
@@ -234,9 +233,11 @@ names(cms_pcsa) <- names(cms_pcsa) %>% str_to_lower()
 cms_pcsa <-
   cms_pcsa %>%
   transmute(pcsa = pcsa2010, 
-            pcpvt = zvt_pc99,
-            ambvt = zvt_am99,
-            edvt = zvt_ed99,
+            pcpvt = zvt_pc99, #part B & outpatient file
+            ambvt = zvt_am99, #part B & outpatient file
+            edvt = zvt_ed99, #total #ED visits per bene per day by Med Part B bene resident in ZCTA
+            pcpdenom = zvden_99,
+            eddenom = zhden_99,
             totbene = zbene_n)
 
 nyc99 <-
@@ -262,5 +263,67 @@ nyc99 <-
   inner_join(cms_pcsa, by = "pcsa") %>%
   inner_join(gentxwalk, by = "pcsa")
 
+```
+
+```{r}
+nyc99$physicians <- nyc99$pcp + nyc99$specialist + nyc99$obgyn
+nyc99$obstets <- nyc99$obgyn + nyc99$pa_ob
+nyc99$allpcp <- nyc99$pcp + nyc99$pa_pcp
+nyc99$specs <- nyc99$specialist + nyc99$pa_spec + nyc99$pa_oth
+nyc99$allimg <- nyc99$img_ob + nyc99$img_pcp + nyc99$img_spec
+```
+
+```{r}
+sumtable99 <- 
+  nyc99 %>%
+  group_by(gent_status) %>%
+  summarise(physicians_rt = sum(physicians) / sum(totpop)*1000,
+            phys_ci = ci(1000, totpop, physicians),
+            pa_rt = sum(pa_tot) / sum(totpop)*10000,
+            pa_ci = ci(10000, totpop, pa_tot),
+            allpcp_rt = sum(allpcp) / sum(totpop)*1000,
+            allpcp_ci = ci(1000, totpop, allpcp), 
+            specs_rt = sum(specs) / sum(totpop)*1000,
+            specs_ci = ci(1000, totpop, specs),
+            obstets_rt = sum(obstets) / sum(fem15_44)*10000,
+            obstets_ci = ci(10000, fem15_44, obstets),
+            img_rt = sum(allimg) / sum(totpop)*1000,
+            img_ci = ci(1000, totpop, allimg)) %>%
+    mutate_if(is.numeric, funs(round(., digits = 2)))
+
+kable(sumtable99)
+
+order_vec <- c("gent_status", "physicians_rt", "phys_ci", "pa_rt", "pa_ci", "allpcp_rt", "allpcp_ci", "specs_rt", "specs_ci", "obstets_rt", "obstets_ci", "img_rt", "img_ci", "acscd_rt") 
+
+sumtable99 %>% 
+  gather("var", "value", -gent_status) %>% 
+  spread(gent_status, value) %>% 
+  mutate(var = ordered(var, levels = order_vec)) %>% 
+  arrange(var) %>% 
+  kable()
+
+```
+
+```{r}
+nyc99 <- mutate(nyc99, pcp_rt = if_else(pcpdenom != 0, (pcpvt / pcpdenom), NA_real_))
+nyc99 <- mutate(nyc99, ed_rt = if_else(eddenom != 0, (edvt /eddenom), NA_real_))
+
+
+vsttable99 <- 
+  nyc99 %>%
+  group_by(gent_status) %>%
+  summarise(pcp_rt = sum(pcpvt[!is.na(pcp_rt)], na.rm = T) / sum(pcpdenom[!is.na(pcp_rt)], na.rm=T) * 100,
+ed_rt = sum(edvt[!is.na(ed_rt)], na.rm= T / sum(eddenom)[!is.na(ed_rt)], na.rm=T) *1000) %>%
+  mutate_if(is.numeric, funs(round(., digits = 2)))
+
+
+order_vec <- c("gent_status", "pcp_rt", "ed_rt")
+
+vsttable99 %>% 
+  gather("var", "value", -gent_status) %>% 
+  spread(gent_status, value) %>% 
+  mutate(var = ordered(var, levels = order_vec)) %>% 
+  arrange(var) %>% 
+  kable()          
 ```
 
