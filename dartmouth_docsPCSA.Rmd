@@ -181,6 +181,8 @@ kable(sumtable)
 dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(medicare_denom != 0, (medicare_acscd / medicare_denom), NA_real_))
 dart_nyc <- mutate(dart_nyc, pcp_rt = if_else(pcpdenom != 0, (pcpvt_tot / pcpdenom), NA_real_))
 dart_nyc <- mutate(dart_nyc, ed_rt = if_else(hospdenom !=0, (edperday / hospdenom), NA_real_))
+dart_nyc$eddenom_calc <- dart_nyc$edperday/dart_nyc$ed_crudert
+dart_nyc$denom_diffs <- dart_nyc$pcpdenom - dart_nyc$eddenom_calc
 
 summedicare <- sum(dart_nyc$medicare_denom[!is.na(dart_nyc$acscd_rt)], na.rm=T)
 
@@ -196,6 +198,7 @@ vsttable <-
 
 
 ```{r}
+#2010 data
 order_vec <- c("gent_status", "acscd_rt", "pcp_rt", "ed_rt")
 
 options(scipen=999)
@@ -277,6 +280,7 @@ nyc99$allimg <- nyc99$img_ob + nyc99$img_pcp + nyc99$img_spec
 ```
 
 ```{r}
+#1999 data
 sumtable99 <- 
   nyc99 %>%
   group_by(gent_status) %>%
@@ -308,6 +312,7 @@ sumtable99 %>%
 ```
 
 ```{r}
+# 1999 data
 nyc99 <- mutate(nyc99, pcp_rt = if_else(pcpdenom != 0, (pcpvt / pcpdenom), NA_real_))
 nyc99 <- mutate(nyc99, ed_rt = if_else(eddenom != 0, (edvt /eddenom), NA_real_))
 
