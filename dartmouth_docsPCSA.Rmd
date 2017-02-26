@@ -160,28 +160,63 @@ ci(1000, dart_nyc$totpop, dart_nyc$physicians)
 sumtotpop <- sum(dart_nyc$totpop)
 sumfempop <- sum(dart_nyc$fem15_44)
 
-sumtable <- 
+# sumtable <-
+#   dart_nyc %>%
+#   group_by(gent_status) %>%
+#   summarise(physicians_rt = sum(physicians) / sum(totpop)*1000,
+#             phys_ci = ci(1000, totpop, physicians),
+#             pa_rt = sum(pa) / sum(totpop)*10000,
+#             pa_ci = ci(10000, totpop, pa),
+#             np_rt = sum(np_fte) / sum(totpop)*100000,
+#             np_ci = ci(100000, totpop, np_fte),
+#             cnm_rt = sum(cnm_fte) / sum(fem15_44)*10000,
+#             cnm_ci = ci(10000, fem15_44, cnm_fte),
+#             allpcp_rt = sum(allpcp) / sum(totpop)*1000,
+#             allpcp_ci = ci(1000, totpop, allpcp),
+#             specs_rt = sum(specs) / sum(totpop)*1000,
+#             specs_ci = ci(1000, totpop, specs),
+#             obstets_rt = sum(obstets) / sum(fem15_44)*10000,
+#             obstets_ci = ci(10000, fem15_44, obstets),
+#             img_rt = sum(allimg) / sum(totpop)*1000,
+#             img_ci = ci(1000, totpop, allimg)) %>%
+#     mutate_if(is.numeric, funs(round(., digits = 2)))
+
+# kable(sumtable)
+
+# order_vec <- c("gent", "physicians_rt", "phys_ci", "pa_rt", "pa_ci", "np_rt", 
+# "np_ci", "cnm_rt", "cnm_ci", "allpcp_rt", "allpcp_ci", "specs_rt", 
+# "specs_ci", "obstets_rt", "obstets_ci", "img_rt", "img_ci", "acscd_rt") 
+# 
+# sumtable %>% 
+#   gather("var", "value", -gent_status) %>% 
+#   spread(gent_status, value) %>% 
+#   mutate(var = ordered(var, levels = order_vec)) %>% 
+#   arrange(var) %>% 
+#   kable()
+
+doctable_ratios <- 
   dart_nyc %>%
   group_by(gent_status) %>%
-  summarise(physicians_rt = sum(physicians) / sum(totpop)*1000,
-            phys_ci = ci(1000, totpop, physicians),
-            pa_rt = sum(pa) / sum(totpop)*10000,
-            pa_ci = ci(10000, totpop, pa),
-            np_rt = sum(np_fte) / sum(totpop)*100000,
-            np_ci = ci(100000, totpop, np_fte),
-            cnm_rt = sum(cnm_fte) / sum(fem15_44)*10000,
-            cnm_ci = ci(10000, fem15_44, cnm_fte),
-            allpcp_rt = sum(allpcp) / sum(totpop)*1000,
-            allpcp_ci = ci(1000, totpop, allpcp), 
-            specs_rt = sum(specs) / sum(totpop)*1000,
-            specs_ci = ci(1000, totpop, specs),
-            obstets_rt = sum(obstets) / sum(fem15_44)*10000,
-            obstets_ci = ci(10000, fem15_44, obstets),
-            img_rt = sum(allimg) / sum(totpop)*1000,
-            img_ci = ci(1000, totpop, allimg)) %>%
-    mutate_if(is.numeric, funs(round(., digits = 2)))
+  summarise(physicians = sum(totpop)/ sum(physicians),
+            pa = sum(totpop)/ sum(pa),
+            np = sum(totpop)/ sum(np_fte), 
+            cnm = sum(fem15_44) /sum(cnm_fte),
+            allpcp = sum(totpop) / sum(allpcp), 
+            specs = sum(totpop) / sum(specs),
+            obstets = sum(fem15_44) / sum(obstets),
+            img = sum(totpop) / sum(allimg)) %>%
+  mutate_if(is.numeric, funs(round(., digits = 2)))
+  kable(doctable_ratios)
 
-kable(sumtable)
+order_vec <- c("gent_status", "physicians", "pa", "np", "cnm", "allpcp", "specs", "obstets", "img")
+
+doctable_ratios %>%
+  gather("var", "value", -gent_status) %>%
+  spread(gent_status, value) %>%
+  mutate(var = ordered(var, levels= order_vec)) %>%
+  arrange(var) %>%
+  kable()
+
 ```
 
 ```{r}
@@ -208,11 +243,7 @@ vsttable <-
             pcp_rt = sum(pcpvt_tot[!is.na(pcp_rt)], na.rm = T) / sum(pcpdenom[!is.na(pcp_rt)], na.rm=T) * 100, 
             ed_rt = sum(edperday[!is.na(ed_rt)], na.rm= T) / sum(pcpdenom[!is.na(ed_rt)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
-## ED RT is not tallying with crude rate from dartmouth data
-```
 
-
-```{r}
 #2010 data
 order_vec <- c("gent_status", "acscd_rt", "pcp_rt", "ed_rt")
 
@@ -224,21 +255,6 @@ vsttable %>%
   mutate(var = ordered(var, levels = order_vec)) %>% 
   arrange(var) %>% 
   kable()
-```
-
-```{r}
-
-order_vec <- c("gent", "physicians_rt", "phys_ci", "pa_rt", "pa_ci", "np_rt", 
-"np_ci", "cnm_rt", "cnm_ci", "allpcp_rt", "allpcp_ci", "specs_rt", 
-"specs_ci", "obstets_rt", "obstets_ci", "img_rt", "img_ci", "acscd_rt") 
-
-sumtable %>% 
-  gather("var", "value", -gent_status) %>% 
-  spread(gent_status, value) %>% 
-  mutate(var = ordered(var, levels = order_vec)) %>% 
-  arrange(var) %>% 
-  kable()
-
 ```
 
 ```{r}
