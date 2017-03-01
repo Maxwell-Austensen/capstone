@@ -25,7 +25,8 @@ tract_pcsa_xwalk <- read_csv("../Dropbox/capstone/tract_pcsa_xwalk.csv", col_typ
 
 ncdb_adj <- ncdb_raw %>% 
   filter(year %in% c(1990, 2000, 2008, 2010)) %>% 
-  select(year, geo2010, trctpop, numhhs, 
+  select(year, geo2010, trctpop, numhhs, occhu, vacrt,
+         owncr15, owncr20, rntcr15, rntcr20, r39pi, r49pi, r50pi,
          rntocc, aggrent, avhhin_n, povrat_n, povrat_d, avsocs_d, forborn,
          fem4, fem9, fem14, fem17_a, fem24, fem29,  fem34, fem44, fem54, fem64, fem74, fem75, 
          men4, men9, men14, men17_a, men24, men29, men34, men44, men54, men64, men74, men75, 
@@ -52,6 +53,11 @@ calc_main_vars <- function(.data) {
   .data %>% 
     mutate(avg_inc_adj = avhhin_n_adj / numhhs,
            avg_rent_adj = aggrent_adj / rntocc, 
+           sh_renter = rntocc / occhu,
+           sh_rent_vac = vacrt / (rntocc + vacrt), # This is not the standard def, but can't get vacant-rented
+           sh_sev_crowd = (owncr15 + owncr20 + rntcr15 + rntcr20) / occhu,
+           sh_rent_burd = (r39pi + r49pi + r50pi) / rntocc,
+           sh_sev_rent_burd = r50pi / rntocc,
            sh_pov = povrat_n / povrat_d, 
            sh_col_ed = educ16 / educpp, 
            sh_hs_ed = educ12 / educpp, 
@@ -94,7 +100,7 @@ pcsa_output <- ncdb_adj %>%
   group_by(year, pcsa, pcsa_name) %>% 
   summarise_at(vars(-one_of(c("year", "geo2010", "geoid", "cpi_2016_base"))), sum) %>% 
   ungroup %>% 
-  calc_vars() %>% 
+  calc_main_vars() %>% 
   gather("var", "value", -pcsa, -pcsa_name, -year) %>% 
   unite(var_year, var, year) %>% 
   spread(var_year, value) %>% 
@@ -102,7 +108,7 @@ pcsa_output <- ncdb_adj %>%
 
 #do same for tract level data? 
 tract_output <- ncdb_adj %>% 
-  calc_vars() %>% 
+  calc_main_vars() %>% 
   gather("var", "value", -geoid, -year) %>% 
   unite(var_year, var, year) %>% 
   spread(var_year, value) %>% 
