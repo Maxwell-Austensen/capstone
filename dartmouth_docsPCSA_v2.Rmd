@@ -159,7 +159,8 @@ ci(1000, dart_nyc$totpop, dart_nyc$physicians)
 ```{r}
 # add PCSA-level doc ratios
 dart_nyc <- 
-  mutate(dart_nyc, pa_rat = if_else(physicians !=0, (totpop/ physicians), NA_real_),
+  mutate(dart_nyc, physician_rat = if_else(physicians !=0, (totpop/ physicians), NA_real_),
+         pa_rat = if_else(pa !=0, (totpop/pa), NA_real_),
          np_rat = if_else(np_fte !=0, (totpop/ np_fte), NA_real_),
          cnm_rat = if_else(cnm_fte != 0, (fem15_44 /cnm_fte), NA_real_),
          allpcp_rat = if_else(allpcp !=0, (totpop / allpcp), NA_real_),
@@ -174,42 +175,6 @@ dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(hospdenom != 0, (medicare_acscd 
 ```
 
 ```{r}
-
-# sumtable <-
-#   dart_nyc %>%
-#   group_by(gent_status) %>%
-#   summarise(physicians_rt = sum(physicians) / sum(totpop)*1000,
-#             phys_ci = ci(1000, totpop, physicians),
-#             pa_rt = sum(pa) / sum(totpop)*10000,
-#             pa_ci = ci(10000, totpop, pa),
-#             np_rt = sum(np_fte) / sum(totpop)*100000,
-#             np_ci = ci(100000, totpop, np_fte),
-#             cnm_rt = sum(cnm_fte) / sum(fem15_44)*10000,
-#             cnm_ci = ci(10000, fem15_44, cnm_fte),
-#             allpcp_rt = sum(allpcp) / sum(totpop)*1000,
-#             allpcp_ci = ci(1000, totpop, allpcp),
-#             specs_rt = sum(specs) / sum(totpop)*1000,
-#             specs_ci = ci(1000, totpop, specs),
-#             obstets_rt = sum(obstets) / sum(fem15_44)*10000,
-#             obstets_ci = ci(10000, fem15_44, obstets),
-#             img_rt = sum(allimg) / sum(totpop)*1000,
-#             img_ci = ci(1000, totpop, allimg)) %>%
-#     mutate_if(is.numeric, funs(round(., digits = 2)))
-
-# kable(sumtable)
-
-# order_vec <- c("gent", "physicians_rt", "phys_ci", "pa_rt", "pa_ci", "np_rt", 
-# "np_ci", "cnm_rt", "cnm_ci", "allpcp_rt", "allpcp_ci", "specs_rt", 
-# "specs_ci", "obstets_rt", "obstets_ci", "img_rt", "img_ci", "acscd_rt") 
-# 
-# sumtable %>% 
-#   gather("var", "value", -gent_status) %>% 
-#   spread(gent_status, value) %>% 
-#   mutate(var = ordered(var, levels = order_vec)) %>% 
-#   arrange(var) %>% 
-#   kable()
-
-
 doctable_ratios <- 
   dart_nyc %>%
   group_by(gent_status) %>%
@@ -323,24 +288,35 @@ nyc99$allimg <- nyc99$img_ob + nyc99$img_pcp + nyc99$img_spec
 ```
 
 ```{r}
-#1999 data
-#sumtable99 <- 
-#  nyc99 %>%
-#  group_by(gent_status) %>%
-#  summarise(physicians_rt = sum(physicians) / sum(totpop)*1000,
-#            phys_ci = ci(1000, totpop, physicians),
-#            pa_rt = sum(pa_tot) / sum(totpop)*10000,
-#            pa_ci = ci(10000, totpop, pa_tot),
-##            allpcp_rt = sum(allpcp) / sum(totpop)*1000,
-#            allpcp_ci = ci(1000, totpop, allpcp), 
-#            specs_rt = sum(specs) / sum(totpop)*1000,
-#            specs_ci = ci(1000, totpop, specs),
-#            obstets_rt = sum(obstets) / sum(fem15_44)*10000,
-#            obstets_ci = ci(10000, fem15_44, obstets),
-#            img_rt = sum(allimg) / sum(totpop)*1000,
-#            img_ci = ci(1000, totpop, allimg)) %>%
-#    mutate_if(is.numeric, funs(round(., digits = 2)))
+## 1999 data
+# PCSA-level doc ratios
+nyc99 <-
+  mutate(nyc99, physician_rat = if_else(physicians !=0, (totpop/ physicians), NA_real_),
+         pa_rat = if_else(pa_tot !=0, (totpop/pa_tot), NA_real_),
+         allpcp_rat = if_else(allpcp !=0, (totpop / allpcp), NA_real_),
+         specs_rat = if_else(specs != 0, (totpop / specs), NA_real_),
+         obstets_rat = if_else(obstets !=0, (fem15_44 / obstets), NA_real_),
+         img_rat = if_else(allimg != 0, (totpop / allimg), NA_real_))
 
+# PCSA-level visit rates
+nyc99 <- 
+  mutate(nyc99, pcp_rt = if_else(pcpdenom != 0, (pcpvt / pcpdenom), NA_real_),
+         ed_rt = if_else(eddenom != 0, (edvt /eddenom), NA_real_))
+
+```
+
+```{r}
+## COMBINE DATASETS
+# need to add year and create new sets with same number of vars for analysis before using rbind
+
+# add year 
+nyc99$year <- 1999
+dart_nyc$year <- 2010
+
+
+```
+
+```{r}
 table99_ratios <- 
   nyc99 %>%
   group_by(gent_status) %>%
@@ -352,31 +328,19 @@ table99_ratios <-
             img = sum(totpop)/sum(allimg)) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 
-#kable(sumtable99)
-#order_vec <- c("gent_status", "physicians_rt", "phys_ci", "pa_rt", "pa_ci", "allpcp_rt", "allpcp_ci", "specs_rt", #"specs_ci", "obstets_rt", "obstets_ci", "img_rt", "img_ci") 
-
 kable(table99_ratios)
 order_vec <- c("gent_status", "physicians", "pa", "allpcp", "specialists", "obstets", "img") 
 
-
-#sumtable99 %>% 
 table99_ratios %>% 
  gather("var", "value", -gent_status) %>% 
   spread(gent_status, value) %>% 
   mutate(var = ordered(var, levels = order_vec)) %>% 
   arrange(var) %>% 
   kable()
-
 ```
 
 ```{r}
 # 1999 data
-nyc99 <- mutate(nyc99, pcp_rt = if_else(pcpdenom != 0, (pcpvt / pcpdenom), NA_real_))
-nyc99 <- mutate(nyc99, ed_rt = if_else(eddenom != 0, (edvt /eddenom), NA_real_))
-
-#sum(nyc99$edvt) /sum(nyc99$eddenom)
-#sum(nyc99$pcpvt) /sum(nyc99$pcpdenom)
-
 
 vsttable99 <- 
   nyc99 %>%
@@ -395,10 +359,3 @@ vsttable99 %>%
   arrange(var) %>% 
   kable()          
 ```
-
-```{r}
-#look at docs by age
-
-dart_nyc <- cbind.data.frame(dart_nyc, dart_raw$pg_gt50doc, dart_raw$ps_gt50doc, dart_raw$po_gt50doc)
-```
-
