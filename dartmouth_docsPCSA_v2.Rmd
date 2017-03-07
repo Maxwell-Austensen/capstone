@@ -291,19 +291,10 @@ rm(dart_raw, dart_raw2, raw99, dart_fem, dart_np, cms_pcsa)
 ```
 
 ```{r}
+#for maps
+write.csv(new99, "../dropbox/capstone/map99.csv")
 
-# ADD THESE RATES BACK IN!!!
-
-
-write.csv(map99, "../dropbox/capstone/map99.csv")
-
-map10 <-
-  mutate(new10, 
-         phys_rtpop = if_else(totpop !=0, (physicians/ totpop)*1000, NA_real_),
-         allpcp_rtpop = if_else(totpop !=0, (allpcp / totpop)*1000, NA_real_),
-         specs_rtpop = if_else(totpop !=0, (specs/totpop)*1000, NA_real_),
-         img_rtpop = if_else(totpop !=0, (allimg/totpop)*1000, NA_real_))
-write.csv(map10, "../dropbox/capstone/map10.csv")
+write.csv(new10, "../dropbox/capstone/map10.csv")
 
 ```
 
