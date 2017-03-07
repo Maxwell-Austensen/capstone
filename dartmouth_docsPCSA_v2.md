@@ -1,20 +1,12 @@
----
-title: "Dartmouth_docsPCSA"
-output:
-  github_document: default
-  html_notebook: default
-date: '`r Sys.Date()`'
----
+Dartmouth\_docsPCSA
+================
+2017-03-06
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r, message=FALSE}
+``` r
 library(stringr); library(foreign); library(QuantPsyc); library(psych); library(knitr); library(tidyverse)
 ```
 
-```{r}
+``` r
 # 2010 raw data
 dart_raw <- read.dbf("../dropbox/capstone/2010 data/p_103113_1.dbf", as.is = TRUE)
 names(dart_raw) <- names(dart_raw) %>% str_to_lower()
@@ -26,13 +18,22 @@ dart_np <- read.dbf("../dropbox/capstone/2010 data/p_cnm_np_122013.dbf", as.is =
 names(dart_np) <- names(dart_np) %>% str_to_lower()
 ```
 
-
-```{r}
+``` r
 # limit to NYC PCSAs
 
 dart_np$pcsa <-as.numeric(dart_np$pcsa)
 
 xwalk <- read_csv("../Dropbox/capstone/tract_pcsa_xwalk.csv") %>% distinct(pcsa, pcsa_name)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   geoid = col_double(),
+    ##   pcsa = col_double(),
+    ##   pcsa_name = col_character()
+    ## )
+
+``` r
 dart_np <- semi_join(dart_np, xwalk, by = "pcsa")
 
 dart_np <-
@@ -45,7 +46,7 @@ dart_np <-
   mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))
 ```
 
-```{r}
+``` r
 dart_raw2$pcsa <- as.numeric(dart_raw2$pcsa)
 dart_raw2 <- semi_join(dart_raw2, xwalk, by = "pcsa")
 
@@ -58,7 +59,7 @@ dart_fem <-
     mutate_if(is.double, funs(if_else(. %in% c(-99, -999), NA_real_, .)))
 ```
 
-```{r}
+``` r
 gentxwalk <- 
   read_csv("../dropbox/capstone/pcsa_gent.csv", col_types = cols(pcsa = "c")) %>% 
   select(pcsa, gent_status) %>% 
@@ -66,10 +67,9 @@ gentxwalk <-
 
 gentxwalk$pcsa <- as.numeric(gentxwalk$pcsa)
 gentxwalk$gent_status <- ordered(gentxwalk$gent_status, levels = c("Non-Gentrifying", "Gentrifying", "High Income"))
-
 ```
 
-```{r}
+``` r
 dart_raw$pcsa <- as.numeric(dart_raw$pcsa)
 dart_raw <- semi_join(dart_raw, xwalk, by = "pcsa")
 
@@ -117,10 +117,9 @@ dart_nyc$pcpvt_fqhc[is.na(dart_nyc$pcpvt_fqhc)] <- 0
 dart_nyc$pcpvt_rhc[is.na(dart_nyc$pcpvt_rhc)] <- 0 
 
 dart_nyc$pcpvt <- dart_nyc$partb_pcp + dart_nyc$pcpvt_rhc + dart_nyc$pcpvt_fqhc  #total pcp visits for part B and OTP
-
 ```
 
-```{r}
+``` r
 dart_nyc$physicians <- dart_nyc$pcphys + dart_nyc$specialist + dart_nyc$obgyn + dart_nyc$famprac + dart_nyc$internist
 dart_nyc$pa <- dart_nyc$pa_ob + dart_nyc$pa_pcp + dart_nyc$pa_spec + dart_nyc$pa_oth
 dart_nyc$obstets <- dart_nyc$obgyn + dart_nyc$pa_ob + dart_nyc$cnm_fte
@@ -129,7 +128,7 @@ dart_nyc$specs <- dart_nyc$specialist + dart_nyc$pa_spec + dart_nyc$pa_oth
 dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
 ```
 
-```{r}
+``` r
 # add PCSA-level doc ratios
 dart_nyc <- 
   mutate(dart_nyc, physician_rat = if_else(physicians !=0, (totpop/ physicians), NA_real_),
@@ -147,9 +146,7 @@ dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(hospdenom != 0, (medicare_acscd 
                    edvt_rt = if_else(pcpdenom !=0, (edvt / pcpdenom), NA_real_))
 ```
 
-
-```{r}
-
+``` r
 ##confirm denominators
 # test <- cbind.data.frame(dart_nyc$ed_crudert, dart_nyc$ed_rt, dart_nyc$pcp_crudert, dart_nyc$pcp_rt, dart_nyc$acs_crudert, dart_nyc$acscd_rt)
 # 
@@ -159,10 +156,9 @@ dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(hospdenom != 0, (medicare_acscd 
 # 
 # dart_nyc$eddenom_calc <- dart_nyc$edperday/dart_nyc$ed_crudert
 # dart_nyc$denom_diffs <- dart_nyc$pcpdenom - dart_nyc$eddenom_calc
-
 ```
 
-```{r}
+``` r
 ## bring in 99 data
 raw99 <- read.csv("../dropbox/capstone/zcta99_pcsa2010.csv", as.is = TRUE)
 names(raw99) <- names(raw99) %>% str_to_lower()
@@ -171,7 +167,7 @@ cms_pcsa <-read.csv("../dropbox/capstone/cms99_pcsa2010.csv", as.is = T)
 names(cms_pcsa) <- names(cms_pcsa) %>% str_to_lower()
 ```
 
-```{r}
+``` r
 cms_pcsa <-
   cms_pcsa %>%
   transmute(pcsa = pcsa2010, 
@@ -204,24 +200,21 @@ nyc99 <-
             totpop = zage00_14 + zage15_64 + zage65_up) %>%
   inner_join(cms_pcsa, by = "pcsa") %>%
   inner_join(gentxwalk, by = "pcsa")
-
 ```
 
-```{r}
+``` r
 nyc99$physicians <- nyc99$pcphys + nyc99$specialist + nyc99$obgyn
 nyc99$obstets <- nyc99$obgyn + nyc99$pa_ob
 nyc99$allpcp <- nyc99$pcphys + nyc99$pa_pcp
 nyc99$specs <- nyc99$specialist + nyc99$pa_spec + nyc99$pa_oth
 nyc99$allimg <- nyc99$img_ob + nyc99$img_pcp + nyc99$img_spec
-
 ```
 
-```{r}
+``` r
 ## 1999 data
 # PCSA-level doc ratios
 nyc99 <-
-  mutate(nyc99, 
-         physician_rat = if_else(physicians !=0, (totpop/ physicians), NA_real_),
+  mutate(nyc99, physician_rat = if_else(physicians !=0, (totpop/ physicians), NA_real_),
          pa_rat = if_else(pa !=0, (totpop/pa), NA_real_),
          allpcp_rat = if_else(allpcp !=0, (totpop / allpcp), NA_real_),
          specs_rat = if_else(specs != 0, (totpop / specs), NA_real_),
@@ -232,10 +225,9 @@ nyc99 <-
 nyc99 <- 
   mutate(nyc99, pcpvt_rt = if_else(pcpdenom != 0, (pcpvt / pcpdenom), NA_real_),
          edvt_rt = if_else(eddenom != 0, (edvt /eddenom), NA_real_))
-
 ```
 
-```{r}
+``` r
 ## COMBINE DATASETS
 
 nyc99$year <- 1999
@@ -261,30 +253,4 @@ new10 <-
 
 fulldf <- bind_rows(new99, new10)
 write.csv(fulldf, file = "../dropbox/capstone/fulldf.csv")
-
 ```
-
-```{r}
-rm(dart_raw, dart_raw2, raw99, dart_fem, dart_np, cms_pcsa) 
-
-```
-
-```{r}
-map99 <- 
-  mutate(new99, 
-         phys_rtpop = if_else(totpop !=0, (physicians/ totpop)*1000, NA_real_),
-         allpcp_rtpop = if_else(totpop !=0, (allpcp / totpop)*1000, NA_real_),
-         specs_rtpop = if_else(totpop !=0, (specs/totpop)*1000, NA_real_),
-         img_rtpop = if_else(totpop !=0, (allimg/totpop)*1000, NA_real_))
-write.csv(map99, "../dropbox/capstone/map99.csv")
-
-map10 <-
-  mutate(new10, 
-         phys_rtpop = if_else(totpop !=0, (physicians/ totpop)*1000, NA_real_),
-         allpcp_rtpop = if_else(totpop !=0, (allpcp / totpop)*1000, NA_real_),
-         specs_rtpop = if_else(totpop !=0, (specs/totpop)*1000, NA_real_),
-         img_rtpop = if_else(totpop !=0, (allimg/totpop)*1000, NA_real_))
-write.csv(map10, "../dropbox/capstone/map10.csv")
-
-```
-
