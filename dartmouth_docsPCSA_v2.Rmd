@@ -255,9 +255,30 @@ new99$acscd_rt <- NA
 # new99 does not include internist and famprac, separately, but those are included in total physicians
 # no np in pcp, no cnm in obstets for new99 
 
+new99 <- 
+  mutate(new99, 
+         phys_p1000 = if_else(totpop !=0, (physicians/ totpop)*1000, NA_real_),
+         pa_p1000 = if_else(totpop !=0, (pa/totpop)*1000, NA_real_),
+         allpcp_p1000 = if_else(totpop !=0, (allpcp / totpop)*1000, NA_real_),
+         specs_p1000 = if_else(totpop !=0, (specs/totpop)*1000, NA_real_),
+         obstets_p1000 = if_else(totpop !=0, (obstets/totpop)*1000, NA_real_),
+         img_p1000 = if_else(totpop !=0, (allimg/totpop)*1000, NA_real_))
+
+new99$np_p1000 <- NA
+
 new10 <-
   dart_nyc %>%
   transmute(pcsa, year, gent_status, pcphys, specialist, obgyn, img_pcp, img_spec, img_ob, pa_pcp, pa_spec, pa_ob, pa_oth, fem15_44, totpop, pcpvt, edvt, physicians, pa, obstets, allpcp, specs, allimg, physician_rat, pa_rat, allpcp_rat, specs_rat, obstets_rat, img_rat, pcpvt_rt, edvt_rt, pcpdenom, cnm_fte, np_fte, cnm_rat, np_rat, medicare_acscd, medicare_denom, acscd_rt)
+
+new10 <- 
+  mutate(new10, 
+         phys_p1000 = if_else(totpop !=0, (physicians/ totpop)*1000, NA_real_),
+         pa_p1000 = if_else(totpop !=0, (pa/totpop)*1000, NA_real_),
+         allpcp_p1000 = if_else(totpop !=0, (allpcp / totpop)*1000, NA_real_),
+         specs_p1000 = if_else(totpop !=0, (specs/totpop)*1000, NA_real_),
+         obstets_p1000 = if_else(totpop !=0, (obstets/totpop)*1000, NA_real_),
+         img_p1000 = if_else(totpop !=0, (allimg/totpop)*1000, NA_real_),
+         np_p1000 = if_else(totpop !=0, (np_fte/totpop)*1000, NA_real_))
 
 fulldf <- bind_rows(new99, new10)
 write.csv(fulldf, file = "../dropbox/capstone/fulldf.csv")
@@ -270,12 +291,10 @@ rm(dart_raw, dart_raw2, raw99, dart_fem, dart_np, cms_pcsa)
 ```
 
 ```{r}
-map99 <- 
-  mutate(new99, 
-         phys_rtpop = if_else(totpop !=0, (physicians/ totpop)*1000, NA_real_),
-         allpcp_rtpop = if_else(totpop !=0, (allpcp / totpop)*1000, NA_real_),
-         specs_rtpop = if_else(totpop !=0, (specs/totpop)*1000, NA_real_),
-         img_rtpop = if_else(totpop !=0, (allimg/totpop)*1000, NA_real_))
+
+# ADD THESE RATES BACK IN!!!
+
+
 write.csv(map99, "../dropbox/capstone/map99.csv")
 
 map10 <-
