@@ -213,6 +213,7 @@ nyc99$obstets <- nyc99$obgyn + nyc99$pa_ob
 nyc99$allpcp <- nyc99$pcphys + nyc99$pa_pcp
 nyc99$specs <- nyc99$specialist + nyc99$pa_spec + nyc99$pa_oth
 nyc99$allimg <- nyc99$img_ob + nyc99$img_pcp + nyc99$img_spec
+
 ```
 
 ```{r}
@@ -235,9 +236,7 @@ nyc99 <-
 
 ```{r}
 ## COMBINE DATASETS
-# need to add year and create new sets with same number of vars for analysis before using rbind
 
-# add year 
 nyc99$year <- 1999
 dart_nyc$year <- 2010
 
@@ -252,6 +251,8 @@ new99$np_rat <- NA
 new99$medicare_acscd <- NA
 new99$medicare_denom <- NA
 new99$acscd_rt <- NA
+# new99 does not include internist and famprac, separately, but those are included in total physicians
+# no np in pcp, no cnm in obstets for new99 
 
 new10 <-
   dart_nyc %>%
