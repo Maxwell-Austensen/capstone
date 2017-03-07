@@ -6,14 +6,14 @@ library(spdplyr) # allows use of main dyplr verbs (commands) on spatial data
 library(sf)
 
 # read in PCSA shapefile
-pcsas <- readOGR("../dropbox/capstone/shapefiles/pcsav3_1shapefiles", "uspcsav31_HRSA")
+pcsas <- readOGR("/Users/Jennifer/dropbox/capstone/shapefiles/pcsav3_1shapefiles/uspcsav31_HRSA.shp", "uspcsav31_HRSA")
 
 #nc <- st_read(system.file("shape/nc.shp", package="sf"))
-pcsas <- system.file("../dropbox/capstone/shapefiles/pcsav3_1shapefiles/uspcsav31_HRSA.shp", package = "sf")
-pcsas <- st_read(pcsas)
+#pcsas <- ("../dropbox/capstone/shapefiles/pcsav3_1shapefiles/uspcsav31_HRSA.shp", package = "sf")
+#pcsas <- st_read(pcsas)
 
 # Read in PCSA-level gentrifiction status crosswalk
-map10 <- read_csv("../dropbox/capstone/map10.csv",col_types =cols_only(pcsa = "c", gent_status = "c", phys_p1000 = "i", acscd_rt = "i"))
+map10 <- read_csv("../dropbox/capstone/new10.csv",col_types =cols_only(pcsa = "c", gent_status = "c", phys_p1000 = "i", acscd_rt = "i"))
 
 
 
