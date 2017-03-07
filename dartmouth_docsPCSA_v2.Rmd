@@ -142,9 +142,9 @@ dart_nyc <-
          img_rat = if_else(allimg != 0, (totpop / allimg), NA_real_))
 
 # add PCSA-level visit rates
-dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(hospdenom != 0, (medicare_acscd / hospdenom), NA_real_),
-                   pcpvt_rt = if_else(pcpdenom != 0, (pcpvt/ pcpdenom), NA_real_),
-                   edvt_rt = if_else(pcpdenom !=0, (edvt / pcpdenom), NA_real_))
+dart_nyc <- mutate(dart_nyc, acscd_rt = if_else(hospdenom != 0, (medicare_acscd / hospdenom)*1000, NA_real_),
+                   pcpvt_rt = if_else(pcpdenom != 0, (pcpvt/ pcpdenom)*100, NA_real_),
+                   edvt_rt = if_else(pcpdenom !=0, (edvt / pcpdenom)*1000, NA_real_))
 ```
 
 
@@ -230,8 +230,8 @@ nyc99 <-
 
 # PCSA-level visit rates
 nyc99 <- 
-  mutate(nyc99, pcpvt_rt = if_else(pcpdenom != 0, (pcpvt / pcpdenom), NA_real_),
-         edvt_rt = if_else(eddenom != 0, (edvt /eddenom), NA_real_))
+  mutate(nyc99, pcpvt_rt = if_else(pcpdenom != 0, (pcpvt / pcpdenom)*100, NA_real_),
+         edvt_rt = if_else(eddenom != 0, (edvt /eddenom)*1000, NA_real_))
 
 ```
 
