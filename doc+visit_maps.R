@@ -89,7 +89,7 @@ acs_map <- ggplot(acsmap, aes(x= long, y = lat, group = group, fill = acscd_rt))
   scale_fill_viridis(option = "magma") +
   theme_void() +
   labs(title = "Ambulatory Sensitive Care Condition Discharges \nper 1,000 Medicare Beneficiaries by PCSA",
-       subtitle = "New York City, 2000",
+       subtitle = "New York City, 2010",
        fil = "",
        caption = "Source: Dartmouth Atlas of Health Care, Primary Care Service Area Project") +
   theme(legend.title = element_blank(),
