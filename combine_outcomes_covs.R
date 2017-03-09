@@ -1,40 +1,52 @@
 
+# Install packages if needed
+package_list <- c("tidyverse", "janitor")
+new_packages <- package_list[! package_list %in% installed.packages()[,"Package"]]
+if(length(new_packages)) install.packages(new_packages)
+
 library(tidyverse)
-library(haven)
 library(stringr)
-library(feather)
-library(foreign)
 
 # how do I shortcut to the directory again? 
-dcov <- read_csv("/Users/amy/Dropbox/1. NYU Wagner/Fall 2016/capstone1/capstone/pcsa_gent.csv")
-dout <- read.csv("/Users/amy/Dropbox/1. NYU Wagner/Fall 2016/capstone1/capstone/fulldf.csv")
+# You need to have your dropbox capstone folder be in the first level of you dropbox folder, 
+# and also have your capstone github repo on the save level as your dropbox 
+# then you can use the "../" to navigate up from the repo, and then into your dropbox
 
 
-# notes for Amy on how to summarize data
-# names(dcov)  
-# glimpse(dataframe) 
-# summary(dataframe)
+# Load Data Sets ----------------------------------------------------------
 
-summary(dout$year)
-glimpse(dout)
+gent_xwalk <- read_csv("../Dropbox/capstone/pcsa_gent_xwalk.csv")
 
-#change years from 1999 to 2000. 
-dout <- dout %>% 
+dcov <- read_csv("../Dropbox/capstone/pcsa_cov_vars.csv")
+
+dout <- read_csv("../Dropbox/capstone/fulldf.csv", guess_max = 250) %>% 
+  select(-X1, -gent_status) %>% 
   mutate(year = if_else(year == 1999L, 2000L, year))
 
-# reshape covariates so years go long
-dcov2 <- dcov %>% 
-  gather("var_year", "value", -pcsa, -pcsa_name) %>% 
-  mutate(year = str_sub(var_year, -4),
-         var = str_sub(var_year, 1, -4)) %>% 
-  select(-var_year) %>% 
-  spread(var, value) %>% 
-  filter(year %in% c("1990", "2000", "2010", "2008"))
-  select(year, everything())
+# Create changes for health variables
+dout_changes <- dout %>%
+  group_by(pcsa) %>% 
+  arrange(pcsa, year) %>% 
+  mutate_at(vars(-year, -pcsa), funs(ch = . - lag(.))) %>% 
+  set_names(., names(.) %>% str_replace("(.*)_(ch)$", "\\2_\\1")) %>% 
+  janitor::remove_empty_cols()
 
-# merge covariates with outcomes.
-  dfull <- dout %>%         
-  left_join(dcov2, by = "pcsa")
+
+# merge together census covariates and health variables
+all_vars <- full_join(dcov, dout_changes, by = c("year", "pcsa"))
+
+# Gather: This reshapes to be super long (long by pcsa, year, variable)
+# Unite: then combine the variable name and year (how we want the new columns to be named)
+# Spread: reshape teh data wide so that the columns are var_year since we potentially combine 
+#  variables of different types into teh single "value" column it can change the variable type, 
+#  so "convert = TRUE" changes them back by guessing what they should be
+# Since some variables aren't available in all years some empty columns are created
+all_vars_wide <- all_vars %>%
+  gather("var", "value", -pcsa, -pcsa_name, -year) %>% 
+  unite(var_year, var, year) %>% 
+  spread(var_year, value, convert = TRUE) %>% 
+  janitor::remove_empty_cols()
+  
 
 #export to dta for regressions. 
-write.dta(dfull, "/Users/amy/Dropbox/1. NYU Wagner/Fall 2016/capstone1/capstone/dall.dta")
+haven::write_dta(all_vars_wide, "../Dropbox/capstone/dall.dta")
