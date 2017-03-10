@@ -32,7 +32,7 @@ names(dart_np) <- names(dart_np) %>% str_to_lower()
 
 dart_np$pcsa <-as.numeric(dart_np$pcsa)
 
-xwalk <- read_csv("../Dropbox/capstone/tract_pcsa_xwalk.csv") %>% distinct(pcsa, pcsa_name)
+xwalk <- read_csv("../Dropbox/capstone/zcta00_pcsa10_xwalk.csv") %>% distinct(pcsa, pcsa_name)
 dart_np <- semi_join(dart_np, xwalk, by = "pcsa")
 
 dart_np <-
@@ -60,7 +60,7 @@ dart_fem <-
 
 ```{r}
 gentxwalk <- 
-  read_csv("../dropbox/capstone/pcsa_gent.csv", col_types = cols(pcsa = "c")) %>% 
+  read_csv("../dropbox/capstone/pcsa_gent_xwalk.csv", col_types = cols(pcsa = "c")) %>% 
   select(pcsa, gent_status) %>% 
   filter(!is.na(gent_status))
 
@@ -295,6 +295,11 @@ rm(dart_raw, dart_raw2, raw99, dart_fem, dart_np, cms_pcsa)
 write.csv(new99, "../dropbox/capstone/map99.csv")
 
 write.csv(new10, "../dropbox/capstone/map10.csv")
+
+```
+
+```{r}
+## for tables
 
 ```
 
