@@ -250,7 +250,7 @@ new99$np_fte <- NA
 new99$cnm_rat <- NA
 new99$np_rat <- NA
 new99$medicare_acscd <- NA
-new99$medicare_denom <- NA
+new99$hospdenom <- NA
 new99$acscd_rt <- NA
 # new99 does not include internist and famprac, separately, but those are included in total physicians
 # no np in pcp, no cnm in obstets for new99 
@@ -268,7 +268,7 @@ new99$np_p1000 <- NA
 
 new10 <-
   dart_nyc %>%
-  transmute(pcsa, year, gent_status, pcphys, specialist, obgyn, img_pcp, img_spec, img_ob, pa_pcp, pa_spec, pa_ob, pa_oth, fem15_44, totpop, pcpvt, edvt, physicians, pa, obstets, allpcp, specs, allimg, physician_rat, pa_rat, allpcp_rat, specs_rat, obstets_rat, img_rat, pcpvt_rt, edvt_rt, pcpdenom, cnm_fte, np_fte, cnm_rat, np_rat, medicare_acscd, medicare_denom, acscd_rt)
+  transmute(pcsa, year, gent_status, pcphys, specialist, obgyn, img_pcp, img_spec, img_ob, pa_pcp, pa_spec, pa_ob, pa_oth, fem15_44, totpop, pcpvt, edvt, physicians, pa, obstets, allpcp, specs, allimg, physician_rat, pa_rat, allpcp_rat, specs_rat, obstets_rat, img_rat, pcpvt_rt, edvt_rt, pcpdenom, cnm_fte, np_fte, cnm_rat, np_rat, medicare_acscd, hospdenom, acscd_rt)
 
 new10 <- 
   mutate(new10, 
@@ -299,7 +299,50 @@ write.csv(new10, "../dropbox/capstone/map10.csv")
 ```
 
 ```{r}
-## for tables
+# VISIT TABLES
+vsttable <-
+  fulldf %>%
+  group_by(gent_status, year) %>%
+  summarise(pcpvt_rt = sum(pcpvt[!is.na(pcpvt_rt)], na.rm = T) / sum(pcpdenom[!is.na(pcpvt_rt)], na.rm=T) * 100,
+            edvt_rt = sum(edvt[!is.na(edvt_rt)], na.rm= T) / sum(pcpdenom[!is.na(edvt_rt)], na.rm=T) * 1000) %>%
+  mutate_if(is.numeric, funs(round(., digits = 2)))
 
+order_vec <- c("gent_status", "year", "pcpvt_rt", "edvt_rt")
+kable(vsttable)
+
+vstacs <- new10 %>%
+  group_by(gent_status) %>%
+  summarise(acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(hospdenom[!is.na(acscd_rt)], na.rm=T) * 1000) %>%
+  mutate_if(is.numeric, funs(round(., digits = 2)))
+kable(vstacs)
+
+# vsttable %>%
+#   gather("var", "value", -gent_status) %>%
+#   spread(gent_status, value) %>%
+#   mutate(var = ordered(var, levels = order_vec)) %>%
+#   arrange(var) %>%
+#   kable()
+```
+```{r}
+# DOC TABLES
+
+doctable_ratios <-
+  fulldf %>%
+  group_by(gent_status, year) %>%
+  summarise(physicians = sum(totpop)/ sum(physicians),
+            pa = sum(totpop)/ sum(pa),
+            allpcp = sum(totpop) / sum(allpcp),
+            specs = sum(totpop) / sum(specs),
+            obstets = sum(fem15_44) / sum(obstets),
+            img = sum(totpop) / sum(allimg)) %>%
+  mutate_if(is.numeric, funs(round(., digits = 2)))
+  kable(doctable_ratios)
+
+npcnm <- new10 %>%
+  group_by(gent_status) %>%
+  summarise(np = sum(totpop)/ sum(np_fte),
+            cnm = sum(fem15_44) /sum(cnm_fte)) %>%
+  mutate_if(is.numeric, funs(round(., digits = 2)))
+  kable(npcnm)
 ```
 
