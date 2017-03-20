@@ -45,7 +45,8 @@ all_vars_wide <- all_vars %>%
   gather("var", "value", -pcsa, -pcsa_name, -year) %>% 
   unite(var_year, var, year) %>% 
   spread(var_year, value, convert = TRUE) %>% 
-  janitor::remove_empty_cols()
+  janitor::remove_empty_cols() %>% 
+  left_join(gent_xwalk, by = c("pcsa", "pcsa_name"))
   
 
 #export to dta for regressions. 
