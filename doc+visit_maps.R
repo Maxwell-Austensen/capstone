@@ -6,8 +6,12 @@ library(spdplyr) # allows use of main dyplr verbs (commands) on spatial data
 #library(sf)
 library(viridis)
 
+# NOTE: temporarily dropping one pcsa in provider map that is outlier messing up scales
+# After midterm report/presentaiton we should probably look at this one anyway
+# Though if we switch to zcta these sorts of issues would likely be resolved
+
 # read in PCSA shapefile
-pcsas <- readOGR("/Users/Jennifer/dropbox/capstone/shapefiles/pcsav3_1shapefiles/uspcsav31_HRSA.shp", "uspcsav31_HRSA")
+pcsas <- readOGR("../dropbox/capstone/shapefiles/pcsav3_1shapefiles/uspcsav31_HRSA.shp", "uspcsav31_HRSA")
 
 ## THIS DIDN'T WORK FOR ME
 # EXAMPLE: nc <- st_read(system.file("shape/nc.shp", package="sf"))
@@ -52,7 +56,7 @@ pcp_map <- ggplot(pcpmap, aes(x= long, y = lat, group = group, fill = allpcp_p10
   geom_polygon() + # this plots the main shapefiles, using the group and fill from above
   geom_polygon(fill = NA, color = "white", size = 0.10) + # this is just to all a white outline around neighborhoods
   coord_map() + # this maps the map projection look right
-  scale_fill_viridis(option = "magma") +
+  scale_fill_viridis(option = "magma", limits = c(0, 5)) +
   theme_void() + #removes formatting for graphs, makes background white
   labs(title = "All Primary Care Providers per 1,000 Population by PCSA",
        subtitle = "New York City, 2010",
@@ -61,6 +65,7 @@ pcp_map <- ggplot(pcpmap, aes(x= long, y = lat, group = group, fill = allpcp_p10
   theme(legend.title = element_blank(), # These options just remove legend tiles, move the legend, and make the source caption grey
         legend.position = c(.1, .7),
         plot.caption = element_text(colour = "grey50"))
+
 # This save the ggplot object with given file type, and demensions
 ggsave("pcp1000_map_pcsa.png", pcp_map, width = 6, height = 6, units = "in") 
 
@@ -69,7 +74,7 @@ pcp_map99 <- ggplot(pcpmap99, aes(x= long, y = lat, group = group, fill = allpcp
   geom_polygon() + 
   geom_polygon(fill = NA, color = "white", size = 0.10) +
   coord_map() +
-  scale_fill_viridis(option = "magma") +
+  scale_fill_viridis(option = "magma", limits = c(0, 5)) +
   theme_void() +
   labs(title = "All Primary Care Providers per 1,000 Population by PCSA",
        subtitle = "New York City, 2000",
