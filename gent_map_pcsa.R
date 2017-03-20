@@ -8,7 +8,7 @@ library(spdplyr) # allows use of main dyplr verbs (commands) on spatial data
 pcsas <- readOGR("../Dropbox/capstone/shapefiles/pcsav3_1shapefiles", "uspcsav31_HRSA")
 
 # Read in PCSA-level gentrifiction status crosswalk
-gent_df <- read_csv("../Dropbox/capstone/pcsa_gent.csv", col_types = cols_only(pcsa = "c", gent_status = "c"))
+gent_df <- read_csv("../Dropbox/capstone/pcsa_gent_xwalk.csv", col_types = "ccc")
 
 # create county code variable, restrict to only NYC using county, "fortify" data makes it work with ggplot, merge in gentrification status
 nyc_pcsas <- pcsas %>% 
@@ -25,8 +25,8 @@ gent_map <- ggplot(nyc_pcsas, aes(x= long, y = lat, group = group, fill = gent_s
   coord_map() + # this maps the map projection look right
   ggmap::theme_nothing(legend = TRUE) + # this just remove the basic formatting used for graphs
   labs(title = "Gentrification Status by PCSA",
-       subtitle = "New York City, 2006-2010",
-       fil = "",
+       subtitle = "New York City",
+       fil = NULL,
        caption = "Source: Dartmouth Atlas of Health Care, Neighborhood Change Database") +
   theme(legend.title = element_blank(), # These options just remove legend tiles, move the legend, and make the source caption grey
         legend.position = c(.1, .7),
