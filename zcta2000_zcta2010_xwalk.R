@@ -33,6 +33,7 @@ nyc_zcta2010 <- st_read("/Users/Maxwell/Data/US_zcta_2010/US_zcta_2010.shp", "US
   semi_join(zcta2010_nyc_xwalk, by = "zcta2010") %>% 
   select(zcta2010, geometry)
 
+st_write(nyc_zcta2010, "../Dropbox/capstone/nyc_zcta2010.shp", "nyc_zcta2010")
 
 # Comparse ZCTA Vintages --------------------------------------------------
 
