@@ -24,6 +24,7 @@ cpi <- tribble(
 )
 
 tract_pcsa_xwalk <- read_csv("../Dropbox/capstone/tract_pcsa_xwalk.csv", col_types = "ccc")
+tract_zcta_xwalk <- read_csv("../Dropbox/capstone/tract2010_zcta2010_xwalk.csv", col_types = "ccc")
 
 
 # Inflation Adjustment ----------------------------------------------------
@@ -121,7 +122,11 @@ calc_gent_vars <- function(.data) {
 }
 
 
-# Make wide Tract and PCSa files ------------------------------------------
+
+# Make wide files for analysis --------------------------------------------
+
+
+# PCSA --------------------------------------------------------------------
 
 # merge in PCSA IDs, collapse by pcsa (getting sums), calculate vars at pcsa level, replace undefined with NA
 pcsa_vars1 <- ncdb_adj %>% 
@@ -141,7 +146,6 @@ pcsa_gent <- pcsa_vars1 %>%
   calc_gent_vars() %>% 
   select(pcsa, pcsa_name, gent_status)
 
-
 # Calculate changes between years as simple differences ("ch2" indicates 2-year lag, ie. 1990-2010)
 pcsa_vars2 <- pcsa_vars1 %>% 
   group_by(pcsa) %>% 
@@ -150,6 +154,40 @@ pcsa_vars2 <- pcsa_vars1 %>%
   mutate_at(vars(-year, -pcsa, -pcsa_name, -matches("_ch$")), funs(ch2 = . - lag(., n = 2L))) %>% 
   set_names(., names(.) %>% str_replace("(.*)_(ch2?)$", "\\2_\\1")) %>%  # move the "ch" to the front
   janitor::remove_empty_cols()
+
+
+# ZCTA 2010 ---------------------------------------------------------------
+
+# merge in PCSA IDs, collapse by pcsa (getting sums), calculate vars at pcsa level, replace undefined with NA
+zcta_vars1 <- ncdb_adj %>% 
+  right_join(tract_zcta_xwalk, by = c("geoid" = "tract10")) %>% 
+  group_by(year, zcta2010) %>% 
+  summarise_at(vars(-one_of(c("year", "geo2010", "geoid", "cpi_2016_base"))), sum) %>% 
+  ungroup %>% 
+  calc_main_vars() %>% 
+  select(year, zcta2010, matches("^(sh_|hhs_|pop_|avg_)")) %>% 
+  mutate_all(funs(ifelse(is.nan(.), NA, .))) # converts NaN to NA for all variables
+
+# reshape the above data set so wide by year, calculate changes between years for gentrification status, keep just that for a crosswalk
+zcta_gent <- pcsa_vars1 %>% 
+  gather("var", "value", -zcta2010, -year) %>% 
+  unite(var_year, var, year) %>% 
+  spread(var_year, value) %>% 
+  calc_gent_vars() %>% 
+  select(zcta2010, gent_status)
+
+# Calculate changes between years as simple differences ("ch2" indicates 2-year lag, ie. 1990-2010)
+zcta_vars2 <- zcta_vars1 %>% 
+  group_by(zcta2010) %>% 
+  arrange(zcta2010, year) %>% 
+  mutate_at(vars(-year, -zcta2010), funs(ch = . - lag(.))) %>% 
+  mutate_at(vars(-year, -zcta2010, -matches("_ch$")), funs(ch2 = . - lag(., n = 2L))) %>% 
+  set_names(., names(.) %>% str_replace("(.*)_(ch2?)$", "\\2_\\1")) %>%  # move the "ch" to the front
+  janitor::remove_empty_cols()
+
+
+# Tract 2010 --------------------------------------------------------------
+
 
 # Apply the same steps as above to tract data, leaving out the PCSA aggregation
 tract_vars1 <- ncdb_adj %>% 
@@ -177,6 +215,8 @@ tract_vars2 <- tract_vars1 %>%
 
 write_csv(tract_gent, "../Dropbox/capstone/tract_gent_xwalk.csv")
 write_csv(pcsa_gent, "../Dropbox/capstone/pcsa_gent_xwalk.csv")
+write_csv(zcta_gent, "../Dropbox/capstone/zcta_gent_xwalk.csv")
 
 write_csv(tract_vars2, "../Dropbox/capstone/tract_cov_vars.csv")
 write_csv(pcsa_vars2, "../Dropbox/capstone/pcsa_cov_vars.csv")
+write_csv(zcta_vars2, "../Dropbox/capstone/zcta_cov_vars.csv")
