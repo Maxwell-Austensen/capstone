@@ -1,0 +1,54 @@
+---
+title: "Gentrification Status (ZCTAs)"
+output: html_document
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+library(stringr)
+library(sf)
+library(leaflet)
+```
+
+```{r,message=FALSE, warning=FALSE, results='hide'}
+zcta_gent_xwalk <- read_csv("../Dropbox/capstone/zcta_gent_xwalk.csv", col_types = "cc")
+
+nyc_zcta2010 <- st_read("../Dropbox/capstone/shapefiles/nyc_zcta2010/nyc_zcta2010.shp", "nyc_zcta2010", 
+                        stringsAsFactors = FALSE) %>% 
+  st_transform('+proj=longlat +datum=WGS84') %>% 
+  left_join(zcta_gent_xwalk, by = "zcta2010")
+```
+
+```{r zcta_gent_map}
+ggplot(nyc_zcta2010, aes(fill = gent_status)) + 
+  geom_sf(color = "white", size = 0.1) +
+  scale_fill_manual(values = c("#FFD200", "#00B2AB", "#B21293")) +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        plot.caption = element_text(colour = "grey50", face = "italic", size = 8)) +
+  labs(title = "Neighborhood Gentrification Status in New York City",
+       subtitle = "ZIP Census Tabulation Areas (ZCTAs)",
+       fill = NULL,
+       caption = "Sources: Minnesota Population Center, NHGIS; Neighborhood Change Database")
+```
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+ggsave("zcta_gent_map.png", width = 20, height = 20, units = "cm")
+ggsave("../Dropbox/capstone/zcta_gent_map.png", width = 40, height = 40, units = "cm")
+
+```
+
+```{r}
+factpal <- colorFactor(c("#FFD200", "#00B2AB", "#B21293"), nyc_zcta2010$gent_status)
+  
+leaflet(nyc_zcta2010) %>%
+  addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+              opacity = 1.0, fillOpacity = 1,
+              fillColor = ~factpal(gent_status),
+              popup = ~zcta2010,
+              highlightOptions = highlightOptions(color = "white", weight = 2,
+                                                  bringToFront = TRUE))
+```
+
