@@ -24,7 +24,7 @@ cpi <- tribble(
 )
 
 tract_pcsa_xwalk <- read_csv("../Dropbox/capstone/tract_pcsa_xwalk.csv", col_types = "ccc")
-tract_zcta_xwalk <- read_csv("../Dropbox/capstone/tract2010_zcta2010_xwalk.csv", col_types = "ccc")
+tract_zcta_xwalk <- read_csv("../Dropbox/capstone/tract2010_zcta2010_xwalk.csv", col_types = "ccd")
 
 
 # Inflation Adjustment ----------------------------------------------------
@@ -132,7 +132,7 @@ calc_gent_vars <- function(.data) {
 pcsa_vars1 <- ncdb_adj %>% 
   right_join(tract_pcsa_xwalk, by = "geoid") %>% 
   group_by(year, pcsa, pcsa_name) %>% 
-  summarise_at(vars(-one_of(c("year", "geo2010", "geoid", "cpi_2016_base"))), sum) %>% 
+  summarise_at(vars(-one_of(c("year", "pcsa", "pcsa_name", "geo2010", "geoid", "cpi_2016_base"))), sum) %>% 
   ungroup %>% 
   calc_main_vars() %>% 
   select(year, pcsa, pcsa_name, matches("^(sh_|hhs_|pop_|avg_)")) %>% 
@@ -149,6 +149,7 @@ pcsa_gent <- pcsa_vars1 %>%
 # Calculate changes between years as simple differences ("ch2" indicates 2-year lag, ie. 1990-2010)
 pcsa_vars2 <- pcsa_vars1 %>% 
   group_by(pcsa) %>% 
+  complete(pcsa, nesting(year)) %>% # ensure no missing years messes up lag/lead calculations
   arrange(pcsa, year) %>% 
   mutate_at(vars(-year, -pcsa, -pcsa_name), funs(ch = . - lag(.))) %>% 
   mutate_at(vars(-year, -pcsa, -pcsa_name, -matches("_ch$")), funs(ch2 = . - lag(., n = 2L))) %>% 
@@ -161,15 +162,16 @@ pcsa_vars2 <- pcsa_vars1 %>%
 # merge in PCSA IDs, collapse by pcsa (getting sums), calculate vars at pcsa level, replace undefined with NA
 zcta_vars1 <- ncdb_adj %>% 
   right_join(tract_zcta_xwalk, by = c("geoid" = "tract10")) %>% 
+  mutate_at(vars(-one_of(c("year", "zcta2010", "geo2010", "geoid", "cpi_2016_base"))), funs(. * afact)) %>% 
   group_by(year, zcta2010) %>% 
-  summarise_at(vars(-one_of(c("year", "geo2010", "geoid", "cpi_2016_base"))), sum) %>% 
+  summarise_at(vars(-one_of(c("year", "zcta2010", "geo2010", "geoid", "cpi_2016_base"))), sum) %>% 
   ungroup %>% 
   calc_main_vars() %>% 
   select(year, zcta2010, matches("^(sh_|hhs_|pop_|avg_)")) %>% 
   mutate_all(funs(ifelse(is.nan(.), NA, .))) # converts NaN to NA for all variables
 
 # reshape the above data set so wide by year, calculate changes between years for gentrification status, keep just that for a crosswalk
-zcta_gent <- pcsa_vars1 %>% 
+zcta_gent <- zcta_vars1 %>% 
   gather("var", "value", -zcta2010, -year) %>% 
   unite(var_year, var, year) %>% 
   spread(var_year, value) %>% 
@@ -179,6 +181,7 @@ zcta_gent <- pcsa_vars1 %>%
 # Calculate changes between years as simple differences ("ch2" indicates 2-year lag, ie. 1990-2010)
 zcta_vars2 <- zcta_vars1 %>% 
   group_by(zcta2010) %>% 
+  complete(zcta2010, nesting(year)) %>% # ensure no missing years messes up lag/lead calculations
   arrange(zcta2010, year) %>% 
   mutate_at(vars(-year, -zcta2010), funs(ch = . - lag(.))) %>% 
   mutate_at(vars(-year, -zcta2010, -matches("_ch$")), funs(ch2 = . - lag(., n = 2L))) %>% 
@@ -204,6 +207,7 @@ tract_gent <- tract_vars1 %>%
 
 tract_vars2 <- tract_vars1 %>% 
   group_by(geoid) %>% 
+  complete(geoid, nesting(year)) %>% # ensure no missing years messes up lag/lead calculations
   arrange(geoid, year) %>% 
   mutate_at(vars(-year, -geoid), funs(ch = . - lag(.))) %>% 
   mutate_at(vars(-year, -geoid, -matches("_ch$")), funs(ch2 = . - lag(., n = 2L))) %>% 
