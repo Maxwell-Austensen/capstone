@@ -60,6 +60,15 @@ block_pop <- read_csv("/Users/Maxwell/Data/block2000_pop.csv") %>%
   select(GISJOIN, block_pop = FXS001)
 
 
+# ZCTA 2010 population ----------------------------------------------------
+
+zcta2010_pop_names <- read_csv("../Dropbox/capstone/zcta2010_pop_geocorr12.csv", n_max = 1) %>% names
+
+zcta2010_pop <- "../Dropbox/capstone/zcta2010_pop_geocorr12.csv" %>% 
+  read_csv(skip = 2, col_names = zcta2010_pop_names, col_types = "ccdd") %>% 
+  select(zcta2010 = zcta5, zcta2010_pop = pop10)
+
+
 # Create Relationship File ------------------------------------------------
 
 nyc_block_zcta2000 <- nyc_block2000 %>% 
@@ -86,9 +95,11 @@ nyc_block_zcta2010 <- nyc_block2000 %>%
 # Join block-zcta2000, block-zcta2010, and block population
 block_zcta2000_zcta2010 <- full_join(nyc_block_zcta2000, nyc_block_zcta2010, by = "GISJOIN") %>% 
   left_join(block_pop, by = "GISJOIN") %>% 
-  filter(block_pop > 0) %>% 
-  drop_na() %>% 
-  select(GISJOIN, zcta2000, zcta2010, block_pop)
+  left_join(zcta2010_pop, by = "zcta2010") %>% 
+  filter(block_pop > 0,
+         zcta2010_pop >= 2000) %>% 
+  select(GISJOIN, zcta2000, zcta2010, block_pop) %>% 
+  drop_na()
 
 # Calculate
 zcta2000_zcta2010_xwalk <- block_zcta2000_zcta2010 %>% 
@@ -102,5 +113,4 @@ zcta2000_zcta2010_xwalk <- block_zcta2000_zcta2010 %>%
   select(zcta2000, zcta2010, afact)
 
 write_csv(zcta2000_zcta2010_xwalk, "../Dropbox/capstone/zcta2000_zcta2010_xwalk")
-
-
+ 
