@@ -1,0 +1,20 @@
+---
+title: "Data & Methods"
+date: "`r Sys.Date()`"
+output: 
+  html_notebook: default
+  github_document: default
+---
+
+
+* median, mean, SD, and IQR of Area and Population
+    * ZCTA 2010 (after exclusions)
+    * Tracts 2010, and 
+    * PCSA 2010
+
+<br>  
+
+* ZCTA 2010
+    * number pop < 2000 (excluded), number remaining
+    * 40th percentiile hosehold income 1990
+    * median average rent percent increase (1990 to 2006-10)
