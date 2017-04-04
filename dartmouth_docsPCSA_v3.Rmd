@@ -124,7 +124,7 @@ dart_nyc$pcpvt <- dart_nyc$partb_pcp + dart_nyc$pcpvt_rhc + dart_nyc$pcpvt_fqhc 
 dart_nyc$physicians <- dart_nyc$pcphys + dart_nyc$specialist + dart_nyc$obgyn + dart_nyc$famprac + dart_nyc$internist
 dart_nyc$pa <- dart_nyc$pa_ob + dart_nyc$pa_pcp + dart_nyc$pa_spec + dart_nyc$pa_oth
 dart_nyc$obstets <- dart_nyc$obgyn + dart_nyc$pa_ob + dart_nyc$cnm_fte
-dart_nyc$allpcp <- dart_nyc$pcpphys + dart_nyc$pa_pcp + dart_nyc$famprac + dart_nyc$internist
+dart_nyc$allpcp <- dart_nyc$pcphys + dart_nyc$pa_pcp + dart_nyc$famprac + dart_nyc$internist
 dart_nyc$allpcpnp <- dart_nyc$pcphys + dart_nyc$np_fte + dart_nyc$pa_pcp + dart_nyc$famprac + dart_nyc$internist
 dart_nyc$specs <- dart_nyc$specialist + dart_nyc$pa_spec + dart_nyc$pa_oth
 dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
