@@ -124,7 +124,8 @@ dart_nyc$pcpvt <- dart_nyc$partb_pcp + dart_nyc$pcpvt_rhc + dart_nyc$pcpvt_fqhc 
 dart_nyc$physicians <- dart_nyc$pcphys + dart_nyc$specialist + dart_nyc$obgyn + dart_nyc$famprac + dart_nyc$internist
 dart_nyc$pa <- dart_nyc$pa_ob + dart_nyc$pa_pcp + dart_nyc$pa_spec + dart_nyc$pa_oth
 dart_nyc$obstets <- dart_nyc$obgyn + dart_nyc$pa_ob + dart_nyc$cnm_fte
-dart_nyc$allpcp <- dart_nyc$pcphys + dart_nyc$np_fte + dart_nyc$pa_pcp #should we include dart_nyc$famprac & dart_nyc$internist ??
+dart_nyc$allpcp <- dart_nyc$pcpphys + dart_nyc$pa_pcp + dart_nyc$famprac + dart_nyc$internist
+dart_nyc$allpcpnp <- dart_nyc$pcphys + dart_nyc$np_fte + dart_nyc$pa_pcp + dart_nyc$famprac + dart_nyc$internist
 dart_nyc$specs <- dart_nyc$specialist + dart_nyc$pa_spec + dart_nyc$pa_oth
 dart_nyc$allimg <- dart_nyc$img_ob + dart_nyc$img_pcp + dart_nyc$img_spec
 ```
@@ -137,6 +138,7 @@ dart_nyc <-
          np_rat = if_else(np_fte !=0, (totpop/ np_fte), NA_real_),
          cnm_rat = if_else(cnm_fte != 0, (fem15_44 /cnm_fte), NA_real_),
          allpcp_rat = if_else(allpcp !=0, (totpop / allpcp), NA_real_),
+         allpcpnp_rat = if_else(allpcpnp !=0, (totpop/allpcpnp), NA_real_),
          specs_rat = if_else(specs != 0, (totpop / specs), NA_real_),
          obstets_rat = if_else(obstets !=0, (fem15_44 / obstets), NA_real_),
          img_rat = if_else(allimg != 0, (totpop / allimg), NA_real_))
@@ -247,6 +249,8 @@ new99 <-
 
 new99$cnm_fte <- NA
 new99$np_fte <- NA
+new99$allpcpnp <- NA
+new99$allpcpnp_rat <- NA
 new99$cnm_rat <- NA
 new99$np_rat <- NA
 new99$medicare_acscd <- NA
@@ -268,13 +272,14 @@ new99$np_p1000 <- NA
 
 new10 <-
   dart_nyc %>%
-  transmute(pcsa, year, gent_status, pcphys, specialist, obgyn, img_pcp, img_spec, img_ob, pa_pcp, pa_spec, pa_ob, pa_oth, fem15_44, totpop, pcpvt, edvt, physicians, pa, obstets, allpcp, specs, allimg, physician_rat, pa_rat, allpcp_rat, specs_rat, obstets_rat, img_rat, pcpvt_rt, edvt_rt, pcpdenom, cnm_fte, np_fte, cnm_rat, np_rat, medicare_acscd, hospdenom, acscd_rt)
+  transmute(pcsa, year, gent_status, pcphys, specialist, obgyn, img_pcp, img_spec, img_ob, pa_pcp, pa_spec, pa_ob, pa_oth, fem15_44, totpop, pcpvt, edvt, physicians, pa, obstets, allpcp, allpcpnp, specs, allimg, physician_rat, pa_rat, allpcp_rat, allpcpnp_rat, specs_rat, obstets_rat, img_rat, pcpvt_rt, edvt_rt, pcpdenom, cnm_fte, np_fte, cnm_rat, np_rat, medicare_acscd, hospdenom, acscd_rt)
 
 new10 <- 
   mutate(new10, 
          phys_p1000 = if_else(totpop !=0, (physicians/ totpop)*1000, NA_real_),
          pa_p1000 = if_else(totpop !=0, (pa/totpop)*1000, NA_real_),
          allpcp_p1000 = if_else(totpop !=0, (allpcp / totpop)*1000, NA_real_),
+         allpcpnp_p1000 = if_else(totpop !=0, (allpcpnp / totpop)*1000, NA_real_),
          specs_p1000 = if_else(totpop !=0, (specs/totpop)*1000, NA_real_),
          obstets_p1000 = if_else(totpop !=0, (obstets/totpop)*1000, NA_real_),
          img_p1000 = if_else(totpop !=0, (allimg/totpop)*1000, NA_real_),
