@@ -71,6 +71,8 @@ zcta2010_pop <- "../Dropbox/capstone/zcta2010_pop_geocorr12.csv" %>%
 
 # Create Relationship File ------------------------------------------------
 
+# Assign each block to the ZCTA that a plurality of its area resides
+
 nyc_block_zcta2000 <- nyc_block2000 %>% 
   mutate(block_area = st_area(.)) %>% 
   st_intersection(nyc_zcta2000) %>% 
@@ -101,7 +103,8 @@ block_zcta2000_zcta2010 <- full_join(nyc_block_zcta2000, nyc_block_zcta2010, by 
   select(GISJOIN, zcta2000, zcta2010, block_pop) %>% 
   drop_na()
 
-# Calculate
+# Calculate zcta00 -> zcta10 allocation factor
+# alloc = the share of a given zcta00's population that is in a given zcta2010
 zcta2000_zcta2010_xwalk <- block_zcta2000_zcta2010 %>% 
   group_by(zcta2000) %>% 
   mutate(zcta2000_pop = sum(block_pop, na.rm = TRUE)) %>% 
