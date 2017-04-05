@@ -115,5 +115,5 @@ zcta2000_zcta2010_xwalk <- block_zcta2000_zcta2010 %>%
   mutate(afact = zcta2000_zcta2010_pop / zcta2000_pop) %>% 
   select(zcta2000, zcta2010, afact)
 
-write_csv(zcta2000_zcta2010_xwalk, "../Dropbox/capstone/zcta2000_zcta2010_xwalk")
+write_csv(zcta2000_zcta2010_xwalk, "../Dropbox/capstone/zcta2000_zcta2010_xwalk.csv")
  
