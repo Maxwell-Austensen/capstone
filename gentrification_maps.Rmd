@@ -11,9 +11,9 @@ library(leaflet)
 ```
 
 ```{r,message=FALSE, warning=FALSE, results='hide'}
-zcta_gent_xwalk <- read_csv("../Dropbox/capstone/zcta_gent_xwalk.csv", col_types = "cc")
+zcta_gent_xwalk <- read_csv("../dropbox/capstone/data_inter/zcta_gent_xwalk.csv", col_types = "cc")
 
-nyc_zcta2010 <- st_read("../Dropbox/capstone/shapefiles/nyc_zcta2010/nyc_zcta2010.shp", "nyc_zcta2010", 
+nyc_zcta2010 <- st_read("../dropbox/capstone/shapefiles/nyc_zcta2010/nyc_zcta2010.shp", "nyc_zcta2010", 
                         stringsAsFactors = FALSE) %>% 
   st_transform('+proj=longlat +datum=WGS84') %>% 
   left_join(zcta_gent_xwalk, by = "zcta2010")
@@ -36,12 +36,12 @@ ggplot(nyc_zcta2010, aes(fill = gent_status)) +
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 ggsave("zcta_gent_map.png", width = 20, height = 20, units = "cm")
-ggsave("../Dropbox/capstone/zcta_gent_map.png", width = 40, height = 40, units = "cm")
+ggsave("../dropbox/capstone/images/zcta_gent_map.png", width = 40, height = 40, units = "cm")
 
 ```
 
 ```{r}
-factpal <- colorFactor(c("#FFD200", "#00B2AB", "#B21293"), nyc_zcta2010$gent_status)
+factpal <- colorFactor(c("#FFD200", "#00B2AB", "#B21293"), nyc_zcta2010[["gent_status"]])
   
 leaflet(nyc_zcta2010) %>%
   addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
