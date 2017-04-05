@@ -15,25 +15,28 @@ library(stringr)
 
 # Load Data Sets ----------------------------------------------------------
 
-gent_xwalk <- read_csv("../Dropbox/capstone/pcsa_gent_xwalk.csv")
+gent_status <- read_csv("../dropbox/capstone/data_inter/zcta_gent_xwalk.csv", col_types = "cc") %>% 
+  mutate(gent_status = ordered(gent_status, levels = c("Non-Gentrifying", "Gentrifying", "High Income")))
 
-dcov <- read_csv("../Dropbox/capstone/pcsa_cov_vars.csv")
+census <- read_csv("../dropbox/capstone/data_inter/zcta_cov_vars.csv", col_types = cols(zcta2010 = "c"))
 
-dout <- read_csv("../Dropbox/capstone/fulldf.csv", guess_max = 250) %>% 
-  select(-X1, -gent_status) %>% 
+hospital_vars <- read_csv("../dropbox/capstone/data_inter/hospital_vars.csv", col_types = cols(zcta2010 = "c"))
+
+health <- read_csv("../dropbox/capstone/data_inter/dart_clean.csv", 
+                 col_types = cols(zcta2010 = "c", gent_status = "c")) %>% 
+  select(-gent_status) %>% 
   mutate(year = if_else(year == 1999L, 2000L, year))
 
 # Create changes for health variables
-dout_changes <- dout %>%
-  group_by(pcsa) %>% 
-  arrange(pcsa, year) %>% 
-  mutate_at(vars(-year, -pcsa), funs(ch = . - lag(.))) %>% 
-  set_names(., names(.) %>% str_replace("(.*)_(ch)$", "\\2_\\1")) %>% 
-  janitor::remove_empty_cols()
-
+health_changes <- health %>%
+  group_by(zcta2010) %>% 
+  complete(zcta2010, nesting(year)) %>% # ensure no missing years messes up lag/lead calculations
+  arrange(zcta2010, year) %>% 
+  mutate_at(vars(-year, -zcta2010), funs(ch = . - lag(.))) %>% 
+  set_names(., names(.) %>% str_replace("(.*)_(ch)$", "\\2_\\1")) 
 
 # merge together census covariates and health variables
-all_vars <- full_join(dcov, dout_changes, by = c("year", "pcsa"))
+all_long <- full_join(census, health_changes, by = c("year", "zcta2010"))
 
 # Gather: This reshapes to be super long (long by pcsa, year, variable)
 # Unite: then combine the variable name and year (how we want the new columns to be named)
@@ -41,13 +44,15 @@ all_vars <- full_join(dcov, dout_changes, by = c("year", "pcsa"))
 #  variables of different types into teh single "value" column it can change the variable type, 
 #  so "convert = TRUE" changes them back by guessing what they should be
 # Since some variables aren't available in all years some empty columns are created
-all_vars_wide <- all_vars %>%
-  gather("var", "value", -pcsa, -pcsa_name, -year) %>% 
+all_wide <- all_long %>%
+  gather("var", "value", -zcta2010, -year) %>% 
   unite(var_year, var, year) %>% 
   spread(var_year, value, convert = TRUE) %>% 
   janitor::remove_empty_cols() %>% 
-  left_join(gent_xwalk, by = c("pcsa", "pcsa_name"))
+  left_join(gent_status, by = "zcta2010") %>% 
+  left_join(hospital_vars, by = "zcta2010")
   
 
 #export to dta for regressions. 
-haven::write_dta(all_vars_wide, "../Dropbox/capstone/dall.dta")
+haven::write_dta(all_wide, "../dropbox/capstone/data_clean/all_data.dta")
+feather::write_feather(all_wide, "../dropbox/capstone/data_clean/all_data.feather")
