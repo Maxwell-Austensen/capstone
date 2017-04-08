@@ -142,6 +142,7 @@ dart10_all4 <- dart10_all3 %>%
     allpcpnp_rat = totpop / na_if(allpcpnp, 0),
     specs_rat = totpop / na_if(specs, 0),
     obstets_rat = fem15_44 / na_if(obstets, 0),
+    obgyn_rat = fem15_44 / na_if(obgyn, 0),
     img_rat = totpop / na_if(allimg, 0),
 
     # add zcta-level visit rates
@@ -150,11 +151,13 @@ dart10_all4 <- dart10_all3 %>%
     edvt_rt = edvt / na_if(pcpdenom, 0),
 
     phys_p1000 = (physicians/   na_if(totpop, 0))*1000,
+    pcphys_p1000 = (pcphys / na_if(totpop, 0))*1000,
     pa_p1000 = (pa / na_if(totpop, 0))*1000,
     allpcp_p1000 = (allpcp /   na_if(totpop, 0))*1000,
     allpcpnp_p1000 = (allpcpnp /   na_if(totpop, 0))*1000,
     specs_p1000 = (specs / na_if(totpop, 0))*1000,
     obstets_p1000 = (obstets / na_if(totpop, 0))*1000,
+    obgyn_p1000 = (obgyn / na_if(totpop, 0))*1000,
     img_p1000 = (allimg / na_if(totpop, 0))*1000,
     np_p1000 = (np_fte / na_if(totpop, 0))*1000
   )
@@ -225,6 +228,7 @@ dart99_all2 <- dart99_all %>%
     allpcp_rat = totpop / na_if(allpcp, 0),
     specs_rat = totpop / na_if(specs, 0),
     obstets_rat = fem15_44 / na_if(obstets, 0),
+    obgyn_rat = fem15_44 / na_if(obgyn, 0),
     img_rat = totpop / na_if(allimg, 0),
     # PCSA-level visit rates
     pcpvt_rt = (pcpvt / na_if(pcpdenom, 0))*100,
@@ -233,10 +237,12 @@ dart99_all2 <- dart99_all %>%
     # new99 does not include internist and famprac, separately, but those are included in total physicians
     # no np in pcp, no cnm in obstets for new99 
     phys_p1000 = (physicians / na_if(totpop, 0))*1000,
+    pcphys_p1000 = (pcphys / na_if(totpop, 0))*1000,
     pa_p1000 = (pa / na_if(totpop, 0))*1000,
     allpcp_p1000 = (allpcp / na_if(totpop, 0))*1000,
     specs_p1000 = (specs / na_if(totpop, 0))*1000,
     obstets_p1000 = (obstets / na_if(totpop, 0))*1000,
+    obgyn_p1000 = (obgyn / na_if(totpop, 0))*1000,
     img_p1000 = (allimg / na_if(totpop, 0))*1000
   )
 
