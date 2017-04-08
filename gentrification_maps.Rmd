@@ -36,7 +36,8 @@ ggplot(nyc_zcta2010, aes(fill = gent_status)) +
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 ggsave("zcta_gent_map.png", width = 20, height = 20, units = "cm")
-ggsave("../dropbox/capstone/images/zcta_gent_map.png", width = 40, height = 40, units = "cm")
+ggsave("../dropbox/capstone/images/zcta_gent_map_med.png", width = 20, height = 20, units = "cm")
+ggsave("../dropbox/capstone/images/zcta_gent_map_big.png", width = 40, height = 40, units = "cm")
 
 ```
 
