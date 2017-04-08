@@ -20,8 +20,8 @@ chs03 <- read_feather("../dropbox/capstone/data_raw/chs2003.feather") %>%
             year = 2003L,
             wt = wt3,
             strata = strata,
-            gen_health = generalhealth, 
             good_health = generalhealth <= 3,
+            gen_health = recode(generalhealth, `1` = 5, `2` = 4, `3` = 3, `4` = 2, `5` = 1), 
             # no_care = didntseedr == 1, # this is didn't see doc b/c of COST
             has_pcp = pcp == 1,
             insured = insured == 1,
@@ -42,8 +42,8 @@ chs09 <- read_feather("../dropbox/capstone/data_raw/chs2009.feather") %>%
             year = 2009L,
             wt = wt10_dual,
             strata = strata,
-            gen_health = generalhealth, 
             good_health = generalhealth <= 3,
+            gen_health = recode(generalhealth, `1` = 5, `2` = 4, `3` = 3, `4` = 2, `5` = 1), 
             no_care = didntgetcare09 == 1, # this is didn't get care for any reason (more than just doc visit)
             has_pcp = pcp09 == 1,
             insured = insured == 1,
@@ -57,7 +57,6 @@ chs09 <- read_feather("../dropbox/capstone/data_raw/chs2009.feather") %>%
   get_srvy_means()
 
 
-
 # Combine Years -----------------------------------------------------------
 
 uhf34_gent_status <- read_feather("../Dropbox/capstone/data_inter/uhf34_gent_status.feather") %>% select(-uhf34)
@@ -66,9 +65,11 @@ chs_0309 <- bind_rows(chs03, chs09) %>%
   select(-matches("_se$")) %>% 
   group_by(uhf34) %>% 
   arrange(uhf34, year) %>% 
-  mutate_at(vars(-uhf34, -year), funs(chg = . - lag(.))) %>% 
-  select(-no_care_chg) %>% 
+  mutate_at(vars(-uhf34, -year), funs(lag = lag(.))) %>% 
+  mutate_at(vars(-uhf34, -year, -matches("_lag$")), funs(chg = . - lag(.))) %>% 
+  filter(year == 2009) %>% 
+  select(-no_care_chg, -no_care_lag) %>% 
   left_join(uhf34_gent_status, by = c("uhf34" = "chs_uhf34")) %>% 
   select(uhf34, uhf34_name, year, gent, nongent, hiinc, everything())
 
-write_feather(chs_0309, "../dropbox/capstone/data_inter/chs_uhf34_0309.feather")
+write_feather(chs_0309, "../dropbox/capstone/data_clean/chs_uhf34_0309.feather")
