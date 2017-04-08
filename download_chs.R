@@ -24,14 +24,13 @@ library(feather) # for saving data files
 
 # Create Local CHS Directory ----------------------------------------------
 
-c("../Dropbox/capstone/data_raw/chs/", "../Dropbox/capstone/documentation/chs/") %>% 
-  walk(dir.create, showWarnings = FALSE)
+dir.create("../Dropbox/capstone/documentation/chs/", showWarnings = FALSE)
   
 
 # Download CHS Data -------------------------------------------------------
 
 data_urls <- glue("https://www1.nyc.gov/assets/doh/downloads/sas/episrv/chs{2002:2010}_public.sas7bdat")
-data_paths <- glue("../Dropbox/capstone/data_raw/chs/chs{2002:2010}.feather")
+data_paths <- glue("../Dropbox/capstone/data_raw/chs{2002:2010}.feather")
 
 walk2(data_urls, data_paths, ~ read_sas(.x) %>% write_feather(.y))
 
