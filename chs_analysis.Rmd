@@ -34,9 +34,15 @@ get_models <- function(depvar, change = FALSE) {
 
 ---
 
-Self-reported general health status: 
+### `gent` & `nongent`:
+
+Share of the UHF34's residents living in gentrifying and non-gentrifying ZCTAs
+
+---
 
 ### `good_health`:
+
+Self-reported general health status: 
 
 1 = "Excellent", "Very Good", or "Good"
 
@@ -45,6 +51,8 @@ Self-reported general health status:
 ---
 
 ### `gen_health`:
+
+Self-reported general health status: 
 
 5 = "Excellent"
 
