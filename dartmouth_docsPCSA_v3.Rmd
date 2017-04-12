@@ -265,7 +265,7 @@ write_csv(dart_all_years, "../dropbox/capstone/data_inter/dart_clean.csv")
 # Make Visit Tables
 
 ```{r, results='asis'}
-# VISIT TABLES
+# VISIT TABLES PER 1000 MEDICARE BENEFICIARY
 vsttable <- dart_all_years %>%
   group_by(gent_status, year) %>%
   summarise(pcpvt_rt = sum(pcpvt[!is.na(pcpvt_rt)], na.rm = T) / sum(pcpdenom[!is.na(pcpvt_rt)], na.rm=T) * 100,
