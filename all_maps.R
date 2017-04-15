@@ -1,5 +1,9 @@
 library(tidyverse)
+library(feather)
 library(sf)
+
+
+# Load Data and Shapes ----------------------------------------------------
 
 all_data <- feather::read_feather("../dropbox/capstone/data_clean/all_data.feather")
 
@@ -8,49 +12,101 @@ map_data <- st_read("../dropbox/capstone/shapefiles/nyc_zcta2010/nyc_zcta2010.sh
   st_transform('+proj=longlat +datum=WGS84') %>% 
   left_join(all_data, by = "zcta2010")
 
+boros <- st_read("http://services5.arcgis.com/GfwWNkhOj9bNBqoJ/arcgis/rest/services/nybb/FeatureServer/0/query?where=1=1&outFields=*&outSR=4326&f=geojson")
+
+uhf34_xwalk <- read_feather("../Dropbox/capstone/data_inter/uhf34_gent_status.feather") %>% 
+  transmute(uhf34_name = uhf34_name,
+            UHF34_CODE = stringr::str_replace_all(uhf34, "/", "") %>% as.numeric())
+
+chs_vars <- feather::read_feather("../dropbox/capstone/data_clean/chs_uhf34_0309_all.feather") %>% 
+  left_join(uhf34_xwalk, by = "uhf34_name")
+
+chs_map_data <- st_read("../dropbox/capstone/shapefiles/CHS_2009_DOHMH_2010B/CHS_2009_DOHMH_2010B.shp",
+                  stringsAsFactors = FALSE) %>% 
+  inner_join(chs_vars, by = "UHF34_CODE")
+
+
+# Map Theme ---------------------------------------------------------------
+
 map_theme <- function() {
-  theme(panel.background = element_blank(),
+  theme(legend.position = c(.1, .7),
+        panel.background = element_blank(),
         panel.grid = element_blank(),
         axis.ticks = element_blank(),
         axis.text = element_blank(),
         plot.caption = element_text(colour = "grey50", face = "italic", size = 8))
 }
 
+
+# MAPS! -------------------------------------------------------------------
+
 # Gentrification
 map_data %>% 
+  filter(!is.na(gent_status)) %>% 
   ggplot(aes(fill = gent_status)) + 
+  geom_sf(data = boros, fill = "grey", color = "white", size = 0.1) +
   geom_sf(color = "white", size = 0.1) +
-  scale_fill_manual(values = c("#FFD200", "#B21293", "#00B2AB")) +
+  scale_fill_manual(values = c("Gentrifying" = "#FFD200", 
+                               "Non-Gentrifying" = "#B21293", 
+                               "Higher Income" = "#00B2AB")) +
   map_theme() +
-  labs(title = "Neighborhood Gentrification Status in New York City",
+  labs(title = "Neighborhood Gentrification Status \nNew York City",
        subtitle = "ZIP Census Tabulation Areas (ZCTAs)",
        fill = NULL,
        caption = "Sources: Minnesota Population Center, NHGIS; Neighborhood Change Database")
 
+ggsave("../dropbox/capstone/images/zcta_gentrification.png", width = 20, height = 20, units = "cm")
+
+
+all_pcp_d_levels <- c("Less than 0.5", "0.5 to 1.0", "1.0 to 2.0", "2.0 to 3.0", "Greater than 3.0")
 # Primary Care Providers 2000
 map_data %>% 
-  ggplot(aes(fill = log(allpcp_p1000_2000 + 1))) + 
+  filter(!is.na(gent_status), !is.na(allpcp_p1000_2000)) %>% 
+  mutate(allpcp_p1000_2000_d = case_when(.$allpcp_p1000_2000 < 0.5  ~ all_pcp_d_levels[[1]],
+                                         .$allpcp_p1000_2000 < 1.0  ~ all_pcp_d_levels[[2]],
+                                         .$allpcp_p1000_2000 < 2.0  ~ all_pcp_d_levels[[3]],
+                                         .$allpcp_p1000_2000 < 3.0  ~ all_pcp_d_levels[[4]],
+                                         .$allpcp_p1000_2000 >= 3.0 ~ all_pcp_d_levels[[5]]),
+         allpcp_p1000_2000_d = ordered(allpcp_p1000_2000_d, levels = all_pcp_d_levels)) %>% 
+  ggplot(aes(fill = allpcp_p1000_2000_d)) + 
+  geom_sf(data = boros, fill = "grey", color = "white", size = 0.1) +
   geom_sf(color = "white", size = 0.1) +
-  viridis::scale_fill_viridis() +
-  # scale_fill_manual(values = c("#FFD200", "#B21293", "#00B2AB")) +
+  viridis::scale_fill_viridis(discrete = TRUE) +
   map_theme() +
-  labs(title = "Neighborhood Gentrification Status in New York City",
+  labs(title = "Primary Care Providers per 1,000 Residents \nNew York City, 2000",
        subtitle = "ZIP Census Tabulation Areas (ZCTAs)",
        fill = NULL,
-       caption = "Sources: Minnesota Population Center, NHGIS; Neighborhood Change Database")
+       caption = "Sources: Dartmouth Atlas; Minnesota Population Center, NHGIS")
+
+ggsave("../dropbox/capstone/images/zcta_allpcp_2000.png", width = 20, height = 20, units = "cm")
+
 
 # Abulatory Sensitive Conditions Discharges 2010
 map_data %>% 
   ggplot(aes(fill = acscd_rt_2010)) + 
+  geom_sf(data = boros, fill = "grey", color = "white", size = 0.1) +
   geom_sf(color = "white", size = 0.1) +
-  # viridis::scale_fill_viridis(discrete = TRUE) +
-  viridis::scale_fill_viridis() +
-  # scale_fill_manual(values = c("#FFD200", "#B21293", "#00B2AB")) +
+  viridis::scale_fill_viridis(limits = c(0, 0.20)) +
   map_theme() +
-  labs(title = "Neighborhood Gentrification Status in New York City",
+  labs(title = "Ambulatory Care Sensitive Condition Discharges Rate \nNew York City, 2010",
        subtitle = "ZIP Census Tabulation Areas (ZCTAs)",
        fill = NULL,
-       caption = "Sources: Minnesota Population Center, NHGIS; Neighborhood Change Database")
+       caption = "Sources: Dartmouth Atlas; Minnesota Population Center, NHGIS")
 
 
-# ggsave("../dropbox/capstone/images/zcta_gent_map_med.png", width = 20, height = 20, units = "cm")
+ggsave("../dropbox/capstone/images/zcta_acsc_2010.png", width = 20, height = 20, units = "cm")
+
+# CHS general Health (% Excellent or Very Good)
+chs_map_data %>% 
+  ggplot(aes(fill = good_health)) + 
+  geom_sf(data = boros, fill = "grey", color = "white", size = 0.1) +
+  geom_sf(color = "white", size = 0.1) +
+  viridis::scale_fill_viridis(labels = scales::percent_format(), limits = c(0, 1)) +
+  map_theme() +
+  labs(title = "Percent of Residents Reporting \"Excellent\" or \"Very Good\" General Health \nNew York City, 2009",
+       subtitle = "United Hospital Fund Neighborhoods (UHF 34)",
+       fill = NULL,
+       caption = "Source: New York City Community Health Survey")
+
+
+ggsave("../dropbox/capstone/images/uhf34_gen_health.png", width = 20, height = 20, units = "cm")
