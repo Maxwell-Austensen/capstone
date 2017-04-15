@@ -12,11 +12,12 @@ library(glue)
 ```
 
 ```{r}
-chs <- feather::read_feather("../dropbox/capstone/data_clean/chs_uhf34_0309.feather")
+chs_all <- feather::read_feather("../dropbox/capstone/data_clean/chs_uhf34_0309_all.feather")
+chs_200pov <- feather::read_feather("../dropbox/capstone/data_clean/chs_uhf34_0309_200pov.feather")
 ```
 
 ```{r}
-get_models <- function(depvar, change = FALSE) {
+get_models <- function(depvar, df = chs_all, change = FALSE) {
   if(change == FALSE) {
     indepvars <- c("gent + nongent", "gent + nongent + insured + age65p + pov + asn + blk + his + forborn")
     fomulas <- glue("{depvar} ~ {indepvars}")
@@ -28,7 +29,7 @@ get_models <- function(depvar, change = FALSE) {
     fomulas <- glue("{depvar} ~ {indepvars}")
   }
   
-  map(fomulas, ~ lm(.x, data = chs))
+  map(fomulas, ~ lm(.x, data = df))
 }
 ```
 
@@ -89,21 +90,63 @@ Self-reported general health status:
 ## Cross-section 2009
 
 ```{r, results='asis', warning=FALSE}
-c(get_models("gen_health"), 
+cross_09_models <- c(
+  get_models("gen_health"), 
   get_models("good_health"),
   get_models("has_pcp"),
   get_models("no_care")
-  ) %>% 
-  stargazer_mod(type = "html")
+)
+
+cross_09_se <- map(cross_09_models, robust)
+
+stargazer_mod(cross_09_models, se = cross_09_se, type = "html")
 ```
 
 
 ## Changes 2003-2009
 
 ```{r, results='asis', warning=FALSE}
-c(get_models("gen_health_chg", change = TRUE), 
+chg_09_models <- c(
+  get_models("gen_health_chg", change = TRUE), 
   get_models("good_health_chg", change = TRUE),
   get_models("has_pcp_chg", change = TRUE)
-  ) %>% 
-  stargazer_mod(type = "html")
+)
+
+chg_09_se <- map(cross_09_models, robust)
+
+stargazer_mod(chg_09_models, se = chg_09_se, type = "html")
 ```
+
+# Only persons with incomes less than 200% of the poverty line
+
+### Cross-section 2009
+
+```{r, results='asis', warning=FALSE}
+cross_09_200pov_models <- c(
+  get_models("gen_health", df = chs_200pov), 
+  get_models("good_health", df = chs_200pov),
+  get_models("has_pcp", df = chs_200pov),
+  get_models("no_care", df = chs_200pov)
+)
+
+cross_09_200pov_se <- map(cross_09_200pov_models, robust)
+
+stargazer_mod(cross_09_200pov_models, se = cross_09_200pov_se, type = "html")
+```
+
+### Changes 2003-2009
+
+```{r, results='asis', warning=FALSE}
+chg_09_200pov_models <- c(
+  get_models("gen_health_chg", df = chs_200pov, change = TRUE), 
+  get_models("good_health_chg", df = chs_200pov, change = TRUE),
+  get_models("has_pcp_chg", df = chs_200pov, change = TRUE)
+)
+
+chg_09_200pov_se <- map(chg_09_200pov_models, robust)
+
+stargazer_mod(chg_09_200pov_models, se = chg_09_200pov_se, type = "html")
+```
+
+
+
