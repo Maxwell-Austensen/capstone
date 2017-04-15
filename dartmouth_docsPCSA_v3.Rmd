@@ -288,7 +288,7 @@ kable(vstacs)
 # Make Doc Tables
 
 ```{r}
-# DOC TABLES
+# DOC TABLES RATIO OF POP : 1 DOC
 
 doctable_ratios <- dart_all_years %>% 
   group_by(gent_status, year) %>%
@@ -296,21 +296,124 @@ doctable_ratios <- dart_all_years %>%
             pa = sum(totpop)/ sum(pa),
             allpcp = sum(totpop) / sum(allpcp),
             specs = sum(totpop) / sum(specs),
-            obstets = sum(fem15_44) / sum(obstets),
-            img = sum(totpop) / sum(allimg)) %>%
-  mutate_if(is.numeric, funs(round(., digits = 2)))
+            obstets = sum(fem15_44) / sum(obstets), ## is this the right var?
+            img = sum(totpop) / sum(allimg), 
+            np = sum(totpop)/ sum(np_fte),
+            cnm = sum(fem15_44) /sum(cnm_fte)) %>%
+  mutate_if(is.numeric, funs(round(., digits = 0)))
 
 kable(doctable_ratios)
+
+```
+```{r}
+## if flip to rates - better for test?
+doctable_ratesflip <-
+  dart_all_years %>%
+  group_by(gent_status, year) %>%
+  summarise(physicians = sum(physicians)/sum(totpop) * 1000,
+            pa = sum(pa)/sum(totpop) * 1000,
+            np = sum(np_fte)/sum(totpop) *1000,
+            cnm = sum(cnm_fte)/sum(fem15_44) *1000,
+            allpcp = sum(allpcp) / sum(totpop)* 1000,
+            specs = sum(specs) / sum(totpop) *1000,
+            obstets = sum(obstets) / sum(fem15_44) *1000, ## is this the right var??
+            img = sum(allimg) / sum(totpop) *1000) %>%
+  mutate_if(is.numeric, funs(round(., digits = 2)))
+  kable(doctable_ratesflip)
+ 
 ```
 
 ```{r}
-npcnm <- dart_all_years %>%
-  filter(year == 2010) %>% 
-  group_by(gent_status) %>%
-  summarise(np = sum(totpop)/ sum(np_fte),
-            cnm = sum(fem15_44) /sum(cnm_fte)) %>%
-  mutate_if(is.numeric, funs(round(., digits = 2)))
+sumtable_num <-
+  dart_all_years %>%
+  group_by(gent_status, year) %>%
+  summarise(physicians = sum(physicians),
+            pa = sum(pa),
+            np = sum(np_fte),
+            cnm = sum(cnm_fte),
+            allpcp = sum(allpcp),
+            specs = sum(specs),
+            obstets = sum(obstets), ## is this the right var??
+            img = sum(allimg)) %>%
+  mutate_if(is.numeric, funs(round(., digits = 0)))
+kable(sumtable_num)
+```
+```{r}
+sumtable_denom <- 
+  dart_all_years %>%
+  group_by(gent_status, year) %>%
+  summarise(totpop = sum(totpop), 
+            sumfem = sum(fem15_44)) %>%
+  mutate_if(is.numeric, funs(round(., digits = 0)))
+kable(sumtable_denom)
+```
 
-kable(npcnm)
+```{r}
+## significance tests for summary tables by year
+library(exactci)
+
+#year tests, non-gent
+poisson.exact(c(2557, 3265), c(1640828, 1696196),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #phys sig
+poisson.exact(c(360, 482), c(1640828, 1696196),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #pa sig
+poisson.exact(c(1049, 1541), c(1640828, 1696196),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
+poisson.exact(c(1726, 2049), c(1640828, 1696196),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
+poisson.exact(c(142, 224), c(393562, 318642),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
+poisson.exact(c(1523, 1826), c(1640828, 1696196),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img sig
+
+# year, gent
+poisson.exact(c(4022, 5866), c(2308004, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #phys sig
+poisson.exact(c(395, 545), c(2308004, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #pa sig
+poisson.exact(c(1479, 2239), c(2308004, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
+poisson.exact(c(2721, 3842), c(2308004, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
+poisson.exact(c(218, 467), c(561177, 462180),alternative = "t", tsmethod = c("blaker")) #obstets sig
+poisson.exact(c(1941, 2508), c(2308004, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) # img sig
+
+#year hi
+poisson.exact(c(17543, 17142), c(4115132, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #phys non-sig at p = .01
+poisson.exact(c(1465, 1888), c(4115132, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #pa sig
+poisson.exact(c(5011, 5512), c(4115132, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
+poisson.exact(c(12976, 12476), c(4115132, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
+poisson.exact(c(1021, 1249), c(973005, 748401),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
+poisson.exact(c(7547, 6952), c(4115132, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img sig
+
+```
+
+```{r}
+# tests by gent status for 2010
+## CHECK OBSTETS VAR
+
+# non-gentrifying to gent
+poisson.exact(c(3265, 5866), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #phys sig
+poisson.exact(c(482, 545), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #pa sig
+poisson.exact(c(122, 192), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #np NON-sig
+poisson.exact(c(66, 136), c(318642, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #cnm NON-sig, rare event
+poisson.exact(c(1541, 2239), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp NON-sig
+poisson.exact(c(2049, 3842), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
+poisson.exact(c(224, 467), c(318642, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
+poisson.exact(c(1826, 2508), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img NON-sig
+
+# hi to gent
+poisson.exact(c(17142, 5866), c(4108012, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #phys sig
+poisson.exact(c(1888, 545), c(4108012, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #pa sig
+poisson.exact(c(521, 192), c(4108012, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #np sig
+poisson.exact(c(207, 136), c(748401, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #cnm NON-sig, rare event
+poisson.exact(c(5512, 2239), c(4108012, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
+poisson.exact(c(12476, 3842), c(4108012, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
+poisson.exact(c(1249, 467), c(748401, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
+poisson.exact(c(6952, 2508), c(4108012, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img sig
+
+#non-gent to hi
+poisson.exact(c(3265, 17142), c(1696196, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #phys sig
+poisson.exact(c(482, 1888), c(1696196, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #pa sig
+poisson.exact(c(122, 521), c(1696196, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #np sig
+poisson.exact(c(66, 207), c(318642, 748401),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #cnm NON-sig, rare event
+poisson.exact(c(1541, 5512), c(1696196, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
+poisson.exact(c(2049, 12476), c(1696196, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
+poisson.exact(c(224, 1249), c(318642, 748401),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
+poisson.exact(c(1826, 6952), c(1696196, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img sig
+
+```
+```{r}
+
 ```
 
