@@ -16,7 +16,7 @@ library(stringr)
 # Load Data Sets ----------------------------------------------------------
 
 gent_status <- read_csv("../dropbox/capstone/data_inter/zcta_gent_xwalk.csv", col_types = "cc") %>% 
-  mutate(gent_status = ordered(gent_status, levels = c("Non-Gentrifying", "Gentrifying", "High Income")))
+  mutate(gent_status = ordered(gent_status, levels = c("Non-Gentrifying", "Gentrifying", "Higher Income")))
 
 census <- read_csv("../dropbox/capstone/data_inter/zcta_cov_vars.csv", col_types = cols(zcta2010 = "c"))
 
@@ -25,7 +25,7 @@ hospital_vars <- read_csv("../dropbox/capstone/data_inter/hospital_vars.csv", co
 health <- read_csv("../dropbox/capstone/data_inter/dart_clean.csv", 
                  col_types = cols(zcta2010 = "c", gent_status = "c")) %>% 
   select(-gent_status) %>% 
-  mutate(year = if_else(year == 1999L, 2000L, year))
+  mutate(year = if_else(year == 1999, 2000, year))
 
 # Create changes for health variables
 health_changes <- health %>%
