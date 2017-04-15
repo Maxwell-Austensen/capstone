@@ -45,9 +45,9 @@ Share of the UHF34's residents living in gentrifying and non-gentrifying ZCTAs
 
 Self-reported general health status: 
 
-1 = "Excellent", "Very Good", or "Good"
+1 = "Excellent" or "Very Good"
 
-0 = "Fair" or "Poor"
+0 = "Good", "Fair" or "Poor"
 
 ---
 
