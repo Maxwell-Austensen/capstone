@@ -11,13 +11,14 @@ All pcp (includes non-physicians, al providers) ch_allpcp_p1000_2010
 */
 
 
-global capstone "/Users/amy/Dropbox/1. NYU Wagner/Fall 2016/capstone1/capstone/data_clean"
+global capstone "/Users/amy/Dropbox/1. NYU Wagner/Spring 2017/capstone1/capstone/data_clean"
+global tables "/Users/amy/Dropbox/1. NYU Wagner/Spring 2017/capstone1/capstone/Tables"
+global graphs "/Users/amy/Dropbox/1. NYU Wagner/Spring 2017/capstone1/graphs"
 clear all 
 
 
 cd "$capstone"
 u all_data
-
 
 *summary statistics
 tabstat sh_lt5_2010 sh_5_17_2010 sh_20_34_2010 sh_35_54_2010 sh_55p_2010, by(gent_status)
@@ -36,8 +37,7 @@ tabstat allpcp_p1000_2010 img_p1000_2010 obgyn_p1000_2010 specs_p1000_2010 pcphy
 
 * histograms 
 
-cd "/Users/amy/Dropbox/1. NYU Wagner/Fall 2016/capstone1/graphs"
-
+cd "$graphs"
 
 hist ch_pcphys_p1000_2010, normal xtitle("Change in number of pc phys per 1000 (2000-2010)")  color(ltblue)
 graph export "ch_phys_p1000.png", replace 
@@ -103,30 +103,30 @@ Age sh_55p_2010 *need cite--Gopal
 
 
 * 2010 cross section levels: only gentrification var. 
-cd "/Users/amy/Dropbox/1. NYU Wagner/Fall 2016/capstone1/capstone/Tables"
+cd "$tables"
 local replace replace 
 foreach v in log_pcp_p1000 log_img_p1000 log_ob_p1000 log_sp_p1000 log_phys_p1000{
-reg `v' ib2.gent_status
+reg `v' ib2.gent_status, robust
 outreg2 using "gent_only.docx", `replace'
 local replace append 
 }
 
  
 *2010 cross section in levels, with covariates 
-cd "/Users/amy/Dropbox/1. NYU Wagner/Fall 2016/capstone1/capstone/Tables"
+cd "$tables"
 local replace replace
 foreach v in log_pcp_p1000 log_img_p1000 log_ob_p1000 log_sp_p1000 log_phys_p1000 {
-reg `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010
+reg `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, robust
 outreg2 using "2010docs_levels.docx", `replace'
 local replace append
 }
 
 
 * poisson regressions: 
-cd "/Users/amy/Dropbox/1. NYU Wagner/Spring 2017/capstone1/capstone/Tables"
+cd "$tables"
 local replace replace
 foreach v in allpcp_p1000_2010 img_p1000_2010 obgyn_p1000_2010 specs_p1000_2010 pcphys_p1000_2010 {
-	poisson `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010
+	poisson `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, robust
 	outreg2 using "poisson_2010.docx", `replace'
 local replace append
 }
@@ -135,19 +135,43 @@ local replace append
 clear all 
 cd "$capstone"
 u all_data
-cd "/Users/amy/Dropbox/1. NYU Wagner/Fall 2016/capstone1/capstone/Tables"
+cd "$tables"
 local replace replace
 foreach v in ch_allpcp_p1000_2010 ch_obgyn_p1000_2010 ch_img_p1000_2010 ch_pcphys_p1000_2010 ch_specs_p1000_2010 {
-	reg `v' hospital closure ch_avg_inc_adj_2010 ch_sh_blk_2010 ch_sh_hisp_2010 ch_sh_forborn_2010 ch_sh_pov_2010 ch_sh_55p_2010 
+	reg `v' hospital closure ch_avg_inc_adj_2010 ch_sh_blk_2010 ch_sh_hisp_2010 ch_sh_forborn_2010 ch_sh_pov_2010 ch_sh_55p_2010, robust
 outreg2 using "changes_docs.docx", `replace'
 local replace append
 }
 
 
-*ambulatory sensitive conditions
-reg acscd_rt_2010 ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010
+*ambulatory sensitive conditions, primary care visit rates & ED visit rates - 2010 cross section 
+clear all 
+cd "$capstone"
+u all_data
+cd "$tables"
+local replace replace
+foreach v in acscd_rt_2010 edvt_rt_2010 pcpvt_rt_2010 {
+	reg `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, robust
+	outreg2 using "acs_pc_ed_results.docx", `replace'
+local replace append
+}
 
-		
+*Run regression for primary care visit rates & ED visit rates, changes 2000 - 2010 
+clear all 
+cd "$capstone"
+u all_data
+cd "$tables"
+local replace replace
+foreach v in ch_edvt_rt_2010 ch_pcpvt_rt_2010 {
+	reg `v'  ch_avg_inc_adj_2010 ch_sh_blk_2010 ch_sh_hisp_2010 ch_sh_forborn_2010 ch_sh_pov_2010 ch_sh_55p_2010, robust
+	outreg2 using "ch_pc_ed_results.docx", `replace'
+local replace append
+}
+
+
+
+
+/*		
 * run dif in dif
 * regress on treatment and interaction of treatment and indep var. 
 * Keep only vars for regression and reshape. 
@@ -171,11 +195,11 @@ save diff_vars, replace
 cd "/Users/amy/Dropbox/1. NYU Wagner/Fall 2016/capstone1/capstone/Tables"
 local replace replace
 foreach v in specs_p1000_ pcphys_p1000_ obgyn_p1000_ img_p1000_ allpcp_p1000_{
-reg `v' gent_status year gent_year
+reg `v' gent_status year gent_year, robust
 outreg2 using "diff.docx", `replace' 
 local replace append
 }
-
+*/
 
 
 
