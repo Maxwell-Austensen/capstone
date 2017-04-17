@@ -33,6 +33,9 @@ tabstat ch_pcphys_p1000_2010 ch_img_p1000_2010 ch_obgyn_p1000_2010 ch_specs_p100
 
 tabstat allpcp_p1000_2010 img_p1000_2010 obgyn_p1000_2010 specs_p1000_2010 pcphys_p1000_2010, by(gent_status)
 
+tabstat sh_blk_2010 sh_hisp_2010 sh_wht_2010 sh_asian_2010, by(gent_status)
+
+tabstat sh_forborn_2010, by(gent_status)
 
 
 * histograms 
