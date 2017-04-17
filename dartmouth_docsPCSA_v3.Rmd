@@ -279,11 +279,31 @@ kable(vsttable)
 vstacs <- dart_all_years %>%
   filter(year == 2010) %>% 
   group_by(gent_status) %>%
-  summarise(acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(hospdenom[!is.na(acscd_rt)], na.rm=T) * 1000) %>%
+  summarise(acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T) / sum(hospdenom[!is.na(hospdenom)], na.rm=T) * 1000) %>%
   mutate_if(is.numeric, funs(round(., digits = 2)))
 
 kable(vstacs)
 ```
+```{r}
+sumvisits_num <- dart_all_years %>%
+group_by(gent_status, year) %>%
+           summarise(pcpvt_rt = sum(pcpvt[!is.na(pcpvt_rt)], na.rm = T), 
+                     edvt_rt = sum(edvt[!is.na(edvt_rt)], na.rm= T), 
+                     acscd_rt = sum(medicare_acscd[!is.na(acscd_rt)], na.rm=T)) %>%
+  mutate_if(is.numeric, funs(round(., digits = 0)))
+kable(sumvisits_num)
+```
+
+```{r}
+
+sumvisits_denom <- dart_all_years %>%
+group_by(gent_status, year) %>%
+  summarise(hospdenom = sum(hospdenom[!is.na(hospdenom)], na.rm=T),
+            pcpdenom = sum(pcpdenom[!is.na(pcpdenom)], na.rm=T)) %>%
+  mutate_if(is.numeric, funs(round(., digits = 0)))
+kable(sumvisits_denom)
+```
+
 
 # Make Doc Tables
 
@@ -414,6 +434,43 @@ poisson.exact(c(1826, 6952), c(1696196, 4108012),alternative = "t", tsmethod = c
 
 ```
 ```{r}
+#ACS rate tests
 
+# 2010 non to gent
+poisson.exact(c(7108, 9283), c(87530, 120083),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #acs visits sig
+
+#2010 gent to hi
+poisson.exact(c(9283, 17351), c(120083, 331136),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #acs visits sig
+
+#2010 non to hi
+poisson.exact(c(7108, 17351), c(87530, 331136),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #acs visits sig
+
+```
+
+```{r}
+#PCP visit rate tests 2010  - all sig
+
+#non to gent
+poisson.exact(c(430099, 460599), c(80527, 109252),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #sig
+
+#gent to hi
+poisson.exact(c(460599, 1113692), c(109252, 294371),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #sig
+
+#non to hi
+poisson.exact(c(430099, 1113692), c(80527, 294371),alternative = "t", tsmethod = c("blaker"), conf.level = .99) 
+
+```
+
+```{r}
+#ED visit rate tests 2010
+
+#non to gent
+poisson.exact(c(41570, 58257), c(80527, 109252),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #sig
+
+#gent to hi
+poisson.exact(c(58257, 121441), c(109252, 294371),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #sig
+
+#non to hi
+poisson.exact(c(41570, 121441), c(80527, 294371),alternative = "t", tsmethod = c("blaker"), conf.level = .99) 
 ```
 
