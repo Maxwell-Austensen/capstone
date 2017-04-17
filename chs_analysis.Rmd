@@ -23,9 +23,9 @@ get_models <- function(depvar, df = chs_all, change = FALSE) {
     fomulas <- glue("{depvar} ~ {indepvars}")
   } else if(change == TRUE) {
     ivar1 <- "gent + nongent"
-    ivar2 <- " + insured_chg + age65p_chg + pov_chg + asn_chg + blk_chg + his_chg + forborn_chg"
-    ivar3 <- " + insured_lag + age65p_lag + pov_lag + asn_lag + blk_lag + his_lag + forborn_lag"
-    indepvars <- c(ivar1, collapse(c(ivar1, ivar2)), collapse(c(ivar1, ivar2, ivar3)))
+    ivar2 <- "insured_chg + age65p_chg + pov_chg + asn_chg + blk_chg + his_chg + forborn_chg"
+    ivar3 <- "insured_lag + age65p_lag + pov_lag + asn_lag + blk_lag + his_lag + forborn_lag"
+    indepvars <- c(ivar1, ivar2, ivar3)
     fomulas <- glue("{depvar} ~ {indepvars}")
   }
   
