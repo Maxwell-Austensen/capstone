@@ -19,7 +19,10 @@ library(stringr); library(foreign); library(QuantPsyc); library(psych); library(
 dart_all_years <-read_csv("../dropbox/capstone/data_inter/dart_clean.csv") %>%
   mutate(gent_status = ordered(gent_status, levels = c("Non-Gentrifying", "Gentrifying", "NA")))
 
+dartround <- read_csv("../dropbox/capstone/data_inter/dart_clean.csv") %>%
+  mutate_if(is.numeric, funs(round(., digits=0)))
 
+barplot(table(dartround$physicians))
 ```
 
 
