@@ -16,7 +16,8 @@ library(stringr); library(foreign); library(QuantPsyc); library(psych); library(
 ```
 
 ```{r}
-dart_all_years <-read_csv("../dropbox/capstone/data_inter/dart_clean.csv")
+dart_all_years <-read_csv("../dropbox/capstone/data_inter/dart_clean.csv") %>%
+  mutate(gent_status = ordered(gent_status, levels = c("Non-Gentrifying", "Gentrifying", "NA")))
 
 
 ```
@@ -87,6 +88,7 @@ doctable_ratesflip <-
 ```
 
 ```{r}
+#docs numerators
 sumtable_num <-
   dart_all_years %>%
   group_by(gent_status, year) %>%
@@ -101,7 +103,9 @@ sumtable_num <-
   mutate_if(is.numeric, funs(round(., digits = 0)))
 kable(sumtable_num)
 ```
+
 ```{r}
+#docs denominators
 sumtable_denom <- 
   dart_all_years %>%
   group_by(gent_status, year) %>%
@@ -119,7 +123,7 @@ poisson.exact(c(2557, 3265), c(1640828, 1696196),alternative = "t", tsmethod = c
 poisson.exact(c(360, 482), c(1640828, 1696196),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #pa sig
 poisson.exact(c(1049, 1541), c(1640828, 1696196),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
 poisson.exact(c(1726, 2049), c(1640828, 1696196),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
-poisson.exact(c(142, 224), c(393562, 318642),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obs sig
+poisson.exact(c(129, 150), c(393562, 318642),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obs sig
 poisson.exact(c(1523, 1826), c(1640828, 1696196),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img sig
 
 # year, gent
@@ -127,7 +131,7 @@ poisson.exact(c(4022, 5866), c(2308004, 2366950),alternative = "t", tsmethod = c
 poisson.exact(c(395, 545), c(2308004, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #pa sig
 poisson.exact(c(1479, 2239), c(2308004, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
 poisson.exact(c(2721, 3842), c(2308004, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
-poisson.exact(c(218, 467), c(561177, 462180),alternative = "t", tsmethod = c("blaker")) #obstets sig
+poisson.exact(c(206, 321), c(561177, 462180),alternative = "t", tsmethod = c("blaker")) #obs sig
 poisson.exact(c(1941, 2508), c(2308004, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) # img sig
 
 #year hi
@@ -135,7 +139,7 @@ poisson.exact(c(17543, 17142), c(4115132, 4108012),alternative = "t", tsmethod =
 poisson.exact(c(1465, 1888), c(4115132, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #pa sig
 poisson.exact(c(5011, 5512), c(4115132, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
 poisson.exact(c(12976, 12476), c(4115132, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
-poisson.exact(c(1021, 1249), c(973005, 748401),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
+poisson.exact(c(984, 1005), c(973005, 748401),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obs sig
 poisson.exact(c(7547, 6952), c(4115132, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img sig
 
 ```
