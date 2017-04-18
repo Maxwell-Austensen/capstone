@@ -146,7 +146,6 @@ poisson.exact(c(7547, 6952), c(4115132, 4108012),alternative = "t", tsmethod = c
 
 ```{r}
 # tests by gent status for 2010
-## CHECK OBSTETS VAR
 
 # non-gentrifying to gent
 poisson.exact(c(3265, 5866), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #phys sig
@@ -155,7 +154,7 @@ poisson.exact(c(122, 192), c(1696196, 2366950),alternative = "t", tsmethod = c("
 poisson.exact(c(66, 136), c(318642, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #cnm NON-sig, rare event
 poisson.exact(c(1541, 2239), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp NON-sig
 poisson.exact(c(2049, 3842), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
-poisson.exact(c(224, 467), c(318642, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
+poisson.exact(c(150, 321), c(318642, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obs sig
 poisson.exact(c(1826, 2508), c(1696196, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img NON-sig
 
 # hi to gent
@@ -165,7 +164,7 @@ poisson.exact(c(521, 192), c(4108012, 2366950),alternative = "t", tsmethod = c("
 poisson.exact(c(207, 136), c(748401, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #cnm NON-sig, rare event
 poisson.exact(c(5512, 2239), c(4108012, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
 poisson.exact(c(12476, 3842), c(4108012, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
-poisson.exact(c(1249, 467), c(748401, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
+poisson.exact(c(1005, 321), c(748401, 462180),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
 poisson.exact(c(6952, 2508), c(4108012, 2366950),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img sig
 
 #non-gent to hi
@@ -175,7 +174,7 @@ poisson.exact(c(122, 521), c(1696196, 4108012),alternative = "t", tsmethod = c("
 poisson.exact(c(66, 207), c(318642, 748401),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #cnm NON-sig, rare event
 poisson.exact(c(1541, 5512), c(1696196, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #allpcp sig
 poisson.exact(c(2049, 12476), c(1696196, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #specs sig
-poisson.exact(c(224, 1249), c(318642, 748401),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
+poisson.exact(c(150, 1005), c(318642, 748401),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #obstets sig
 poisson.exact(c(1826, 6952), c(1696196, 4108012),alternative = "t", tsmethod = c("blaker"), conf.level = .99) #img sig
 
 ```
