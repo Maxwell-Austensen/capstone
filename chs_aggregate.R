@@ -98,4 +98,5 @@ chs_0309_200pov <- finalize_chs(list(chs03_200pov, chs09_200pov))
 
 
 write_feather(chs_0309_all, "../dropbox/capstone/data_clean/chs_uhf34_0309_all.feather")
+haven::write_dta(chs_0309_all, "../dropbox/capstone/data_clean/chs_uhf34_0309_all.dta")
 write_feather(chs_0309_200pov, "../dropbox/capstone/data_clean/chs_uhf34_0309_200pov.feather")
