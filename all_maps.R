@@ -58,37 +58,16 @@ map_data %>%
 ggsave("../dropbox/capstone/images/zcta_gentrification.png", width = 20, height = 20, units = "cm")
 
 
-all_pcp_d_levels <- c("Less than 0.5", "0.5 to 1.0", "1.0 to 2.0", "2.0 to 3.0", "Greater than 3.0")
-# Primary Care Providers 2000
-map_data %>% 
-  filter(!is.na(gent_status), !is.na(allpcp_p1000_2000)) %>% 
-  mutate(allpcp_p1000_2000_d = case_when(.$allpcp_p1000_2000 < 0.5  ~ all_pcp_d_levels[[1]],
-                                         .$allpcp_p1000_2000 < 1.0  ~ all_pcp_d_levels[[2]],
-                                         .$allpcp_p1000_2000 < 2.0  ~ all_pcp_d_levels[[3]],
-                                         .$allpcp_p1000_2000 < 3.0  ~ all_pcp_d_levels[[4]],
-                                         .$allpcp_p1000_2000 >= 3.0 ~ all_pcp_d_levels[[5]]),
-         allpcp_p1000_2000_d = ordered(allpcp_p1000_2000_d, levels = all_pcp_d_levels)) %>% 
-  ggplot(aes(fill = allpcp_p1000_2000_d)) + 
-  geom_sf(data = boros, fill = "grey", color = "white", size = 0.1) +
-  geom_sf(color = "white", size = 0.1) +
-  viridis::scale_fill_viridis(discrete = TRUE) +
-  map_theme() +
-  labs(title = "Primary Care Providers per 1,000 Residents \nNew York City, 2000",
-       subtitle = "ZIP Census Tabulation Areas (ZCTAs)",
-       fill = NULL,
-       caption = "Sources: Dartmouth Atlas; Minnesota Population Center, NHGIS")
-
-ggsave("../dropbox/capstone/images/zcta_allpcp_2000.png", width = 20, height = 20, units = "cm")
-
 
 # Abulatory Sensitive Conditions Discharges 2010
 map_data %>% 
-  ggplot(aes(fill = acscd_rt_2010)) + 
+  mutate(acscd_p1000_2010 = acscd_rt_2010 * 1000) %>% 
+  ggplot(aes(fill = acscd_p1000_2010)) + 
   geom_sf(data = boros, fill = "grey", color = "white", size = 0.1) +
   geom_sf(color = "white", size = 0.1) +
-  viridis::scale_fill_viridis(limits = c(0, 0.20)) +
+  viridis::scale_fill_viridis() +
   map_theme() +
-  labs(title = "Ambulatory Care Sensitive Condition Discharges Rate \nNew York City, 2010",
+  labs(title = "Ambulatory Care Sensitive Condition Discharges per 1,000 Medicare Beneficiaries \nNew York City, 2010",
        subtitle = "ZIP Census Tabulation Areas (ZCTAs)",
        fill = NULL,
        caption = "Sources: Dartmouth Atlas; Minnesota Population Center, NHGIS")
@@ -110,3 +89,31 @@ chs_map_data %>%
 
 
 ggsave("../dropbox/capstone/images/uhf34_gen_health.png", width = 20, height = 20, units = "cm")
+
+
+
+
+# CUT MAps ----------------------------------------------------------------
+
+# Primary Care Providers 2010
+ 
+all_pcp_d_levels <- c("Less than 0.5", "0.5 to 1.0", "1.0 to 2.0", "2.0 to 3.0", "Greater than 3.0")
+map_data %>%
+  filter(!is.na(gent_status), !is.na(allpcp_p1000_2010)) %>%
+  mutate(allpcp_p1000_2010_d = case_when(.$allpcp_p1000_2010 < 0.5  ~ all_pcp_d_levels[[1]],
+                                         .$allpcp_p1000_2010 < 1.0  ~ all_pcp_d_levels[[2]],
+                                         .$allpcp_p1000_2010 < 2.0  ~ all_pcp_d_levels[[3]],
+                                         .$allpcp_p1000_2010 < 3.0  ~ all_pcp_d_levels[[4]],
+                                         .$allpcp_p1000_2010 >= 3.0 ~ all_pcp_d_levels[[5]]),
+         allpcp_p1000_2010_d = ordered(allpcp_p1000_2010_d, levels = all_pcp_d_levels)) %>%
+  ggplot(aes(fill = allpcp_p1000_2010_d)) +
+  geom_sf(data = boros, fill = "grey", color = "white", size = 0.1) +
+  geom_sf(color = "white", size = 0.1) +
+  viridis::scale_fill_viridis(discrete = TRUE, guide = guide_legend(reverse = TRUE)) +
+  map_theme() +
+  labs(title = "Primary Care Providers per 1,000 Residents \nNew York City, 2010",
+       subtitle = "ZIP Census Tabulation Areas (ZCTAs)",
+       fill = NULL,
+       caption = "Sources: Dartmouth Atlas; Minnesota Population Center, NHGIS")
+
+ggsave("../dropbox/capstone/images/zcta_allpcp_2010.png", width = 20, height = 20, units = "cm")
