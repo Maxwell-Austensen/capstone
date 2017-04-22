@@ -23,8 +23,8 @@ get_models <- function(depvar, df = chs_all, change = FALSE) {
     fomulas <- glue("{depvar} ~ {indepvars}")
   } else if(change == TRUE) {
     ivar1 <- "gent + nongent"
-    ivar2 <- "insured_chg + age65p_chg + pov_chg + asn_chg + blk_chg + his_chg + forborn_chg"
-    indepvars <- c(ivar1, ivar2)
+    ivar2 <- " + insured_chg + age65p_chg + pov_chg + asn_chg + blk_chg + his_chg + forborn_chg"
+    indepvars <- c(ivar1, collapse(c(ivar1, ivar2)))
     fomulas <- glue("{depvar} ~ {indepvars}")
   }
   
@@ -47,22 +47,6 @@ Self-reported general health status:
 1 = "Excellent" or "Very Good"
 
 0 = "Good", "Fair" or "Poor"
-
----
-
-### `gen_health`:
-
-Self-reported general health status: 
-
-5 = "Excellent"
-
-4 = "Very Good" 
-
-3 = "Good"
-
-2 = "Fair" 
-
-1 = "Poor"
 
 ---
 
@@ -90,7 +74,6 @@ Self-reported general health status:
 
 ```{r, results='asis', warning=FALSE}
 cross_09_models <- c(
-  get_models("gen_health"), 
   get_models("good_health"),
   get_models("has_pcp"),
   get_models("no_care")
@@ -106,7 +89,6 @@ stargazer_mod(cross_09_models, se = cross_09_se, type = "html")
 
 ```{r, results='asis', warning=FALSE}
 chg_09_models <- c(
-  get_models("gen_health_chg", change = TRUE), 
   get_models("good_health_chg", change = TRUE),
   get_models("has_pcp_chg", change = TRUE)
 )
@@ -115,37 +97,5 @@ chg_09_se <- map(chg_09_models, robust)
 
 stargazer_mod(chg_09_models, se = chg_09_se, type = "html")
 ```
-
-# Only persons with incomes less than 200% of the poverty line
-
-### Cross-section 2009
-
-```{r, results='asis', warning=FALSE}
-cross_09_200pov_models <- c(
-  get_models("gen_health", df = chs_200pov), 
-  get_models("good_health", df = chs_200pov),
-  get_models("has_pcp", df = chs_200pov),
-  get_models("no_care", df = chs_200pov)
-)
-
-cross_09_200pov_se <- map(cross_09_200pov_models, robust)
-
-stargazer_mod(cross_09_200pov_models, se = cross_09_200pov_se, type = "html")
-```
-
-### Changes 2003-2009
-
-```{r, results='asis', warning=FALSE}
-chg_09_200pov_models <- c(
-  get_models("gen_health_chg", df = chs_200pov, change = TRUE), 
-  get_models("good_health_chg", df = chs_200pov, change = TRUE),
-  get_models("has_pcp_chg", df = chs_200pov, change = TRUE)
-)
-
-chg_09_200pov_se <- map(chg_09_200pov_models, robust)
-
-stargazer_mod(chg_09_200pov_models, se = chg_09_200pov_se, type = "html")
-```
-
 
 
