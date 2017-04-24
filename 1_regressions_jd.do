@@ -131,7 +131,7 @@ local replace append
 cd "$tables"
 local replace replace
 foreach v in allpcp_p1000_2010 img_p1000_2010 obgyn_p1000_2010 specs_p1000_2010 pcphys_p1000_2010 {
-	poisson `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, robust
+	g `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, robust
 	outreg2 using "poisson_2010.docx", `replace'
 local replace append
 }
