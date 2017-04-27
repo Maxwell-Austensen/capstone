@@ -1,14 +1,8 @@
-**** changes dataset ******
+**** regression analysis: providers ******
+* Author: A. Ganz 
+* project: capstone
 
 
-/*
-LHS:
-Primary Care Physicians log_pcp_p1000
-International Docs Log_img_p1000
-OBGYNs log_ob_p1000
-Specialists  log_sp_p1000
-All pcp (includes non-physicians, al providers) ch_allpcp_p1000_2010 
-*/
 
 
 global capstone "/Users/amy/Dropbox/1. NYU Wagner/Spring 2017/capstone1/capstone/data_clean"
@@ -126,13 +120,32 @@ local replace append
 
 
 * poisson regressions: 
+
+/* poisson w/ glm to check dispersion add "scale(x2)" to end of code to correct the SEs for each one - would also 
+correct the slight overdispersion for specs
+*/
+
+
 cd "$tables"
 local replace replace
 foreach v in allpcp_p1000_2010 img_p1000_2010 obgyn_p1000_2010 specs_p1000_2010 pcphys_p1000_2010 {
-	poisson `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, robust
+	glm `v' ib2.gent_status, family(poisson) link(log)
+	margins gent_status
+	outreg2 using "poisson_2010_BIV.docx", `replace'
+local replace append
+}
+
+
+
+
+cd "$tables"
+local replace replace
+foreach v in allpcp_p1000_2010 img_p1000_2010 obgyn_p1000_2010 specs_p1000_2010 pcphys_p1000_2010 {
+	glm `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, family(poisson) link(log)
 	outreg2 using "poisson_2010.docx", `replace'
 local replace append
 }
+
 
 * changes regressions: 
 clear all 
@@ -141,7 +154,7 @@ u all_data
 cd "$tables"
 local replace replace
 foreach v in ch_allpcp_p1000_2010 ch_obgyn_p1000_2010 ch_img_p1000_2010 ch_pcphys_p1000_2010 ch_specs_p1000_2010 {
-	reg `v' hospital closure ch_avg_inc_adj_2010 ch_sh_blk_2010 ch_sh_hisp_2010 ch_sh_forborn_2010 ch_sh_pov_2010 ch_sh_55p_2010, robust
+	reg `v' hospital ch_avg_inc_adj_2010 ch_sh_blk_2010 ch_sh_hisp_2010 ch_sh_forborn_2010 ch_sh_pov_2010 ch_sh_55p_2010, robust
 outreg2 using "changes_docs.docx", `replace'
 local replace append
 }
