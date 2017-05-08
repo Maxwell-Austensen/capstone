@@ -114,7 +114,7 @@ cd "$tables"
 local replace replace
 foreach v in log_pcp_p1000 log_img_p1000 log_ob_p1000 log_sp_p1000 log_phys_p1000 {
 reg `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, robust
-outreg2 using "2010docs_levels.docx", `replace'
+outreg2 using "table5.docx", `replace'
 local replace append
 }
 

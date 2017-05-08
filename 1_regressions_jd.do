@@ -115,12 +115,28 @@ local replace append
 }
 
  
-*2010 cross section in levels, with covariates 
+
+ 
+ *2010 cross section in levels, with covariates
 cd "$tables"
 local replace replace
 foreach v in log_pcp_p1000 log_img_p1000 log_ob_p1000 log_sp_p1000 log_phys_p1000 {
 reg `v' ib2.gent_status hospital avg_inc_adj_2010 sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, robust
 outreg2 using "2010docs_levels.docx", `replace'
+local replace append
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ *2010 cross section in levels, with covariates w/o income 
+cd "$tables"
+local replace replace
+foreach v in log_pcp_p1000 log_img_p1000 log_ob_p1000 log_sp_p1000 log_phys_p1000 {
+reg `v' ib2.gent_status hospital sh_forborn_2010 sh_blk_2010 sh_hisp_2010 sh_asian_2010 sh_pov_2010 sh_55p_2010, robust
+outreg2 using "2010docs_levels_noinc.docx", `replace'
 local replace append
 }
 
@@ -154,7 +170,7 @@ u all_data
 cd "$tables"
 local replace replace
 foreach v in ch_allpcp_p1000_2010 ch_obgyn_p1000_2010 ch_img_p1000_2010 ch_pcphys_p1000_2010 ch_specs_p1000_2010 {
-	reg `v' hospital closure ch_avg_inc_adj_2010 ch_sh_blk_2010 ch_sh_hisp_2010 ch_sh_forborn_2010 ch_sh_pov_2010 ch_sh_55p_2010, robust
+	reg `v' hospital ib2.gent_status ch_avg_inc_adj_2010 ch_sh_blk_2010 ch_sh_hisp_2010 ch_sh_forborn_2010 ch_sh_pov_2010 ch_sh_55p_2010, robust
 outreg2 using "changes_docs.docx", `replace'
 local replace append
 }
@@ -179,7 +195,7 @@ u all_data
 cd "$tables"
 local replace replace
 foreach v in ch_edvt_rt_2010 ch_pcpvt_rt_2010 {
-	reg `v'  ch_avg_inc_adj_2010 ch_sh_blk_2010 ch_sh_hisp_2010 ch_sh_forborn_2010 ch_sh_pov_2010 ch_sh_55p_2010, robust
+	reg `v'  ib2.gent_status ch_avg_inc_adj_2010 ch_sh_blk_2010 ch_sh_hisp_2010 ch_sh_forborn_2010 ch_sh_pov_2010 ch_sh_55p_2010, robust
 	outreg2 using "ch_pc_ed_results.docx", `replace'
 local replace append
 }
